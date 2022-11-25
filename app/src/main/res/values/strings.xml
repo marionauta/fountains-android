@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Fountains</string>
+
+    <string name="servers_list_title">Servers</string>
+    <string name="servers_list_addButton_description">Add server</string>
+    <string name="servers_list_empty_title">No servers</string>
+    <string name="servers_list_empty_description">Add a server first</string>
 </resources>
