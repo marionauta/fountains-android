@@ -3,7 +3,6 @@ package mn.fountains.screens.server.list
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,15 +14,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import mn.fountains.R
 import mn.fountains.domain.models.Server
 import mn.fountains.domain.repositories.ServerRepository
+import mn.fountains.navigation.AppScreen
 import mn.fountains.ui.theme.Typography
 
 @Composable
-fun ServerListScreen() {
+fun ServerListScreen(navController: NavController) {
     val (servers, setServers) = remember { mutableStateOf(listOf<Server>()) }
     LaunchedEffect(Unit) {
         val repository = ServerRepository()
@@ -39,7 +39,11 @@ fun ServerListScreen() {
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(AppScreen.ServerAdd.route)
+                }
+            ) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = stringResource(R.string.servers_list_addButton_description),
@@ -73,7 +77,7 @@ private fun ServerList(servers: List<Server>) {
 private fun ServerRow(server: Server) {
     Column(
         modifier = Modifier
-            .clickable {  }
+            .clickable { }
             .padding(all = 16.dp)
             .fillMaxWidth(),
     ) {

@@ -8,34 +8,52 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
+import mn.fountains.R
 import mn.fountains.data.datasources.ServerInfoDataSource
 import mn.fountains.data.models.ServerInfoDto
+import mn.fountains.domain.models.Server
+import mn.fountains.domain.models.intoDomain
+import mn.fountains.domain.repositories.ServerRepository
 import mn.fountains.ui.theme.Typography
 import java.net.URL
 
 @Composable
-fun AddServerScreen() {
+fun AddServerScreen(navController: NavController) {
     Scaffold(topBar = {
         TopAppBar(title = { Text(text = "Add server") })
     }) {
         Box(modifier = Modifier.padding(it)) {
-            AddServer()
+            AddServer(navController = navController)
         }
     }
 }
 
 @Composable
-fun AddServer() {
+fun AddServer(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val (address, setAddress) = remember { mutableStateOf("") }
     val (serverInfo, setServerInfo) = remember { mutableStateOf<ServerInfoDto?>(null) }
+
+    fun saveServerInfo() {
+        if (serverInfo == null) return
+        val repository = ServerRepository()
+        val server = Server(
+            name = serverInfo.area.displayName,
+            address = URL(address),
+            location = serverInfo.area.location.intoDomain(),
+        )
+        repository.add(server)
+        navController.popBackStack()
+    }
 
     Column {
         Row(
@@ -55,8 +73,8 @@ fun AddServer() {
                     setServerInfo(info)
                 }
             }) {
-                Text(text = "Check")
-            }   
+                Text(stringResource(R.string.servers_add_checkButton))
+            }
         }
 
         if (serverInfo != null) {
@@ -67,11 +85,20 @@ fun AddServer() {
                     .padding(16.dp),
             )
 
+            Button(::saveServerInfo, modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)) {
+                Text(stringResource(R.string.servers_add_addButton))
+            }
+
             val position = serverInfo.area.location.let { LatLng(it.latitude, it.longitude) }
 
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
-                cameraPositionState = CameraPositionState(position = CameraPosition.fromLatLngZoom(position, 13f)),
+                cameraPositionState = CameraPositionState(
+                    position = CameraPosition.fromLatLngZoom(
+                        position,
+                        13f
+                    )
+                ),
                 uiSettings = MapUiSettings(
                     compassEnabled = false,
                     myLocationButtonEnabled = false,
