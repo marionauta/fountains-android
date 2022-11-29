@@ -21,6 +21,7 @@ import mn.fountains.domain.models.Server
 import mn.fountains.domain.repositories.ServerRepository
 import mn.fountains.navigation.AppScreen
 import mn.fountains.ui.theme.Typography
+import java.net.URLEncoder
 
 @Composable
 fun ServerListScreen(navController: NavController) {
@@ -55,29 +56,34 @@ fun ServerListScreen(navController: NavController) {
             if (servers.isEmpty()) {
                 EmptyServerList()
             } else {
-                ServerList(servers)
+                ServerList(servers, navController)
             }
         }
     }
 }
 
 @Composable
-private fun ServerList(servers: List<Server>) {
+private fun ServerList(servers: List<Server>, navController: NavController) {
+    fun onServerClick(server: Server) {
+        val encoded = URLEncoder.encode(server.address.toString(), "utf-8")
+        navController.navigate(AppScreen.Map.route + "/${encoded}")
+    }
+
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
             if (index > 0) {
                 Divider()
             }
-            ServerRow(server)
+            ServerRow(server, onClick = ::onServerClick)
         }
     }
 }
 
 @Composable
-private fun ServerRow(server: Server) {
+private fun ServerRow(server: Server, onClick: (Server) -> Unit) {
     Column(
         modifier = Modifier
-            .clickable { }
+            .clickable { onClick(server) }
             .padding(all = 16.dp)
             .fillMaxWidth(),
     ) {
