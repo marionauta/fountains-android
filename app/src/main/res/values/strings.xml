@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Fountains</string>
 
+    <string name="general_back">Back</string>
+    <string name="general_close">Close</string>
+
+    <string name="map_fallback_title">Fountains</string>
+
+    <string name="servers_add_title">Add server</string>
     <string name="servers_add_addButton">Add</string>
     <string name="servers_add_checkButton">Check</string>
 

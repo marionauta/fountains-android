@@ -2,6 +2,8 @@ package mn.fountains.screens.server.add
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +31,17 @@ import java.net.URL
 @Composable
 fun AddServerScreen(navController: NavController) {
     Scaffold(topBar = {
-        TopAppBar(title = { Text(text = "Add server") })
+        TopAppBar(
+            title = { Text(stringResource(R.string.servers_add_title)) },
+            navigationIcon = {
+                IconButton(onClick = navController::navigateUp) {
+                    Icon(
+                        Icons.Rounded.Close,
+                        contentDescription = stringResource(R.string.general_close),
+                    )
+                }
+            }
+        )
     }) {
         Box(modifier = Modifier.padding(it)) {
             AddServer(navController = navController)
