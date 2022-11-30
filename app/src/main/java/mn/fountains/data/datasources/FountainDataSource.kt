@@ -7,8 +7,20 @@ import mn.fountains.networking.ApiClient
 import java.net.URL
 
 class FountainDataSource {
+    companion object {
+        // TODO: Improve this "in memory" cache
+        private var fountains = listOf<FountainDto>()
+    }
+
     suspend fun all(url: URL): List<FountainDto>? {
         val apiClient = ApiClient(baseUrl = url)
-        return apiClient.get<ServerResponse<FountainsResponse>>("v1/drinking-fountains")?.data?.fountains
+        val response = apiClient.get<ServerResponse<FountainsResponse>>("v1/drinking-fountains")
+        val fountains = response?.data?.fountains
+        if (fountains != null) {
+            FountainDataSource.fountains = response.data.fountains
+        }
+        return fountains
     }
+
+    fun get(fountainId: String): FountainDto? = fountains.firstOrNull { it.id == fountainId }
 }

@@ -17,4 +17,6 @@ class FountainRepository {
     suspend fun all(server: Server): List<Fountain>? {
         return all(url = server.address)
     }
+
+    fun get(fountainId: String): Fountain? = dataSource.get(fountainId)?.intoDomain()
 }

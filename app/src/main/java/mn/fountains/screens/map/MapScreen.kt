@@ -22,6 +22,7 @@ import mn.fountains.domain.models.Location
 import mn.fountains.domain.models.Server
 import mn.fountains.domain.repositories.FountainRepository
 import mn.fountains.domain.repositories.ServerRepository
+import mn.fountains.navigation.AppScreen
 import java.net.URL
 
 @Composable
@@ -33,8 +34,7 @@ fun MapScreen(url: URL, navController: NavController) {
     }
 
     Scaffold(topBar = {
-        TopAppBar(
-            title = { Text(server?.name ?: stringResource(R.string.map_fallback_title)) },
+        TopAppBar(title = { Text(server?.name ?: stringResource(R.string.map_fallback_title)) },
             navigationIcon = {
                 IconButton(navController::navigateUp) {
                     Icon(
@@ -42,21 +42,26 @@ fun MapScreen(url: URL, navController: NavController) {
                         contentDescription = stringResource(R.string.general_back),
                     )
                 }
-            }
-        )
+            })
     }) {
         Box(modifier = Modifier.padding(it)) {
             if (server == null) {
                 Text("No such server")
             } else {
-                Map(server = server)
+                Map(
+                    server = server,
+                    onMarkerClick = { fountain ->
+                        println(fountain)
+                        navController.navigate(AppScreen.FountainDetail.route + "/${fountain.id}")
+                    },
+                )
             }
         }
     }
 }
 
 @Composable
-private fun Map(server: Server) {
+private fun Map(server: Server, onMarkerClick: (Fountain) -> Unit) {
     val (fountains, setFountains) = remember { mutableStateOf(listOf<Fountain>()) }
 
     LaunchedEffect(server) {
@@ -78,10 +83,12 @@ private fun Map(server: Server) {
         ),
     ) {
         for (fountain in fountains) {
-            Marker(
-                state = MarkerState(position = fountain.location.position),
+            Marker(state = MarkerState(position = fountain.location.position),
                 title = fountain.name,
-            )
+                onClick = {
+                    onMarkerClick(fountain)
+                    return@Marker true
+                })
         }
     }
 }
