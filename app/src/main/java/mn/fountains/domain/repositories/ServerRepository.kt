@@ -1,24 +1,32 @@
 package mn.fountains.domain.repositories
 
+import android.content.Context
+import mn.fountains.data.datasources.ServerDataSource
+import mn.fountains.data.models.LocationDto
+import mn.fountains.data.models.ServerEntity
+import mn.fountains.domain.models.Location
 import mn.fountains.domain.models.Server
+import mn.fountains.domain.models.intoDomain
 import java.net.URL
 
-private val servers = mutableListOf<Server>()
+class ServerRepository(private val context: Context) {
+    private val dataSource = ServerDataSource()
 
-class ServerRepository {
-    fun add(server: Server) {
-        servers.add(server)
+    suspend fun add(server: Server) {
+        val payload = ServerEntity(
+            name = server.name,
+            address = server.address.toString(),
+            latitude = server.location.latitude,
+            longitude = server.location.longitude,
+        )
+        dataSource.add(context, payload)
     }
 
-    fun remove(server: Server) {
-        servers.remove(server)
+    suspend fun get(address: URL): Server? {
+        return dataSource.get(context, address.toString())?.intoDomain()
     }
 
-    fun get(address: URL): Server? {
-        return servers.firstOrNull { it.address == address }
-    }
-
-    fun all(): List<Server> {
-        return servers
+    suspend fun all(): List<Server> {
+        return dataSource.all(context).map(ServerEntity::intoDomain)
     }
 }

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.10'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
@@ -42,6 +43,7 @@ android {
         kotlinCompilerExtensionVersion compose_version
     }
     packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
@@ -49,8 +51,13 @@ android {
 }
 
 dependencies {
+    // Maps
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.maps.android:maps-compose:2.7.2'
+
+    // Room
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.compose.foundation:foundation:$compose_version"

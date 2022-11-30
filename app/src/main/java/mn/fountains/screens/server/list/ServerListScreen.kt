@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -27,8 +27,10 @@ import java.net.URLEncoder
 @Composable
 fun ServerListScreen(navController: NavController) {
     val (servers, setServers) = remember { mutableStateOf(listOf<Server>()) }
+
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
-        val repository = ServerRepository()
+        val repository = ServerRepository(context)
         setServers(repository.all())
     }
 

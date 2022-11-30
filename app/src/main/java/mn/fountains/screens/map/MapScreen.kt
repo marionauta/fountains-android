@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
@@ -29,8 +30,9 @@ import java.net.URL
 @Composable
 fun MapScreen(url: URL, navController: NavController) {
     val (server, setServer) = remember { mutableStateOf<Server?>(null) }
+    val context = LocalContext.current
     LaunchedEffect(url) {
-        val repository = ServerRepository()
+        val repository = ServerRepository(context)
         setServer(repository.get(address = url))
     }
 

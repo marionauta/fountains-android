@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -19,6 +20,7 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import mn.fountains.R
 import mn.fountains.data.datasources.ServerInfoDataSource
 import mn.fountains.data.models.ServerInfoDto
@@ -55,15 +57,18 @@ fun AddServer(navController: NavController) {
     val (address, setAddress) = remember { mutableStateOf("") }
     val (serverInfo, setServerInfo) = remember { mutableStateOf<ServerInfoDto?>(null) }
 
+    val context = LocalContext.current
     fun saveServerInfo() {
         if (serverInfo == null) return
-        val repository = ServerRepository()
+        val repository = ServerRepository(context)
         val server = Server(
             name = serverInfo.area.displayName,
             address = URL(address),
             location = serverInfo.area.location.intoDomain(),
         )
-        repository.add(server)
+        runBlocking {
+            repository.add(server)
+        }
         navController.popBackStack()
     }
 
