@@ -21,6 +21,7 @@ import mn.fountains.domain.models.Server
 import mn.fountains.domain.repositories.ServerRepository
 import mn.fountains.navigation.AppScreen
 import mn.fountains.ui.theme.Typography
+import mn.fountains.ui.views.EmptyFallback
 import java.net.URLEncoder
 
 @Composable
@@ -100,20 +101,9 @@ private fun ServerRow(server: Server, onClick: (Server) -> Unit) {
 
 @Composable
 private fun EmptyServerList() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(all = 16.dp)
-            .fillMaxSize(),
-    ) {
-        Text(
-            stringResource(R.string.servers_list_empty_title),
-            style = Typography.h5,
-        )
-        Text(
-            stringResource(R.string.servers_list_empty_description),
-            style = Typography.body1
-        )
-    }
+    EmptyFallback(
+        title = stringResource(R.string.servers_list_empty_title),
+        description = stringResource(R.string.servers_list_empty_description),
+        modifier = Modifier.fillMaxSize(),
+    )
 }

@@ -5,12 +5,16 @@
     <string name="general_close">Close</string>
 
     <string name="fountain_detail_fallback_title">Fountain</string>
+    <string name="fountain_detail_not_found_title">No fountain</string>
+    <string name="fountain_detail_not_found_description">Unknown fountain. Go back.</string>
     <string name="fountain_detail_bottle_title">Bottle filling</string>
     <string name="fountain_detail_bottle_description">Indicates whether a water bottle can easily be filled.</string>
     <string name="fountain_detail_wheelchair_title">Wheelchair access</string>
     <string name="fountain_detail_wheelchair_description">Indicates if the fountain can be used with wheelchairs.</string>
 
     <string name="map_fallback_title">Fountains</string>
+    <string name="map_not_found_title">No server</string>
+    <string name="map_not_found_description">Unknown server. Go back.</string>
 
     <string name="servers_add_title">Add server</string>
     <string name="servers_add_addButton">Add</string>

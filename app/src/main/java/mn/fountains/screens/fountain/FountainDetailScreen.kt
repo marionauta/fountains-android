@@ -18,9 +18,9 @@ import androidx.navigation.NavController
 import mn.fountains.R
 import mn.fountains.domain.models.BasicValue
 import mn.fountains.domain.models.Fountain
-import mn.fountains.domain.models.WheelchairValue
 import mn.fountains.domain.repositories.FountainRepository
 import mn.fountains.ui.theme.Typography
+import mn.fountains.ui.views.EmptyFallback
 
 @Composable
 fun FountainDetailScreen(fountainId: String, navController: NavController) {
@@ -49,20 +49,28 @@ fun FountainDetailScreen(fountainId: String, navController: NavController) {
         )
     }) {
         Box(modifier = Modifier.padding(it)) {
-            FountainDetail(fountain = fountain)
+            if (fountain == null) {
+                NoFountain()
+            } else {
+                FountainDetail(fountain = fountain)
+            }
         }
     }
 }
 
 @Composable
-private fun FountainDetail(fountain: Fountain?) {
-    if (fountain == null) {
-        Text("No fountain")
-        return
-    }
+private fun NoFountain() {
+    EmptyFallback(
+        title = stringResource(R.string.fountain_detail_not_found_title),
+        description = stringResource(R.string.fountain_detail_not_found_description),
+        modifier = Modifier.fillMaxSize(),
+    )
+}
 
+@Composable
+private fun FountainDetail(fountain: Fountain) {
     LazyColumn {
-        item { 
+        item {
             PropertyRow(
                 name = stringResource(R.string.fountain_detail_bottle_title),
                 description = stringResource(R.string.fountain_detail_bottle_description),
@@ -82,7 +90,7 @@ private fun FountainDetail(fountain: Fountain?) {
 }
 
 @Composable
-private fun <T: Enum<T>> PropertyRow(name: String, description: String, value: T) {
+private fun <T : Enum<T>> PropertyRow(name: String, description: String, value: T) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

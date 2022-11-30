@@ -23,6 +23,7 @@ import mn.fountains.domain.models.Server
 import mn.fountains.domain.repositories.FountainRepository
 import mn.fountains.domain.repositories.ServerRepository
 import mn.fountains.navigation.AppScreen
+import mn.fountains.ui.views.EmptyFallback
 import java.net.URL
 
 @Composable
@@ -46,7 +47,7 @@ fun MapScreen(url: URL, navController: NavController) {
     }) {
         Box(modifier = Modifier.padding(it)) {
             if (server == null) {
-                Text("No such server")
+                NoServer()
             } else {
                 Map(
                     server = server,
@@ -58,6 +59,15 @@ fun MapScreen(url: URL, navController: NavController) {
             }
         }
     }
+}
+
+@Composable
+private fun NoServer() {
+    EmptyFallback(
+        title = stringResource(R.string.map_not_found_title),
+        description = stringResource(R.string.map_not_found_description),
+        modifier = Modifier.fillMaxSize(),
+    )
 }
 
 @Composable
