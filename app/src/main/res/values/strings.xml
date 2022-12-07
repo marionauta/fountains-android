@@ -13,6 +13,7 @@
     <string name="fountain_detail_wheelchair_description">Indicates if the fountain can be used with wheelchairs.</string>
 
     <string name="map_fallback_title">Fountains</string>
+    <string name="map_last_updated">Last updated: %s</string>
     <string name="map_not_found_title">No server</string>
     <string name="map_not_found_description">Unknown server. Go back.</string>
 
