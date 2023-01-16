@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +22,9 @@ import mn.fountains.R
 import mn.fountains.data.datasources.ServerInfoDataSource
 import mn.fountains.data.models.ServerInfoDto
 import mn.fountains.domain.models.Server
+import mn.fountains.domain.models.ServerDiscoveryItem
 import mn.fountains.domain.models.intoDomain
+import mn.fountains.domain.repositories.DiscoveryRepository
 import mn.fountains.domain.repositories.ServerRepository
 import mn.fountains.ui.theme.Typography
 import java.net.URL
@@ -54,8 +53,24 @@ fun AddServerScreen(navController: NavController) {
 @Composable
 fun AddServer(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
+    val (discovered, setDiscovered) = remember { mutableStateOf<List<ServerDiscoveryItem>>(emptyList()) }
     val (address, setAddress) = remember { mutableStateOf("") }
     val (serverInfo, setServerInfo) = remember { mutableStateOf<ServerInfoDto?>(null) }
+
+    LaunchedEffect(Unit) {
+        val repository = DiscoveryRepository()
+        setDiscovered(repository.all())
+    }
+
+    fun checkServerInfo(address: String) {
+        val url = URL(address)
+        val dataSource = ServerInfoDataSource()
+        coroutineScope.launch {
+            val info = dataSource.get(url)
+            println(info)
+            setServerInfo(info)
+        }
+    }
 
     val context = LocalContext.current
     fun saveServerInfo() {
@@ -81,15 +96,7 @@ fun AddServer(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             TextField(value = address, onValueChange = setAddress)
-            Button(onClick = {
-                val url = URL(address)
-                val dataSource = ServerInfoDataSource()
-                coroutineScope.launch {
-                    val info = dataSource.get(url)
-                    println(info)
-                    setServerInfo(info)
-                }
-            }) {
+            Button(onClick = { checkServerInfo(address = address) }, enabled = address.isNotBlank()) {
                 Text(stringResource(R.string.servers_add_checkButton))
             }
         }
@@ -129,6 +136,15 @@ fun AddServer(navController: NavController) {
                     indoorLevelPickerEnabled = false,
                 )
             )
+        } else if (discovered.isNotEmpty()) {
+            for (server in discovered) {
+                Button(onClick = {
+                    setAddress(server.address.toString())
+                    checkServerInfo(address = server.address.toString())
+                }) {
+                    Text(server.name)
+                }
+            }
         }
     }
 }
