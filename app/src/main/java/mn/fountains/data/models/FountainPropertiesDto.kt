@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class FountainPropertiesDto(
     val bottle: String,
     val wheelchair: String,
+    val checkDate: String?,
 )

@@ -86,11 +86,26 @@ private fun FountainDetail(fountain: Fountain) {
             )
             Divider()
         }
+        if (fountain.properties.checkDate != null) {
+            item {
+                PropertyRow(
+                    name = stringResource(R.string.fountain_detail_check_date_title),
+                    description = stringResource(R.string.fountain_detail_check_date_description),
+                    value = fountain.properties.checkDate,
+                )
+                Divider()
+            }
+        }
     }
 }
 
 @Composable
 private fun <T : Enum<T>> PropertyRow(name: String, description: String, value: T) {
+    PropertyRow(name = name, description = description, value = value.name)
+}
+
+@Composable
+private fun PropertyRow(name: String, description: String, value: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -104,7 +119,7 @@ private fun <T : Enum<T>> PropertyRow(name: String, description: String, value: 
                 .padding(bottom = 8.dp),
         ) {
             Text(text = name)
-            Text(text = value.name)
+            Text(text = value)
         }
         Text(
             text = description,

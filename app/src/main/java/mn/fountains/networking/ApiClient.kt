@@ -7,14 +7,17 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import java.net.URL
 
 class ApiClient(val baseUrl: URL) {
+    @OptIn(ExperimentalSerializationApi::class)
     val client = HttpClient(Android) {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
+                explicitNulls = false
             })
         }
     }

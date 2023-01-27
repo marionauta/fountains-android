@@ -5,6 +5,7 @@ import mn.fountains.data.models.FountainPropertiesDto
 data class FountainProperties(
     val bottle: BasicValue,
     val wheelchair: WheelchairValue,
+    val checkDate: String?,
 )
 
 enum class BasicValue {
@@ -30,4 +31,5 @@ private fun parseWheelchair(value: String): WheelchairValue = try {
 fun FountainPropertiesDto.intoDomain(): FountainProperties = FountainProperties(
     bottle = parseBasic(bottle),
     wheelchair = parseWheelchair(wheelchair),
+    checkDate = checkDate,
 )
