@@ -24,6 +24,8 @@
     <string name="servers_add_title">Add server</string>
     <string name="servers_add_addButton">Add</string>
     <string name="servers_add_checkButton">Check</string>
+    <string name="servers_add_address_placeholder">https://</string>
+    <string name="servers_add_known_servers">Known servers</string>
 
     <string name="servers_list_title">Servers</string>
     <string name="servers_list_addButton_description">Add server</string>

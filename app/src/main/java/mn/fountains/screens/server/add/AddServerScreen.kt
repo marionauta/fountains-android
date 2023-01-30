@@ -1,12 +1,17 @@
 package mn.fountains.screens.server.add
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,7 +31,6 @@ import mn.fountains.domain.models.ServerDiscoveryItem
 import mn.fountains.domain.models.intoDomain
 import mn.fountains.domain.repositories.DiscoveryRepository
 import mn.fountains.domain.repositories.ServerRepository
-import mn.fountains.ui.theme.Typography
 import java.net.URL
 
 @Composable
@@ -55,7 +59,12 @@ fun AddServer(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val (discovered, setDiscovered) = remember { mutableStateOf<List<ServerDiscoveryItem>>(emptyList()) }
     val (address, setAddress) = remember { mutableStateOf("") }
+    val addressFocus = remember { FocusRequester() }
     val (serverInfo, setServerInfo) = remember { mutableStateOf<ServerInfoDto?>(null) }
+
+    LaunchedEffect(Unit) {
+        addressFocus.requestFocus()
+    }
 
     LaunchedEffect(Unit) {
         val repository = DiscoveryRepository()
@@ -73,7 +82,7 @@ fun AddServer(navController: NavController) {
     }
 
     val context = LocalContext.current
-    fun saveServerInfo() {
+    fun saveServerInfo(serverInfo: ServerInfoDto?) {
         if (serverInfo == null) return
         val repository = ServerRepository(context)
         val server = Server(
@@ -88,63 +97,117 @@ fun AddServer(navController: NavController) {
     }
 
     Column {
-        Row(
+        Spacer(modifier = Modifier.height(16.dp))
+        TextField(
+            value = address,
+            onValueChange = setAddress,
             modifier = Modifier
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                .focusRequester(addressFocus)
+                .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
+            placeholder = {
+                Text(text = stringResource(R.string.servers_add_address_placeholder))
+            }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            TextField(value = address, onValueChange = setAddress)
-            Button(onClick = { checkServerInfo(address = address) }, enabled = address.isNotBlank()) {
+            Button(
+                onClick = { checkServerInfo(address = address) },
+                enabled = address.isNotBlank(),
+            ) {
                 Text(stringResource(R.string.servers_add_checkButton))
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                onClick = { saveServerInfo(serverInfo) },
+                enabled = serverInfo != null,
+            ) {
+                Text(stringResource(R.string.servers_add_addButton))
             }
         }
 
         if (serverInfo != null) {
             Text(
                 text = serverInfo.area.displayName,
-                style = Typography.h5,
-                modifier = Modifier
-                    .padding(16.dp),
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(16.dp),
             )
 
-            Button(::saveServerInfo, modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)) {
-                Text(stringResource(R.string.servers_add_addButton))
-            }
+            PreviewMap(serverInfo = serverInfo)
 
-            val position = serverInfo.area.location.let { LatLng(it.latitude, it.longitude) }
-
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = CameraPositionState(
-                    position = CameraPosition.fromLatLngZoom(
-                        position,
-                        13f
-                    )
-                ),
-                uiSettings = MapUiSettings(
-                    compassEnabled = false,
-                    myLocationButtonEnabled = false,
-                    mapToolbarEnabled = false,
-                    rotationGesturesEnabled = false,
-                    scrollGesturesEnabled = false,
-                    scrollGesturesEnabledDuringRotateOrZoom = false,
-                    tiltGesturesEnabled = false,
-                    zoomControlsEnabled = false,
-                    zoomGesturesEnabled = false,
-                    indoorLevelPickerEnabled = false,
-                )
-            )
         } else if (discovered.isNotEmpty()) {
-            for (server in discovered) {
-                Button(onClick = {
-                    setAddress(server.address.toString())
-                    checkServerInfo(address = server.address.toString())
-                }) {
-                    Text(server.name)
-                }
+            DiscoveredServersList(servers = discovered) {
+                setAddress(it.address.toString())
+                checkServerInfo(it.address.toString())
             }
         }
     }
+}
+
+@Composable
+fun DiscoveredServersList(
+    servers: List<ServerDiscoveryItem>,
+    checkDiscoveryItem: (ServerDiscoveryItem) -> Unit,
+) {
+    Text(
+        text = stringResource(R.string.servers_add_known_servers),
+        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+        style = MaterialTheme.typography.h5,
+    )
+    LazyColumn {
+        itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
+            if (index > 0) {
+                Divider()
+            }
+            ServerRow(server = server, onClick = checkDiscoveryItem)
+        }
+    }
+}
+
+@Composable
+private fun ServerRow(server: ServerDiscoveryItem, onClick: (ServerDiscoveryItem) -> Unit) {
+    Column(
+        modifier = Modifier
+            .clickable { onClick(server) }
+            .padding(all = 16.dp)
+            .fillMaxWidth(),
+    ) {
+        Text(
+            text = server.name,
+            style = MaterialTheme.typography.subtitle1,
+        )
+        Text(
+            text = server.address.toString(),
+            style = MaterialTheme.typography.caption,
+        )
+    }
+}
+
+@Composable
+private fun PreviewMap(serverInfo: ServerInfoDto) {
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = CameraPositionState(
+            position = CameraPosition.fromLatLngZoom(
+                serverInfo.area.location.let { LatLng(it.latitude, it.longitude) },
+                13f
+            )
+        ),
+        uiSettings = MapUiSettings(
+            compassEnabled = false,
+            myLocationButtonEnabled = false,
+            mapToolbarEnabled = false,
+            rotationGesturesEnabled = false,
+            scrollGesturesEnabled = false,
+            scrollGesturesEnabledDuringRotateOrZoom = false,
+            tiltGesturesEnabled = false,
+            zoomControlsEnabled = false,
+            zoomGesturesEnabled = false,
+            indoorLevelPickerEnabled = false,
+        )
+    )
 }
