@@ -18,6 +18,8 @@
     <string name="map_last_updated">Last updated: %s</string>
     <string name="map_not_found_title">No server</string>
     <string name="map_not_found_description">Unknown server. Go back.</string>
+    <string name="map_more_menu">Show menu</string>
+    <string name="map_delete_server">Delete server</string>
 
     <string name="servers_add_title">Add server</string>
     <string name="servers_add_addButton">Add</string>

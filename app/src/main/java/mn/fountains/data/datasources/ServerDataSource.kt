@@ -3,7 +3,6 @@ package mn.fountains.data.datasources
 import android.content.Context
 import androidx.room.*
 import mn.fountains.data.models.ServerEntity
-import java.net.URL
 
 class ServerDataSource {
     suspend fun get(context: Context, address: String): ServerEntity? {
@@ -20,6 +19,11 @@ class ServerDataSource {
         val db = AppDatabase.getInstance(context)
         return db.serverDao().add(server)
     }
+
+    suspend fun delete(context: Context, address: String) {
+        val db = AppDatabase.getInstance(context)
+        return db.serverDao().delete(address)
+    }
 }
 
 @Dao
@@ -32,6 +36,9 @@ interface ServerDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(server: ServerEntity)
+
+    @Query("DELETE FROM servers WHERE address = :address")
+    suspend fun delete(address: String)
 }
 
 @Database(entities = [ServerEntity::class], version = 1, exportSchema = false)

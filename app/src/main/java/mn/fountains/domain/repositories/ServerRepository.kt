@@ -29,4 +29,8 @@ class ServerRepository(private val context: Context) {
     suspend fun all(): List<Server> {
         return dataSource.all(context).map(ServerEntity::intoDomain)
     }
+
+    suspend fun delete(server: Server) {
+        dataSource.delete(context, server.address.toString())
+    }
 }
