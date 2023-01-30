@@ -72,11 +72,15 @@ fun AddServer(navController: NavController) {
     }
 
     fun checkServerInfo(address: String) {
-        val url = URL(address)
+        var sanitizedAddress = address
+        if (!sanitizedAddress.startsWith("https://") && !sanitizedAddress.startsWith("http://")) {
+            sanitizedAddress = "https://$sanitizedAddress"
+        }
+        setAddress(sanitizedAddress)
+        val url = URL(sanitizedAddress)
         val dataSource = ServerInfoDataSource()
         coroutineScope.launch {
             val info = dataSource.get(url)
-            println(info)
             setServerInfo(info)
         }
     }
