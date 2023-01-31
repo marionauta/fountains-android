@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -132,8 +133,17 @@ private fun NoServer() {
     )
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (Fountain) -> Unit) {
+    val fineLocationPermission = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    val coarseLocationPermission = rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+    val isMyLocationEnabled = fineLocationPermission.status.isGranted || coarseLocationPermission.status.isGranted
+    LaunchedEffect(isMyLocationEnabled) {
+        if (isMyLocationEnabled) { return@LaunchedEffect }
+        fineLocationPermission.launchPermissionRequest()
+    }
+
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(location.position, 15f)
     }
@@ -145,6 +155,7 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
             isBuildingEnabled = false,
             isIndoorEnabled = false,
             isTrafficEnabled = false,
+            isMyLocationEnabled = isMyLocationEnabled,
         ),
     ) {
         for (fountain in fountains) {

@@ -54,6 +54,7 @@ dependencies {
     // Maps
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.maps.android:maps-compose:2.7.2'
+    implementation "com.google.accompanist:accompanist-permissions:0.28.0"
 
     // Room
     implementation "androidx.room:room-ktx:$room_version"
