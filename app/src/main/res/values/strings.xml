@@ -16,19 +16,19 @@
 
     <string name="map_fallback_title">Fountains</string>
     <string name="map_last_updated">Last updated: %s</string>
-    <string name="map_not_found_title">No server</string>
-    <string name="map_not_found_description">Unknown server. Go back.</string>
+    <string name="map_not_found_title">No location</string>
+    <string name="map_not_found_description">Unknown location. Go back.</string>
     <string name="map_more_menu">Show menu</string>
-    <string name="map_delete_server">Delete server</string>
+    <string name="map_delete_server">Delete location</string>
 
-    <string name="servers_add_title">Add server</string>
+    <string name="servers_add_title">Add location</string>
     <string name="servers_add_addButton">Add</string>
     <string name="servers_add_checkButton">Check</string>
-    <string name="servers_add_address_placeholder">https://</string>
-    <string name="servers_add_known_servers">Known servers</string>
+    <string name="servers_add_address_placeholder" translatable="false">https://</string>
+    <string name="servers_add_known_servers">Known locations</string>
 
-    <string name="servers_list_title">Servers</string>
-    <string name="servers_list_addButton_description">Add server</string>
-    <string name="servers_list_empty_title">No servers</string>
-    <string name="servers_list_empty_description">Add a server first</string>
+    <string name="servers_list_title">Locations</string>
+    <string name="servers_list_addButton_description">Add location</string>
+    <string name="servers_list_empty_title">No locations</string>
+    <string name="servers_list_empty_description">Add a location first.</string>
 </resources>
