@@ -19,6 +19,7 @@ import mn.fountains.R
 import mn.fountains.domain.models.BasicValue
 import mn.fountains.domain.models.Fountain
 import mn.fountains.domain.repositories.FountainRepository
+import mn.fountains.library.parsePropertyValue
 import mn.fountains.ui.theme.Typography
 import mn.fountains.ui.views.EmptyFallback
 
@@ -119,7 +120,7 @@ private fun PropertyRow(name: String, description: String, value: String) {
                 .padding(bottom = 8.dp),
         ) {
             Text(text = name)
-            Text(text = value)
+            Text(text = parsePropertyValue(value = value))
         }
         Text(
             text = description,

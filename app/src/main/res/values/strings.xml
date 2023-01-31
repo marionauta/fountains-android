@@ -4,6 +4,10 @@
     <string name="general_back">Back</string>
     <string name="general_close">Close</string>
 
+    <string name="property_value_no">No</string>
+    <string name="property_value_yes">Yes</string>
+    <string name="property_value_unknown">Unknown</string>
+
     <string name="fountain_detail_fallback_title">Fountain</string>
     <string name="fountain_detail_not_found_title">No fountain</string>
     <string name="fountain_detail_not_found_description">Unknown fountain. Go back.</string>
