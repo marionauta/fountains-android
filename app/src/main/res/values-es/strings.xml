@@ -6,6 +6,7 @@
     <string name="fountain_detail_fallback_title">Fuente</string>
     <string name="fountain_detail_not_found_title">Sin fuente</string>
     <string name="fountain_detail_not_found_description">Fuente desconocida. Vuelve.</string>
+    <string name="fountain_detail_photo_description">Una foto de la fuente.</string>
     <string name="fountain_detail_bottle_title">Rellenado de botellas</string>
     <string name="fountain_detail_bottle_description">Indica si una botella de agua se puede llenar fácilmente.</string>
     <string name="fountain_detail_wheelchair_title">Acceso con silla de ruedas</string>

@@ -26,7 +26,7 @@ class ApiClient(val baseUrl: URL) {
         return try {
             val response = client.get(baseUrl) {
                 url {
-                    appendPathSegments(route)
+                    appendEncodedPathSegments(route)
                 }
             }
             response.body()

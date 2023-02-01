@@ -6,7 +6,7 @@ import java.net.URL
 
 class DiscoveryDataSource {
     companion object {
-        private var discoveryAddress = URL("https://marionauta.github.io/fountains-landing")
+        private val discoveryAddress = URL("https://marionauta.github.io/fountains-landing")
     }
 
     private val apiClient = ApiClient(baseUrl = discoveryAddress)

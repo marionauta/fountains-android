@@ -5,6 +5,7 @@ import mn.fountains.data.models.FountainPropertiesDto
 data class FountainProperties(
     val bottle: BasicValue,
     val wheelchair: WheelchairValue,
+    val mapillaryId: String?,
     val checkDate: String?,
 )
 
@@ -31,5 +32,6 @@ private fun parseWheelchair(value: String): WheelchairValue = try {
 fun FountainPropertiesDto.intoDomain(): FountainProperties = FountainProperties(
     bottle = parseBasic(bottle),
     wheelchair = parseWheelchair(wheelchair),
+    mapillaryId = mapillaryId,
     checkDate = checkDate,
 )

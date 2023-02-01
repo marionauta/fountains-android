@@ -5,20 +5,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import mn.fountains.R
 import mn.fountains.domain.models.BasicValue
 import mn.fountains.domain.models.Fountain
 import mn.fountains.domain.repositories.FountainRepository
+import mn.fountains.library.produceMapillaryImageUrl
 import mn.fountains.library.parsePropertyValue
 import mn.fountains.ui.theme.Typography
 import mn.fountains.ui.views.EmptyFallback
@@ -70,7 +70,22 @@ private fun NoFountain() {
 
 @Composable
 private fun FountainDetail(fountain: Fountain) {
+    val imageUrl by produceMapillaryImageUrl(mapillaryId = fountain.properties.mapillaryId)
+
     LazyColumn {
+        if (imageUrl != null) {
+            item {
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = stringResource(R.string.fountain_detail_photo_description),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                )
+                Divider()
+            }
+        }
         item {
             PropertyRow(
                 name = stringResource(R.string.fountain_detail_bottle_title),
