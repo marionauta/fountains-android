@@ -1,7 +1,8 @@
 package mn.fountains.screens.server.list
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
@@ -14,14 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mn.fountains.R
 import mn.fountains.domain.models.Server
 import mn.fountains.domain.repositories.ServerRepository
 import mn.fountains.navigation.AppScreen
-import mn.fountains.ui.theme.Typography
 import mn.fountains.ui.views.EmptyFallback
+import mn.fountains.ui.views.ServerRowItem
 import java.net.URLEncoder
 
 @Composable
@@ -74,30 +74,13 @@ private fun ServerList(servers: List<Server>, navController: NavController) {
 
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
-            if (index > 0) {
-                Divider()
-            }
-            ServerRow(server, onClick = ::onServerClick)
+            ServerRowItem(
+                name = server.name,
+                address = server.address.toString(),
+                hasTopDivider = index > 0,
+                onClick = { onServerClick(server) }
+            )
         }
-    }
-}
-
-@Composable
-private fun ServerRow(server: Server, onClick: (Server) -> Unit) {
-    Column(
-        modifier = Modifier
-            .clickable { onClick(server) }
-            .padding(all = 16.dp)
-            .fillMaxWidth(),
-    ) {
-        Text(
-            text = server.name,
-            style = Typography.subtitle1,
-        )
-        Text(
-            text = server.address.toString(),
-            style = Typography.caption,
-        )
     }
 }
 

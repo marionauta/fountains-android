@@ -17,8 +17,8 @@ import coil.compose.AsyncImage
 import mn.fountains.R
 import mn.fountains.domain.models.BasicValue
 import mn.fountains.domain.models.Fountain
+import mn.fountains.domain.producers.produceMapillaryImageUrl
 import mn.fountains.domain.repositories.FountainRepository
-import mn.fountains.library.produceMapillaryImageUrl
 import mn.fountains.library.parsePropertyValue
 import mn.fountains.ui.theme.Typography
 import mn.fountains.ui.views.EmptyFallback

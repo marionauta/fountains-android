@@ -1,6 +1,5 @@
 package mn.fountains.screens.server.add
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -8,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -22,19 +22,21 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import mn.fountains.R
-import mn.fountains.data.datasources.ServerInfoDataSource
-import mn.fountains.data.models.ServerInfoDto
 import mn.fountains.domain.models.Server
 import mn.fountains.domain.models.ServerDiscoveryItem
-import mn.fountains.domain.models.intoDomain
-import mn.fountains.domain.repositories.DiscoveryRepository
+import mn.fountains.domain.models.ServerInfo
+import mn.fountains.domain.producers.discoveredServersProducer
+import mn.fountains.domain.repositories.ServerInfoRepository
 import mn.fountains.domain.repositories.ServerRepository
+import mn.fountains.ui.views.AppBarLoader
+import mn.fountains.ui.views.ServerRowItem
 import java.net.URL
 
 @Composable
 fun AddServerScreen(navController: NavController) {
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(topBar = {
         TopAppBar(
             title = { Text(stringResource(R.string.servers_add_title)) },
@@ -45,56 +47,69 @@ fun AddServerScreen(navController: NavController) {
                         contentDescription = stringResource(R.string.general_close),
                     )
                 }
+            },
+            actions = {
+                AppBarLoader(isLoading = isLoading, modifier = Modifier.padding(end = 16.dp))
             }
         )
     }) {
         Box(modifier = Modifier.padding(it)) {
-            AddServer(navController = navController)
+            AddServer(
+                navController = navController,
+                setIsLoading = { value -> isLoading = value }
+            )
         }
     }
 }
 
 @Composable
-fun AddServer(navController: NavController) {
+fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
-    val (discovered, setDiscovered) = remember { mutableStateOf<List<ServerDiscoveryItem>>(emptyList()) }
-    val (address, setAddress) = remember { mutableStateOf("") }
-    val addressFocus = remember { FocusRequester() }
-    val (serverInfo, setServerInfo) = remember { mutableStateOf<ServerInfoDto?>(null) }
 
+    // Server discovery
+    val discovered by discoveredServersProducer()
+    val (discoveredServers, isLoadingDiscovered) = discovered
+
+    // Server Info
+    var serverInfo by remember { mutableStateOf<ServerInfo?>(null) }
+    var isLoadingServerInfo by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(isLoadingDiscovered, isLoadingServerInfo) {
+        setIsLoading(isLoadingDiscovered || isLoadingServerInfo)
+    }
+
+    // Address Text Field
+    var address by rememberSaveable { mutableStateOf("") }
+    val addressFocus = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         addressFocus.requestFocus()
     }
 
-    LaunchedEffect(Unit) {
-        val repository = DiscoveryRepository()
-        setDiscovered(repository.all())
-    }
-
-    fun checkServerInfo(address: String) {
-        var sanitizedAddress = address
+    fun checkServerInfo(serverAddress: String) {
+        var sanitizedAddress = serverAddress
         if (!sanitizedAddress.startsWith("https://") && !sanitizedAddress.startsWith("http://")) {
             sanitizedAddress = "https://$sanitizedAddress"
         }
-        setAddress(sanitizedAddress)
+        address = (sanitizedAddress)
         val url = URL(sanitizedAddress)
-        val dataSource = ServerInfoDataSource()
+        val repository = ServerInfoRepository()
+        isLoadingServerInfo = true
         coroutineScope.launch {
-            val info = dataSource.get(url)
-            setServerInfo(info)
+            serverInfo = repository.get(baseUrl = url)
+            isLoadingServerInfo = false
         }
     }
 
     val context = LocalContext.current
-    fun saveServerInfo(serverInfo: ServerInfoDto?) {
+    fun saveServerInfo(serverInfo: ServerInfo?) {
         if (serverInfo == null) return
         val repository = ServerRepository(context)
         val server = Server(
             name = serverInfo.area.displayName,
             address = URL(address),
-            location = serverInfo.area.location.intoDomain(),
+            location = serverInfo.area.location,
         )
-        runBlocking {
+        coroutineScope.launch {
             repository.add(server)
         }
         navController.popBackStack()
@@ -104,7 +119,7 @@ fun AddServer(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
             value = address,
-            onValueChange = setAddress,
+            onValueChange = { address = it },
             modifier = Modifier
                 .focusRequester(addressFocus)
                 .padding(horizontal = 16.dp)
@@ -120,7 +135,7 @@ fun AddServer(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             Button(
-                onClick = { checkServerInfo(address = address) },
+                onClick = { checkServerInfo(serverAddress = address) },
                 enabled = address.isNotBlank(),
             ) {
                 Text(stringResource(R.string.servers_add_checkButton))
@@ -136,16 +151,13 @@ fun AddServer(navController: NavController) {
 
         if (serverInfo != null) {
             Text(
-                text = serverInfo.area.displayName,
+                text = serverInfo!!.area.displayName,
                 style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             )
-
-            PreviewMap(serverInfo = serverInfo)
-
-        } else if (discovered.isNotEmpty()) {
-            DiscoveredServersList(servers = discovered) {
-                setAddress(it.address.toString())
+            PreviewMap(serverInfo = serverInfo!!)
+        } else {
+            DiscoveredServersList(servers = discoveredServers) {
                 checkServerInfo(it.address.toString())
             }
         }
@@ -159,40 +171,23 @@ fun DiscoveredServersList(
 ) {
     Text(
         text = stringResource(R.string.servers_add_known_servers),
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
         style = MaterialTheme.typography.h5,
+        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
     )
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
-            if (index > 0) {
-                Divider()
-            }
-            ServerRow(server = server, onClick = checkDiscoveryItem)
+            ServerRowItem(
+                name = server.name,
+                address = server.address.toString(),
+                hasTopDivider = index > 0,
+                onClick = { checkDiscoveryItem(server) }
+            )
         }
     }
 }
 
 @Composable
-private fun ServerRow(server: ServerDiscoveryItem, onClick: (ServerDiscoveryItem) -> Unit) {
-    Column(
-        modifier = Modifier
-            .clickable { onClick(server) }
-            .padding(all = 16.dp)
-            .fillMaxWidth(),
-    ) {
-        Text(
-            text = server.name,
-            style = MaterialTheme.typography.subtitle1,
-        )
-        Text(
-            text = server.address.toString(),
-            style = MaterialTheme.typography.caption,
-        )
-    }
-}
-
-@Composable
-private fun PreviewMap(serverInfo: ServerInfoDto) {
+private fun PreviewMap(serverInfo: ServerInfo) {
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = CameraPositionState(

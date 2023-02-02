@@ -1,4 +1,4 @@
-package mn.fountains.library
+package mn.fountains.domain.producers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
