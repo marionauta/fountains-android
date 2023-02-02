@@ -9,29 +9,28 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mn.fountains.R
 import mn.fountains.domain.models.Server
-import mn.fountains.domain.repositories.ServerRepository
+import mn.fountains.domain.producers.savedServersProducer
 import mn.fountains.navigation.AppScreen
+import mn.fountains.ui.views.AppBarLoader
 import mn.fountains.ui.views.EmptyFallback
 import mn.fountains.ui.views.ServerRowItem
 import java.net.URLEncoder
 
 @Composable
 fun ServerListScreen(navController: NavController) {
-    val (servers, setServers) = remember { mutableStateOf(listOf<Server>()) }
+    val state by savedServersProducer()
+    val (servers, isLoadingServers) = state
 
-    val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        val repository = ServerRepository(context)
-        setServers(repository.all())
+    fun onServerClick(server: Server) {
+        val encoded = URLEncoder.encode(server.address.toString(), "utf-8")
+        navController.navigate(AppScreen.Map.route + "/${encoded}")
     }
 
     Scaffold(
@@ -40,6 +39,12 @@ fun ServerListScreen(navController: NavController) {
                 title = {
                     Text(stringResource(R.string.servers_list_title))
                 },
+                actions = {
+                    AppBarLoader(
+                        isLoading = isLoadingServers,
+                        modifier = Modifier.padding(end = 16.dp),
+                    )
+                }
             )
         },
         floatingActionButton = {
@@ -56,22 +61,20 @@ fun ServerListScreen(navController: NavController) {
         }
     ) {
         Box(modifier = Modifier.padding(it)) {
-            if (servers.isEmpty()) {
+            if (!isLoadingServers && servers.isEmpty()) {
                 EmptyServerList()
             } else {
-                ServerList(servers, navController)
+                ServerList(
+                    servers = servers,
+                    onServerClick = ::onServerClick,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ServerList(servers: List<Server>, navController: NavController) {
-    fun onServerClick(server: Server) {
-        val encoded = URLEncoder.encode(server.address.toString(), "utf-8")
-        navController.navigate(AppScreen.Map.route + "/${encoded}")
-    }
-
+private fun ServerList(servers: List<Server>, onServerClick: (Server) -> Unit) {
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
             ServerRowItem(
