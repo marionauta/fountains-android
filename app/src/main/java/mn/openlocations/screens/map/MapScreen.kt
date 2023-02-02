@@ -31,6 +31,7 @@ import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.domain.repositories.ServerRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.ui.theme.Typography
+import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
 import java.net.URL
 
@@ -113,13 +114,16 @@ fun MapScreen(url: URL, navController: NavController) {
             if (server == null) {
                 NoServer()
             } else {
-                Map(
-                    location = server.location,
-                    fountains = fountains?.fountains ?: emptyList(),
-                    onMarkerClick = { fountain ->
-                        navController.navigate(AppScreen.FountainDetail.route + "/${fountain.id}")
-                    },
-                )
+                Column {
+                    BannerAd()
+                    Map(
+                        location = server.location,
+                        fountains = fountains?.fountains ?: emptyList(),
+                        onMarkerClick = { fountain ->
+                            navController.navigate(AppScreen.FountainDetail.route + "/${fountain.id}")
+                        },
+                    )
+                }
             }
         }
     }

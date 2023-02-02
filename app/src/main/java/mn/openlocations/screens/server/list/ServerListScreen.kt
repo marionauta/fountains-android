@@ -1,6 +1,7 @@
 package mn.openlocations.screens.server.list
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import mn.openlocations.domain.models.Server
 import mn.openlocations.domain.producers.savedServersProducer
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.ui.views.AppBarLoader
+import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
 import mn.openlocations.ui.views.ServerRowItem
 import java.net.URLEncoder
@@ -60,7 +62,8 @@ fun ServerListScreen(navController: NavController) {
             }
         }
     ) {
-        Box(modifier = Modifier.padding(it)) {
+        Column(modifier = Modifier.padding(it)) {
+            BannerAd()
             if (!isLoadingServers && servers.isEmpty()) {
                 EmptyServerList()
             } else {
