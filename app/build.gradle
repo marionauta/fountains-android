@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'mn.fountains'
+    namespace 'mn.openlocations'
     compileSdk 33
 
     defaultConfig {
-        applicationId "mn.fountains"
+        applicationId "mn.openlocations"
         minSdk 26
         targetSdk 33
         versionCode 1
