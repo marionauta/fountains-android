@@ -162,8 +162,9 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
         fineLocationPermission.launchPermissionRequest()
     }
 
+    val zoomLevel = 15f
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(location.position, 15f)
+        position = CameraPosition.fromLatLngZoom(location.position, zoomLevel)
     }
 
     GoogleMap(
@@ -173,6 +174,7 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
             isBuildingEnabled = false,
             isIndoorEnabled = false,
             isTrafficEnabled = false,
+            minZoomPreference = zoomLevel,
             isMyLocationEnabled = isMyLocationEnabled,
         ),
     ) {
