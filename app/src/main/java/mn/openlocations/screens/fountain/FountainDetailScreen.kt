@@ -12,7 +12,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import mn.openlocations.R
 import mn.openlocations.domain.models.BasicValue
@@ -24,10 +23,13 @@ import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.EmptyFallback
 
 @Composable
-fun FountainDetailScreen(fountainId: String, navController: NavController) {
+fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
     val (fountain, setFountain) = remember { mutableStateOf<Fountain?>(null) }
 
     LaunchedEffect(fountainId) {
+        if (fountainId == null) {
+            return@LaunchedEffect
+        }
         val repository = FountainRepository()
         setFountain(repository.get(fountainId = fountainId))
     }
@@ -40,7 +42,7 @@ fun FountainDetailScreen(fountainId: String, navController: NavController) {
                     ?.let { Text(it) }
             },
             navigationIcon = {
-                IconButton(onClick = navController::navigateUp) {
+                IconButton(onClick = onClose) {
                     Icon(
                         Icons.Rounded.Close,
                         contentDescription = stringResource(R.string.general_close),

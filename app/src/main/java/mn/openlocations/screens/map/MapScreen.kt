@@ -6,10 +6,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,17 +27,21 @@ import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.Server
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.domain.repositories.ServerRepository
-import mn.openlocations.navigation.AppScreen
+import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
+import mn.openlocations.ui.views.Modal
 import java.net.URL
 
 @Composable
 fun MapScreen(url: URL, navController: NavController) {
-    var (showMenu, setShowMenu) = remember { mutableStateOf(false) }
+    var isMenuShown by remember { mutableStateOf(false) }
+
     val (server, setServer) = remember { mutableStateOf<Server?>(null) }
     val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
+
+    var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
     LaunchedEffect(url) {
@@ -90,13 +92,13 @@ fun MapScreen(url: URL, navController: NavController) {
                 }
             },
             actions = {
-                IconButton(onClick = { setShowMenu(true) }) {
+                IconButton(onClick = { isMenuShown = true }) {
                     Icon(
                         Icons.Rounded.MoreVert,
                         contentDescription = stringResource(R.string.map_more_menu)
                     )
                 }
-                DropdownMenu(expanded = showMenu, onDismissRequest = { setShowMenu(false) }) {
+                DropdownMenu(expanded = isMenuShown, onDismissRequest = { isMenuShown = false }) {
                     val title = stringResource(R.string.map_delete_server)
                     DropdownMenuItem(onClick = { deleteServer(server) }) {
                         Icon(
@@ -119,11 +121,17 @@ fun MapScreen(url: URL, navController: NavController) {
                     Map(
                         location = server.location,
                         fountains = fountains?.fountains ?: emptyList(),
-                        onMarkerClick = { fountain ->
-                            navController.navigate(AppScreen.FountainDetail.route + "/${fountain.id}")
-                        },
+                        onMarkerClick = { fountain -> selectedFountainId = fountain.id },
                     )
                 }
+            }
+            Modal(
+                isOpen = selectedFountainId != null,
+            ) {
+                FountainDetailScreen(
+                    fountainId = selectedFountainId,
+                    onClose = { selectedFountainId = null },
+                )
             }
         }
     }

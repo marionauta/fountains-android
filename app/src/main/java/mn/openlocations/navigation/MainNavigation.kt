@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.map.MapScreen
 import mn.openlocations.screens.server.add.AddServerScreen
 import mn.openlocations.screens.server.list.ServerListScreen
@@ -41,18 +40,6 @@ private fun MainNavGraph(controller: NavHostController) {
             val decoded = URLDecoder.decode(entry.arguments?.getString("url"), "utf-8")
             val url = URL(decoded)
             MapScreen(url = url, navController = controller)
-        }
-        composable(
-            route = AppScreen.FountainDetail.route + "/{id}",
-            arguments = listOf(navArgument(name = "id") {
-                type = NavType.StringType
-            }),
-        ) { entry ->
-            val id = entry.arguments?.getString("id")!!
-            FountainDetailScreen(
-                fountainId = id,
-                navController = controller,
-            )
         }
     }
 }
