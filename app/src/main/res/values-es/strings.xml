@@ -3,6 +3,8 @@
     <string name="app_name">AguApp</string>
     <string name="general_back">Volver</string>
     <string name="general_close">Cerrar</string>
+    <string name="app_info_developer_title">Desarrollador</string>
+    <string name="app_info_app_version_title">Versión de la app</string>
     <string name="fountain_detail_fallback_title">Fuente</string>
     <string name="fountain_detail_not_found_title">Sin fuente</string>
     <string name="fountain_detail_not_found_description">Fuente desconocida. Vuelve.</string>
@@ -30,4 +32,8 @@
     <string name="property_value_no">No</string>
     <string name="property_value_yes">Sí</string>
     <string name="property_value_unknown">Desconocido</string>
+    <string name="app_info_title">Información de la app</string>
+    <string name="app_info_easteregg_title">Tonto</string>
+    <string name="app_info_easteregg_content">Tonto el que lo lea</string>
+    <string name="app_info_easteregg_ok">Leído</string>
 </resources>

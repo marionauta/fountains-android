@@ -36,7 +36,7 @@ import mn.openlocations.domain.repositories.ServerInfoRepository
 import mn.openlocations.domain.repositories.ServerRepository
 import mn.openlocations.library.maybeUrl
 import mn.openlocations.ui.views.AppBarLoader
-import mn.openlocations.ui.views.ServerRowItem
+import mn.openlocations.ui.views.RowItem
 
 @Composable
 fun AddServerScreen(navController: NavController) {
@@ -191,9 +191,9 @@ fun DiscoveredServersList(
     )
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
-            ServerRowItem(
-                name = server.name,
-                address = server.address.toString(),
+            RowItem(
+                title = server.name,
+                content = server.address.toString(),
                 hasTopDivider = index > 0,
                 onClick = { checkDiscoveryItem(server) }
             )

@@ -1,6 +1,5 @@
 package mn.openlocations.screens.server.list
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,8 +8,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -19,16 +22,16 @@ import mn.openlocations.R
 import mn.openlocations.domain.models.Server
 import mn.openlocations.domain.producers.savedServersProducer
 import mn.openlocations.navigation.AppScreen
-import mn.openlocations.ui.views.AppBarLoader
-import mn.openlocations.ui.views.BannerAd
-import mn.openlocations.ui.views.EmptyFallback
-import mn.openlocations.ui.views.ServerRowItem
+import mn.openlocations.screens.info.AppInfoCoordinator
+import mn.openlocations.ui.views.*
 import java.net.URLEncoder
 
 @Composable
 fun ServerListScreen(navController: NavController) {
     val state by savedServersProducer()
     val (servers, isLoadingServers) = state
+
+    var isInfoShown by rememberSaveable { mutableStateOf(false) }
 
     fun onServerClick(server: Server) {
         val encoded = URLEncoder.encode(server.address.toString(), "utf-8")
@@ -46,6 +49,12 @@ fun ServerListScreen(navController: NavController) {
                         isLoading = isLoadingServers,
                         modifier = Modifier.padding(end = 16.dp),
                     )
+                    IconButton(onClick = { isInfoShown = true }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Star,
+                            contentDescription = "App Info",
+                        )
+                    }
                 }
             )
         },
@@ -73,6 +82,11 @@ fun ServerListScreen(navController: NavController) {
                 )
             }
         }
+        Modal(isOpen = isInfoShown, onClose = { isInfoShown = false }) {
+            AppInfoCoordinator(
+                onClose = { isInfoShown = false }
+            )
+        }
     }
 }
 
@@ -80,9 +94,9 @@ fun ServerListScreen(navController: NavController) {
 private fun ServerList(servers: List<Server>, onServerClick: (Server) -> Unit) {
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
-            ServerRowItem(
-                name = server.name,
-                address = server.address.toString(),
+            RowItem(
+                title = server.name,
+                content = server.address.toString(),
                 hasTopDivider = index > 0,
                 onClick = { onServerClick(server) }
             )

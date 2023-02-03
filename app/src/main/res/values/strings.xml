@@ -8,6 +8,14 @@
     <string name="property_value_yes">Yes</string>
     <string name="property_value_unknown">Unknown</string>
 
+    <string name="app_info_title">App Info</string>
+    <string name="app_info_developer_title">Developer</string>
+    <string name="app_info_developer_content" translatable="false">Mario Nachbaur</string>
+    <string name="app_info_app_version_title">App version</string>
+    <string name="app_info_easteregg_title">Deez</string>
+    <string name="app_info_easteregg_content">Deez nuts</string>
+    <string name="app_info_easteregg_ok">Ok</string>
+
     <string name="fountain_detail_fallback_title">Fountain</string>
     <string name="fountain_detail_not_found_title">No fountain</string>
     <string name="fountain_detail_not_found_description">Unknown fountain. Go back.</string>

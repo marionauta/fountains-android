@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Divider
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ServerRowItem(name: String, address: String, hasTopDivider: Boolean, onClick: () -> Unit) {
+fun RowItem(
+    title: String,
+    content: String,
+    contentIsFaded: Boolean = true,
+    hasTopDivider: Boolean = true,
+    onClick: () -> Unit
+) {
     Column {
         if (hasTopDivider) {
             Divider()
@@ -24,13 +31,13 @@ fun ServerRowItem(name: String, address: String, hasTopDivider: Boolean, onClick
                 .fillMaxWidth(),
         ) {
             Text(
-                text = name,
+                text = title,
                 style = MaterialTheme.typography.subtitle1,
             )
             Text(
-                text = address,
+                text = content,
                 style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.onSurface.copy(alpha = .5f),
+                color = if (contentIsFaded) LocalContentColor.current.copy(alpha = .5f) else LocalContentColor.current
             )
         }
     }
