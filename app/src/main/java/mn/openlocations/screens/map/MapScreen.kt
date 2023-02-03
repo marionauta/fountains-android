@@ -13,9 +13,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.permissions.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.TimeZone
@@ -150,7 +153,7 @@ private fun NoServer() {
     )
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
 private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (Fountain) -> Unit) {
     val fineLocationPermission =
@@ -171,6 +174,9 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
         position = CameraPosition.fromLatLngZoom(location.position, zoomLevel)
     }
 
+    var bounds by remember { mutableStateOf<LatLngBounds?>(null) }
+    val shownFountains = fountains.filter { bounds?.contains(it.location.position) ?: false }
+
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
@@ -182,13 +188,20 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
             isMyLocationEnabled = isMyLocationEnabled,
         ),
     ) {
-        for (fountain in fountains) {
-            Marker(state = MarkerState(position = fountain.location.position),
+        MapEffect(Unit) { map ->
+            map.setOnCameraIdleListener {
+                bounds = map.projection.visibleRegion.latLngBounds
+            }
+        }
+        for (fountain in shownFountains) {
+            Marker(
+                state = MarkerState(position = fountain.location.position),
                 title = fountain.name,
                 onClick = {
                     onMarkerClick(fountain)
                     return@Marker true
-                })
+                },
+            )
         }
     }
 }
