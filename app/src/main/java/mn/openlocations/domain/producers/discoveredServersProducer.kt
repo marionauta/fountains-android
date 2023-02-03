@@ -10,7 +10,7 @@ import mn.openlocations.domain.repositories.DiscoveryRepository
 fun discoveredServersProducer(): State<Pair<List<ServerDiscoveryItem>, Boolean>> {
     val repository = DiscoveryRepository()
     return produceState(initialValue = Pair(listOf(), true), Unit) {
-        val servers = repository.all()
+        val servers = repository.all().sortedBy { it.name }
         value = Pair(servers, false)
     }
 }

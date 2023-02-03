@@ -30,6 +30,7 @@ fun ServerRowItem(name: String, address: String, hasTopDivider: Boolean, onClick
             Text(
                 text = address,
                 style = MaterialTheme.typography.caption,
+                color = MaterialTheme.colors.onSurface.copy(alpha = .5f),
             )
         }
     }
