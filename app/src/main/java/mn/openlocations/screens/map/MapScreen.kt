@@ -42,6 +42,9 @@ fun MapScreen(url: URL, navController: NavController) {
     val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
 
     var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
+    fun deselectFountain() {
+        selectedFountainId = null
+    }
 
     val context = LocalContext.current
     LaunchedEffect(url) {
@@ -127,10 +130,11 @@ fun MapScreen(url: URL, navController: NavController) {
             }
             Modal(
                 isOpen = selectedFountainId != null,
+                onClose = ::deselectFountain,
             ) {
                 FountainDetailScreen(
                     fountainId = selectedFountainId,
-                    onClose = { selectedFountainId = null },
+                    onClose = ::deselectFountain,
                 )
             }
         }
