@@ -3,6 +3,8 @@ package mn.openlocations.screens.server.add
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
@@ -14,6 +16,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
@@ -29,9 +34,9 @@ import mn.openlocations.domain.models.ServerInfo
 import mn.openlocations.domain.producers.discoveredServersProducer
 import mn.openlocations.domain.repositories.ServerInfoRepository
 import mn.openlocations.domain.repositories.ServerRepository
+import mn.openlocations.library.maybeUrl
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.ServerRowItem
-import java.net.URL
 
 @Composable
 fun AddServerScreen(navController: NavController) {
@@ -91,7 +96,7 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             sanitizedAddress = "https://$sanitizedAddress"
         }
         address = (sanitizedAddress)
-        val url = URL(sanitizedAddress)
+        val url = maybeUrl(sanitizedAddress) ?: return
         val repository = ServerInfoRepository()
         isLoadingServerInfo = true
         coroutineScope.launch {
@@ -105,8 +110,8 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
         if (serverInfo == null) return
         val repository = ServerRepository(context)
         val server = Server(
+            address = serverInfo.address,
             name = serverInfo.area.displayName,
-            address = URL(address),
             location = serverInfo.area.location,
         )
         coroutineScope.launch {
@@ -120,6 +125,16 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
         TextField(
             value = address,
             onValueChange = { address = it },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = false,
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Go,
+            ),
+            keyboardActions = KeyboardActions(
+                onGo = { checkServerInfo(serverAddress = address) }
+            ),
+            singleLine = true,
             modifier = Modifier
                 .focusRequester(addressFocus)
                 .padding(horizontal = 16.dp)
