@@ -8,6 +8,7 @@ import mn.openlocations.R
 fun parsePropertyValue(value: String): String {
     return when (value) {
         "NO" -> stringResource(R.string.property_value_no)
+        "LIMITED" -> stringResource(R.string.property_value_limited)
         "YES" -> stringResource(R.string.property_value_yes)
         "UNKNOWN" -> stringResource(R.string.property_value_unknown)
         else -> value

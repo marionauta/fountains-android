@@ -5,6 +5,7 @@
     <string name="general_close">Close</string>
 
     <string name="property_value_no">No</string>
+    <string name="property_value_limited">Limited</string>
     <string name="property_value_yes">Yes</string>
     <string name="property_value_unknown">Unknown</string>
 

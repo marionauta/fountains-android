@@ -33,6 +33,7 @@
     <string name="servers_list_empty_title">Sin ubicaciones</string>
     <string name="servers_list_empty_description">Añade una ubicación primero.</string>
     <string name="property_value_no">No</string>
+    <string name="property_value_limited">Limitado</string>
     <string name="property_value_yes">Sí</string>
     <string name="property_value_unknown">Desconocido</string>
     <string name="app_info_title">Información de la app</string>
