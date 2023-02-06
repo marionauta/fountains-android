@@ -9,12 +9,14 @@
     <string name="property_value_unknown">Unknown</string>
 
     <string name="app_info_title">App Info</string>
+    <string name="app_info_website_title">Website</string>
+    <string name="app_info_website_content">Learn more</string>
     <string name="app_info_developer_title">Developer</string>
     <string name="app_info_developer_content" translatable="false">Mario Nachbaur</string>
     <string name="app_info_app_version_title">App version</string>
     <string name="app_info_easteregg_title">Deez</string>
     <string name="app_info_easteregg_content">Deez nuts</string>
-    <string name="app_info_easteregg_ok">Ok</string>
+    <string name="app_info_easteregg_ok">@android:string/ok</string>
 
     <string name="fountain_detail_fallback_title">Fountain</string>
     <string name="fountain_detail_not_found_title">No fountain</string>
@@ -26,6 +28,7 @@
     <string name="fountain_detail_wheelchair_description">Indicates if the fountain can be used with wheelchairs.</string>
     <string name="fountain_detail_check_date_title">Check date</string>
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
+    <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 
     <string name="map_fallback_title">Fountains</string>
     <string name="map_last_updated">Last updated: %s</string>

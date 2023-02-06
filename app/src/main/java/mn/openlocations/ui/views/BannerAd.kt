@@ -21,6 +21,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
+import mn.openlocations.domain.producers.showAddsProducer
 import mn.openlocations.ui.theme.ColorSecondary
 
 @Composable
@@ -28,6 +29,11 @@ fun BannerAd(unitId: String = BuildConfig.ADMOB_AD_UNIT_ID) {
     val isShown by remember { mutableStateOf(true) }
     val width = LocalConfiguration.current.screenWidthDp
     val height = if (isShown) 80 else 0
+
+    val ads by showAddsProducer()
+    if (!ads) {
+        return
+    }
 
     Box(
         contentAlignment = Alignment.Center,

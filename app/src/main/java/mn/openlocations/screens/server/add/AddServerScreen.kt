@@ -8,12 +8,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -85,10 +84,6 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
 
     // Address Text Field
     var address by rememberSaveable { mutableStateOf("") }
-    val addressFocus = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
-        addressFocus.requestFocus()
-    }
 
     fun checkServerInfo(serverAddress: String) {
         var sanitizedAddress = serverAddress
@@ -136,7 +131,6 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             ),
             singleLine = true,
             modifier = Modifier
-                .focusRequester(addressFocus)
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth(),
             placeholder = {
@@ -193,6 +187,7 @@ fun DiscoveredServersList(
         itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
             RowItem(
                 title = server.name,
+                titleIcon = if (server.reviewed) Icons.Rounded.Star else null,
                 content = server.address.toString(),
                 hasTopDivider = index > 0,
                 onClick = { checkDiscoveryItem(server) }

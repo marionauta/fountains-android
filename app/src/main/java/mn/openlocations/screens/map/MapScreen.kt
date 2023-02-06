@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -79,12 +80,18 @@ fun MapScreen(url: URL, navController: NavController) {
         TopAppBar(
             title = {
                 Column {
-                    Text(server?.name ?: stringResource(R.string.map_fallback_title))
+                    Text(
+                        text = server?.name ?: stringResource(R.string.map_fallback_title),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                     fountains?.lastUpdated?.let {
                         val local = it.toLocalDateTime(TimeZone.currentSystemDefault())
                         Text(
-                            stringResource(R.string.map_last_updated).format(local),
+                            text = stringResource(R.string.map_last_updated).format(local),
                             style = Typography.caption,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }

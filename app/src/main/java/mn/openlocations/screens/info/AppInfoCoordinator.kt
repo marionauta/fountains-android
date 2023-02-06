@@ -13,22 +13,40 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
+import mn.openlocations.domain.repositories.PreferencesRepository
+import mn.openlocations.networking.KnownUris
 import mn.openlocations.ui.views.RowItem
 
 @Composable
 fun AppInfoCoordinator(onClose: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     var tapped by rememberSaveable { mutableStateOf(0) }
+
+    val context = LocalContext.current
+    fun toggleSettings() {
+        val repository = PreferencesRepository(context)
+        repository.toggleShowAds()
+        tapped = 0
+    }
+
     val infos = listOf(
+        AppInfo(
+            title = stringResource(R.string.app_info_website_title),
+            content = stringResource(R.string.app_info_website_content),
+            onClick = {
+                uriHandler.openUri(KnownUris.website)
+            },
+        ),
         AppInfo(
             title = stringResource(R.string.app_info_developer_title),
             content = stringResource(R.string.app_info_developer_content),
             onClick = {
-                uriHandler.openUri("https://mario.nachbaur.dev")
+                uriHandler.openUri(KnownUris.developer)
             },
         ),
         AppInfo(
@@ -59,13 +77,13 @@ fun AppInfoCoordinator(onClose: () -> Unit) {
     ) {
         Box(modifier = Modifier.padding(it)) {
             AppInfoScreen(infos = infos)
-            if (tapped >= 10) {
+            if (tapped >= 50) {
                 AlertDialog(
                     onDismissRequest = {},
                     title = { Text(text = stringResource(R.string.app_info_easteregg_title)) },
                     text = { Text(text = stringResource(R.string.app_info_easteregg_content)) },
                     confirmButton = {
-                        Button(onClick = { tapped = 0 }) {
+                        Button(onClick = { toggleSettings() }) {
                             Text(text = stringResource(R.string.app_info_easteregg_ok))
                         }
                     }

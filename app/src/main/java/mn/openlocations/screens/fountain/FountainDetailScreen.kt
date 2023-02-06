@@ -9,7 +9,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -19,6 +21,7 @@ import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
+import mn.openlocations.networking.KnownUris
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.EmptyFallback
 
@@ -34,12 +37,21 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
         setFountain(repository.get(fountainId = fountainId))
     }
 
+    val uriHandler = LocalUriHandler.current
+    fun onFountainProblem() {
+        var uri = KnownUris.help("corregir")
+        if (fountain != null) {
+            uri += "?lat=${fountain.location.latitude}&lng=${fountain.location.longitude}"
+        }
+        uriHandler.openUri(uri)
+    }
+
     Scaffold(topBar = {
         TopAppBar(
             title = {
                 fountain?.name
                     ?.ifBlank { stringResource(R.string.fountain_detail_fallback_title) }
-                    ?.let { Text(it) }
+                    ?.let { Text(it, maxLines = 1, overflow = TextOverflow.Ellipsis) }
             },
             navigationIcon = {
                 IconButton(onClick = onClose) {
@@ -55,7 +67,10 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
             if (fountain == null) {
                 NoFountain()
             } else {
-                FountainDetail(fountain = fountain)
+                FountainDetail(
+                    fountain = fountain,
+                    onFountainProblem = ::onFountainProblem,
+                )
             }
         }
     }
@@ -71,7 +86,7 @@ private fun NoFountain() {
 }
 
 @Composable
-private fun FountainDetail(fountain: Fountain) {
+private fun FountainDetail(fountain: Fountain, onFountainProblem: () -> Unit) {
     val imageUrl by produceMapillaryImageUrl(mapillaryId = fountain.properties.mapillaryId)
 
     LazyColumn {
@@ -112,6 +127,18 @@ private fun FountainDetail(fountain: Fountain) {
                     value = fountain.properties.checkDate,
                 )
                 Divider()
+            }
+        }
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+            ) {
+                Button(onClick = onFountainProblem) {
+                    Text(text = stringResource(R.string.fountain_detail_something_wrong_button))
+                }
             }
         }
     }
