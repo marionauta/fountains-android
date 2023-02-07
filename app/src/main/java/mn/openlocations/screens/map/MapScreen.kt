@@ -1,5 +1,7 @@
 package mn.openlocations.screens.map
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -9,17 +11,17 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.TimeZone
@@ -195,6 +197,9 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
             isMyLocationEnabled = isMyLocationEnabled,
         ),
     ) {
+        val context = LocalContext.current
+        val fountainIcon = bitmapDescriptorFromVector(context, vectorResId = R.drawable.marker)
+
         MapEffect(Unit) { map ->
             map.setOnCameraIdleListener {
                 bounds = map.projection.visibleRegion.latLngBounds
@@ -204,6 +209,8 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
             Marker(
                 state = MarkerState(position = fountain.location.position),
                 title = fountain.name,
+                icon = fountainIcon,
+                anchor = Offset(.5f, .5f),
                 onClick = {
                     onMarkerClick(fountain)
                     return@Marker true
@@ -215,3 +222,16 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
 
 private val Location.position: LatLng
     get() = LatLng(latitude, longitude)
+
+private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+    val drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
+    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+    val bm = Bitmap.createBitmap(
+        drawable.intrinsicWidth,
+        drawable.intrinsicHeight,
+        Bitmap.Config.ARGB_8888,
+    )
+    val canvas = android.graphics.Canvas(bm)
+    drawable.draw(canvas)
+    return BitmapDescriptorFactory.fromBitmap(bm)
+}
