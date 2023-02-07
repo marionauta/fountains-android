@@ -24,7 +24,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.R
 import mn.openlocations.domain.models.Fountain
@@ -39,6 +41,8 @@ import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
 import mn.openlocations.ui.views.Modal
 import java.net.URL
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun MapScreen(url: URL, navController: NavController) {
@@ -87,10 +91,9 @@ fun MapScreen(url: URL, navController: NavController) {
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    fountains?.lastUpdated?.let {
-                        val local = it.toLocalDateTime(TimeZone.currentSystemDefault())
+                    fountains?.lastUpdated?.readable?.let {
                         Text(
-                            text = stringResource(R.string.map_last_updated).format(local),
+                            text = stringResource(R.string.map_last_updated).format(it),
                             style = Typography.caption,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -222,6 +225,13 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
 
 private val Location.position: LatLng
     get() = LatLng(latitude, longitude)
+
+private val Instant.readable: String
+    get() {
+        val dateTime = toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+        return dateTime.format(formatter)
+    }
 
 private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
     val drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
