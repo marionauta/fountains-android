@@ -9,33 +9,44 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Star
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mn.openlocations.R
 import mn.openlocations.domain.models.Server
 import mn.openlocations.domain.producers.savedServersProducer
+import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.navigation.AppScreen
+import mn.openlocations.navigation.replace
 import mn.openlocations.screens.info.AppInfoCoordinator
 import mn.openlocations.ui.views.*
 import java.net.URLEncoder
 
 @Composable
 fun ServerListScreen(navController: NavController) {
+    val context = LocalContext.current
     val state by savedServersProducer()
     val (servers, isLoadingServers) = state
 
     var isInfoShown by rememberSaveable { mutableStateOf(false) }
 
-    fun onServerClick(server: Server) {
-        val encoded = URLEncoder.encode(server.address.toString(), "utf-8")
-        navController.navigate(AppScreen.Map.route + "/${encoded}")
+    fun onServerClick(address: String) {
+        val repository = PreferencesRepository(context)
+        repository.setLastServer(address)
+        val encoded = URLEncoder.encode(address, "utf-8")
+        navController.replace(AppScreen.Map.route + "/${encoded}")
+    }
+
+    LaunchedEffect(Unit) {
+        val repository = PreferencesRepository(context)
+        val lastServer = repository.getLastServer()
+        if (lastServer != null) {
+            onServerClick(lastServer)
+        }
     }
 
     Scaffold(
@@ -78,7 +89,7 @@ fun ServerListScreen(navController: NavController) {
             } else {
                 ServerList(
                     servers = servers,
-                    onServerClick = ::onServerClick,
+                    onServerClick = { server -> onServerClick(server.address.toString()) },
                 )
             }
         }

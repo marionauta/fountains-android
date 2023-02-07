@@ -5,8 +5,8 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,7 +34,10 @@ import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.Server
 import mn.openlocations.domain.repositories.FountainRepository
+import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.domain.repositories.ServerRepository
+import mn.openlocations.navigation.AppScreen
+import mn.openlocations.navigation.replace
 import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.BannerAd
@@ -71,6 +74,12 @@ fun MapScreen(url: URL, navController: NavController) {
         setFountains(repository.all(server))
     }
 
+    fun closeMap() {
+        val repository = PreferencesRepository(context)
+        repository.setLastServer(null)
+        navController.replace(AppScreen.ServerList.route)
+    }
+
     fun deleteServer(server: Server?) {
         if (server == null) {
             return
@@ -79,7 +88,7 @@ fun MapScreen(url: URL, navController: NavController) {
         runBlocking {
             repository.delete(server)
         }
-        navController.popBackStack()
+        closeMap()
     }
 
     Scaffold(topBar = {
@@ -102,9 +111,9 @@ fun MapScreen(url: URL, navController: NavController) {
                 }
             },
             navigationIcon = {
-                IconButton(navController::navigateUp) {
+                IconButton(onClick = { closeMap() }) {
                     Icon(
-                        Icons.Rounded.ArrowBack,
+                        Icons.Rounded.Menu,
                         contentDescription = stringResource(R.string.general_back),
                     )
                 }
