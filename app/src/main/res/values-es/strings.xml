@@ -15,7 +15,7 @@
     <string name="fountain_detail_bottle_description">Una botella de agua se puede llenar fácilmente.</string>
     <string name="fountain_detail_wheelchair_title">Acceso con silla de ruedas</string>
     <string name="fountain_detail_wheelchair_description">La fuente se puede acceder con silla de ruedas.</string>
-    <string name="fountain_detail_check_date_title">Fecha de comprobación</string>
+    <string name="fountain_detail_check_date_title">Comprobado</string>
     <string name="fountain_detail_check_date_description">La  última vez que alguien comprobó esta fuente.</string>
     <string name="fountain_detail_something_wrong_button">¿Algún error?</string>
     <string name="map_fallback_title">Fuentes</string>

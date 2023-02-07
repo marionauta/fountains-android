@@ -27,7 +27,7 @@
     <string name="fountain_detail_bottle_description">A water bottle can easily be filled.</string>
     <string name="fountain_detail_wheelchair_title">Wheelchair access</string>
     <string name="fountain_detail_wheelchair_description">The fountain can be used with wheelchairs.</string>
-    <string name="fountain_detail_check_date_title">Check date</string>
+    <string name="fountain_detail_check_date_title">Last checked</string>
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
     <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 

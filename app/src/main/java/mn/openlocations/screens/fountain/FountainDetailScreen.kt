@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import kotlinx.datetime.toJavaLocalDate
 import mn.openlocations.R
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.Fountain
@@ -24,6 +25,8 @@ import mn.openlocations.library.parsePropertyValue
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.EmptyFallback
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
@@ -124,7 +127,10 @@ private fun FountainDetail(fountain: Fountain, onFountainProblem: () -> Unit) {
                 PropertyRow(
                     name = stringResource(R.string.fountain_detail_check_date_title),
                     description = stringResource(R.string.fountain_detail_check_date_description),
-                    value = fountain.properties.checkDate,
+                    value = fountain.properties.checkDate.let {
+                        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+                        it.toJavaLocalDate().format(formatter)
+                    },
                 )
                 Divider()
             }
