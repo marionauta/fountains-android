@@ -9,6 +9,7 @@
     <string name="property_value_yes">Yes</string>
     <string name="property_value_unknown">Unknown</string>
 
+    <string name="app_info_menu_item">App Info</string>
     <string name="app_info_title">App Info</string>
     <string name="app_info_website_title">Website</string>
     <string name="app_info_website_content">Learn more</string>

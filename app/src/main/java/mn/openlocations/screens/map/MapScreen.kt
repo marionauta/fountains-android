@@ -2,12 +2,16 @@ package mn.openlocations.screens.map
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -15,7 +19,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -39,10 +42,12 @@ import mn.openlocations.domain.repositories.ServerRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.navigation.replace
 import mn.openlocations.screens.fountain.FountainDetailScreen
+import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
+import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
 import java.net.URL
 import java.time.format.DateTimeFormatter
@@ -54,6 +59,8 @@ fun MapScreen(url: URL, navController: NavController) {
 
     val (server, setServer) = remember { mutableStateOf<Server?>(null) }
     val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
+
+    var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
     var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
     fun deselectFountain() {
@@ -127,14 +134,17 @@ fun MapScreen(url: URL, navController: NavController) {
                     )
                 }
                 DropdownMenu(expanded = isMenuShown, onDismissRequest = { isMenuShown = false }) {
-                    val title = stringResource(R.string.map_delete_server)
-                    DropdownMenuItem(onClick = { deleteServer(server) }) {
-                        Icon(
-                            Icons.Rounded.Delete,
-                            contentDescription = title,
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = title)
+                    MenuItem(
+                        imageVector = Icons.Rounded.Star,
+                        title = stringResource(R.string.app_info_menu_item),
+                    ) {
+                        isAppInfoOpen = true
+                    }
+                    MenuItem(
+                        imageVector = Icons.Rounded.Delete,
+                        title = stringResource(R.string.map_delete_server),
+                    ) {
+                        deleteServer(server)
                     }
                 }
             },
@@ -162,6 +172,10 @@ fun MapScreen(url: URL, navController: NavController) {
                     onClose = ::deselectFountain,
                 )
             }
+            AppInfoModal(
+                isOpen = isAppInfoOpen,
+                onClose = { isAppInfoOpen = false },
+            )
         }
     }
 }

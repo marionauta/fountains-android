@@ -20,10 +20,18 @@ import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.networking.KnownUris
+import mn.openlocations.ui.views.Modal
 import mn.openlocations.ui.views.RowItem
 
 @Composable
-fun AppInfoCoordinator(onClose: () -> Unit) {
+fun AppInfoModal(isOpen: Boolean, onClose: () -> Unit) {
+    Modal(isOpen = isOpen, onClose = onClose) {
+        AppInfoCoordinator(onClose = onClose)
+    }
+}
+
+@Composable
+private fun AppInfoCoordinator(onClose: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     var tapped by rememberSaveable { mutableStateOf(0) }
 

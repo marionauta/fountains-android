@@ -22,8 +22,11 @@ import mn.openlocations.domain.producers.savedServersProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.navigation.replace
-import mn.openlocations.screens.info.AppInfoCoordinator
-import mn.openlocations.ui.views.*
+import mn.openlocations.screens.info.AppInfoModal
+import mn.openlocations.ui.views.AppBarLoader
+import mn.openlocations.ui.views.BannerAd
+import mn.openlocations.ui.views.EmptyFallback
+import mn.openlocations.ui.views.RowItem
 import java.net.URLEncoder
 
 @Composable
@@ -32,7 +35,7 @@ fun ServerListScreen(navController: NavController) {
     val state by savedServersProducer()
     val (servers, isLoadingServers) = state
 
-    var isInfoShown by rememberSaveable { mutableStateOf(false) }
+    var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
     fun onServerClick(address: String) {
         val repository = PreferencesRepository(context)
@@ -60,10 +63,10 @@ fun ServerListScreen(navController: NavController) {
                         isLoading = isLoadingServers,
                         modifier = Modifier.padding(end = 16.dp),
                     )
-                    IconButton(onClick = { isInfoShown = true }) {
+                    IconButton(onClick = { isAppInfoOpen = true }) {
                         Icon(
                             imageVector = Icons.Rounded.Star,
-                            contentDescription = "App Info",
+                            contentDescription = stringResource(R.string.app_info_menu_item),
                         )
                     }
                 }
@@ -93,11 +96,10 @@ fun ServerListScreen(navController: NavController) {
                 )
             }
         }
-        Modal(isOpen = isInfoShown, onClose = { isInfoShown = false }) {
-            AppInfoCoordinator(
-                onClose = { isInfoShown = false }
-            )
-        }
+        AppInfoModal(
+            isOpen = isAppInfoOpen,
+            onClose = { isAppInfoOpen = false }
+        )
     }
 }
 
