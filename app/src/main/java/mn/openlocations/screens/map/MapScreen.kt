@@ -39,6 +39,7 @@ import mn.openlocations.domain.repositories.ServerRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.navigation.replace
 import mn.openlocations.screens.fountain.FountainDetailScreen
+import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
@@ -207,6 +208,7 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
             isTrafficEnabled = false,
             minZoomPreference = zoomLevel,
             isMyLocationEnabled = isMyLocationEnabled,
+            mapStyleOptions = mapStyleOptions(),
         ),
     ) {
         val context = LocalContext.current

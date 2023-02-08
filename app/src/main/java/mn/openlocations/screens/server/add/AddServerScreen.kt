@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
 import mn.openlocations.R
@@ -34,6 +35,7 @@ import mn.openlocations.domain.producers.discoveredServersProducer
 import mn.openlocations.domain.repositories.ServerInfoRepository
 import mn.openlocations.domain.repositories.ServerRepository
 import mn.openlocations.library.maybeUrl
+import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.RowItem
 
@@ -205,6 +207,9 @@ private fun PreviewMap(serverInfo: ServerInfo) {
                 serverInfo.area.location.let { LatLng(it.latitude, it.longitude) },
                 13f
             )
+        ),
+        properties = MapProperties(
+            mapStyleOptions = mapStyleOptions(),
         ),
         uiSettings = MapUiSettings(
             compassEnabled = false,
