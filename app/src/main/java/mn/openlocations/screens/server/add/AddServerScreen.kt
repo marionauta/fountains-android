@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.maps.model.CameraPosition
@@ -27,6 +26,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
 import mn.openlocations.R
+import mn.openlocations.data.datasources.NominatimDataSource
+import mn.openlocations.data.models.AreaOsm
 import mn.openlocations.domain.models.Server
 import mn.openlocations.domain.models.ServerDiscoveryItem
 import mn.openlocations.domain.models.ServerInfo
@@ -75,6 +76,15 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
     // Server discovery
     val discovered by discoveredServersProducer()
     val (discoveredServers, isLoadingDiscovered) = discovered
+
+    // Areas
+    val (areas, setAreas) = remember { mutableStateOf<List<AreaOsm>>(emptyList()) }
+    fun search(query: String) {
+        val dataSource = NominatimDataSource()
+        coroutineScope.launch {
+            setAreas(dataSource.search(query) ?: emptyList())
+        }
+    }
 
     // Server Info
     var serverInfo by remember { mutableStateOf<ServerInfo?>(null) }
@@ -125,11 +135,11 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
                 autoCorrect = false,
-                keyboardType = KeyboardType.Uri,
+//                keyboardType = KeyboardType.Uri,
                 imeAction = ImeAction.Go,
             ),
             keyboardActions = KeyboardActions(
-                onGo = { checkServerInfo(serverAddress = address) }
+                onGo = { search(query = address) }
             ),
             singleLine = true,
             modifier = Modifier
@@ -146,10 +156,10 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             Button(
-                onClick = { checkServerInfo(serverAddress = address) },
+                onClick = { search(query = address) },
                 enabled = address.isNotBlank(),
             ) {
-                Text(stringResource(R.string.servers_add_checkButton))
+                Text("Search")
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(
@@ -168,9 +178,32 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             )
             PreviewMap(serverInfo = serverInfo!!)
         } else {
-            DiscoveredServersList(servers = discoveredServers) {
-                checkServerInfo(it.address.toString())
+            AreasList(areas = areas) {
+                //checkServerInfo(it.address.toString())
             }
+        }
+    }
+}
+
+@Composable
+fun AreasList(
+    areas: List<AreaOsm>,
+    checkDiscoveryItem: (AreaOsm) -> Unit,
+) {
+    Text(
+        text = stringResource(R.string.servers_add_known_servers),
+        style = MaterialTheme.typography.h5,
+        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+    )
+    LazyColumn {
+        itemsIndexed(areas, key = { _, item -> item.osm_id }) { index, area ->
+            RowItem(
+                title = area.display_name,
+//                titleIcon = if (server.reviewed) Icons.Rounded.Star else null,
+                content = "${area.osm_id}, ${area.osm_type}",
+                hasTopDivider = index > 0,
+                onClick = { checkDiscoveryItem(area) }
+            )
         }
     }
 }
