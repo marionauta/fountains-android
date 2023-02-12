@@ -21,11 +21,14 @@ class ApiClient(val baseUrl: String) {
         }
     }
 
-    suspend inline fun <reified T> get(route: ApiRoute): T? {
+    suspend inline fun <reified T> get(route: ApiRoute, parameters: Map<String, String> = emptyMap()): T? {
         return try {
             val response = client.get(baseUrl) {
                 url {
                     appendEncodedPathSegments(route.route)
+                    for (parameter in parameters) {
+                        this.parameters.append(parameter.key, parameter.value)
+                    }
                 }
                 headers {
                     for (header in route.headers) {
