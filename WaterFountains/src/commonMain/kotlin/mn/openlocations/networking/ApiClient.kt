@@ -2,18 +2,16 @@ package mn.openlocations.networking
 
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.android.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import java.net.URL
 
-class ApiClient(val baseUrl: URL) {
+class ApiClient(val baseUrl: String) {
     @OptIn(ExperimentalSerializationApi::class)
-    val client = HttpClient(Android) {
+    val client = HttpClient {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true

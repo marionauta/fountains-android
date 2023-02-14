@@ -9,6 +9,6 @@ class ServerInfoRepository {
     private val dataSource = ServerInfoDataSource()
 
     suspend fun get(baseUrl: URL): ServerInfo? {
-        return dataSource.get(baseUrl)?.intoDomain(address = baseUrl)
+        return dataSource.get(baseUrl.toString())?.intoDomain(address = baseUrl)
     }
 }
