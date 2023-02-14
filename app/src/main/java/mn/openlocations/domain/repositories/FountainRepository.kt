@@ -11,7 +11,7 @@ class FountainRepository {
     private val dataSource = FountainDataSource()
 
     suspend fun all(url: URL): FountainsResponse? {
-        return dataSource.all(url = url)?.intoDomain()
+        return dataSource.all(url = url.toString())?.intoDomain()
     }
 
     suspend fun all(server: Server): FountainsResponse? {
