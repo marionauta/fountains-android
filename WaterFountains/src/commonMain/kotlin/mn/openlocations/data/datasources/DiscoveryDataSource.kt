@@ -1,6 +1,7 @@
 package mn.openlocations.data.datasources
 
 import mn.openlocations.data.models.ServerDiscoveryItemDto
+import mn.openlocations.data.routes.DiscoveryRoute
 import mn.openlocations.networking.ApiClient
 import mn.openlocations.networking.KnownUris
 
@@ -12,7 +13,7 @@ class DiscoveryDataSource {
     private val apiClient = ApiClient(baseUrl = discoveryAddress)
 
     suspend fun all(): List<ServerDiscoveryItemDto> {
-        val response = apiClient.get<List<ServerDiscoveryItemDto>?>("servers.json")
+        val response = apiClient.get<List<ServerDiscoveryItemDto>?>(DiscoveryRoute)
         return response ?: emptyList()
     }
 }
