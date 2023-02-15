@@ -1,6 +1,7 @@
 package mn.openlocations.data.datasources
 
 import mn.openlocations.data.models.MapillaryResponseDto
+import mn.openlocations.data.routes.MapillaryRoute
 import mn.openlocations.networking.ApiClient
 import mn.openlocations.networking.KnownUris
 
@@ -15,8 +16,8 @@ class MapillaryDataSource(private val token: String) {
         if (token.isBlank()) {
             return null
         }
-        val url = "$id?fields=thumb_1024_url&access_token=$token"
-        val response = apiClient.get<MapillaryResponseDto>(url)
+        val route = MapillaryRoute(id = id, token = token)
+        val response = apiClient.get<MapillaryResponseDto>(route)
         return response?.thumb_1024_url
     }
 }

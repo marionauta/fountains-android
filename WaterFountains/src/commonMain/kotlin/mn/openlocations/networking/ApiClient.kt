@@ -20,11 +20,11 @@ class ApiClient(val baseUrl: String) {
         }
     }
 
-    suspend inline fun <reified T> get(route: String): T? {
+    suspend inline fun <reified T> get(route: ApiRoute): T? {
         return try {
             val response = client.get(baseUrl) {
                 url {
-                    appendEncodedPathSegments(route)
+                    appendEncodedPathSegments(route.route)
                 }
             }
             response.body()
