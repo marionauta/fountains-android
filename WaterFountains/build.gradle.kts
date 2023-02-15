@@ -65,7 +65,7 @@ kotlin {
 }
 
 android {
-    namespace = "mn.openlocations"
+    namespace = "mn.openlocations.shared"
     compileSdk = 33
     defaultConfig {
         minSdk = 26
