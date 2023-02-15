@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("plugin.serialization") version "1.8.10"
     id("com.android.library")
 }
 
@@ -67,11 +67,5 @@ android {
     defaultConfig {
         minSdk = 26
         targetSdk = 33
-    }
-}
-
-kotlin.targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class.java) {
-    binaries.all {
-        binaryOptions["memoryModel"] = "experimental"
     }
 }
