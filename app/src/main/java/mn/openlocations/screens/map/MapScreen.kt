@@ -54,7 +54,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun MapScreen(url: URL, navController: NavController) {
+fun MapScreen(id: String, navController: NavController) {
     var isMenuShown by remember { mutableStateOf(false) }
 
     val (server, setServer) = remember { mutableStateOf<Server?>(null) }
@@ -67,10 +67,9 @@ fun MapScreen(url: URL, navController: NavController) {
         selectedFountainId = null
     }
 
-    val context = LocalContext.current
-    LaunchedEffect(url) {
-        val repository = ServerRepository(context)
-        setServer(repository.get(address = url))
+    LaunchedEffect(id) {
+        val repository = ServerRepository()
+        setServer(repository.get(id = id))
     }
 
     LaunchedEffect(server) {
@@ -82,6 +81,7 @@ fun MapScreen(url: URL, navController: NavController) {
         setFountains(repository.all(server))
     }
 
+    val context = LocalContext.current
     fun closeMap() {
         val repository = PreferencesRepository(context)
         repository.setLastServer(null)
@@ -92,7 +92,7 @@ fun MapScreen(url: URL, navController: NavController) {
         if (server == null) {
             return
         }
-        val repository = ServerRepository(context)
+        val repository = ServerRepository()
         runBlocking {
             repository.delete(server)
         }
