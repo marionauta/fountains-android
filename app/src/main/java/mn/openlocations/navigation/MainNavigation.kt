@@ -32,14 +32,13 @@ private fun MainNavGraph(controller: NavHostController) {
             AddServerScreen(controller)
         }
         composable(
-            route = AppScreen.Map.route + "/{url}",
-            arguments = listOf(navArgument(name = "url") {
+            route = AppScreen.Map.route + "/{id}",
+            arguments = listOf(navArgument(name = "id") {
                 type = NavType.StringType
             }),
         ) { entry ->
-            val decoded = URLDecoder.decode(entry.arguments?.getString("url"), "utf-8")
-            val url = URL(decoded)
-            MapScreen(url = url, navController = controller)
+            val id = entry.arguments?.getString("id")!!
+            MapScreen(id = id, navController = controller)
         }
     }
 }

@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -38,6 +37,7 @@ import mn.openlocations.library.maybeUrl
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.RowItem
+import java.util.UUID
 
 @Composable
 fun AddServerScreen(navController: NavController) {
@@ -102,11 +102,11 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
         }
     }
 
-    val context = LocalContext.current
     fun saveServerInfo(serverInfo: ServerInfo?) {
         if (serverInfo == null) return
-        val repository = ServerRepository(context)
+        val repository = ServerRepository()
         val server = Server(
+            id = UUID.randomUUID().toString(),
             address = serverInfo.address,
             name = serverInfo.area.displayName,
             location = serverInfo.area.location,

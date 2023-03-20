@@ -37,11 +37,10 @@ fun ServerListScreen(navController: NavController) {
 
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
-    fun onServerClick(address: String) {
+    fun onServerClick(id: String) {
         val repository = PreferencesRepository(context)
-        repository.setLastServer(address)
-        val encoded = URLEncoder.encode(address, "utf-8")
-        navController.replace(AppScreen.Map.route + "/${encoded}")
+        repository.setLastServer(id)
+        navController.replace(AppScreen.Map.route + "/${id}")
     }
 
     LaunchedEffect(Unit) {
@@ -92,7 +91,7 @@ fun ServerListScreen(navController: NavController) {
             } else {
                 ServerList(
                     servers = servers,
-                    onServerClick = { server -> onServerClick(server.address.toString()) },
+                    onServerClick = { server -> onServerClick(id = server.id) },
                 )
             }
         }
