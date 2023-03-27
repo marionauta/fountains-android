@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 fun RowItem(
     title: String,
     titleIcon: ImageVector? = null,
-    content: String,
+    content: String? = null,
     contentIsFaded: Boolean = true,
     hasTopDivider: Boolean = true,
     onClick: () -> Unit,
@@ -43,11 +43,13 @@ fun RowItem(
                     style = MaterialTheme.typography.subtitle1,
                 )
             }
-            Text(
-                text = content,
-                style = MaterialTheme.typography.caption,
-                color = if (contentIsFaded) LocalContentColor.current.copy(alpha = .5f) else LocalContentColor.current
-            )
+            if (content != null) {
+                Text(
+                    text = content,
+                    style = MaterialTheme.typography.caption,
+                    color = if (contentIsFaded) LocalContentColor.current.copy(alpha = .5f) else LocalContentColor.current
+                )
+            }
         }
     }
 }

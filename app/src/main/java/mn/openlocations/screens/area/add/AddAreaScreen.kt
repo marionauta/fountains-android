@@ -1,4 +1,4 @@
-package mn.openlocations.screens.server.add
+package mn.openlocations.screens.area.add
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,14 +29,14 @@ import mn.openlocations.data.datasources.NominatimDataSource
 import mn.openlocations.data.models.AreaOsm
 import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.models.Location
+import mn.openlocations.domain.models.intoDomain
 import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.RowItem
-import java.util.*
 
 @Composable
-fun AddServerScreen(navController: NavController) {
+fun AddAreaScreen(navController: NavController) {
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(topBar = {
@@ -56,7 +56,7 @@ fun AddServerScreen(navController: NavController) {
         )
     }) {
         Box(modifier = Modifier.padding(it)) {
-            AddServer(
+            AddArea(
                 navController = navController,
                 setIsLoading = { value -> isLoading = value }
             )
@@ -65,7 +65,7 @@ fun AddServerScreen(navController: NavController) {
 }
 
 @Composable
-fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
+fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
     // Areas
@@ -150,17 +150,7 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             PreviewMap(selectedArea = selectedArea!!)
         } else {
             AreasList(areas = areas) { area ->
-                val areaId = area.areaId() ?: return@AreasList
-                selectedArea = Area(
-                    id = UUID.randomUUID().toString(),
-                    name = area.display_name,
-                    location = Location(
-                        latitude = area.lat.toDouble(),
-                        longitude = area.lon.toDouble(),
-                    ),
-                    osmAreaId = areaId,
-                )
-                isLoadingSelectedArea = false
+                selectedArea = area.intoDomain()
             }
         }
     }

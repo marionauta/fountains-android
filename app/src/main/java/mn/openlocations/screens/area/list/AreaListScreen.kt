@@ -1,4 +1,4 @@
-package mn.openlocations.screens.server.list
+package mn.openlocations.screens.area.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mn.openlocations.R
 import mn.openlocations.domain.models.Area
-import mn.openlocations.domain.producers.savedServersProducer
+import mn.openlocations.domain.producers.savedAreasProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.navigation.replace
@@ -29,24 +29,24 @@ import mn.openlocations.ui.views.EmptyFallback
 import mn.openlocations.ui.views.RowItem
 
 @Composable
-fun ServerListScreen(navController: NavController) {
+fun AreaListScreen(navController: NavController) {
     val context = LocalContext.current
-    val state by savedServersProducer()
+    val state by savedAreasProducer()
     val (servers, isLoadingServers) = state
 
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
-    fun onServerClick(id: String) {
+    fun onAreaClick(id: String) {
         val repository = PreferencesRepository(context)
-        repository.setLastServer(id)
+        repository.setLastAreaId(id)
         navController.replace(AppScreen.Map.route + "/${id}")
     }
 
     LaunchedEffect(Unit) {
         val repository = PreferencesRepository(context)
-        val lastServer = repository.getLastServer()
-        if (lastServer != null) {
-            onServerClick(lastServer)
+        val lastAreaId = repository.getLastAreaId()
+        if (lastAreaId != null) {
+            onAreaClick(lastAreaId)
         }
     }
 
@@ -73,7 +73,7 @@ fun ServerListScreen(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(AppScreen.ServerAdd.route)
+                    navController.navigate(AppScreen.AreaAdd.route)
                 }
             ) {
                 Icon(
@@ -86,11 +86,11 @@ fun ServerListScreen(navController: NavController) {
         Column(modifier = Modifier.padding(it)) {
             BannerAd()
             if (!isLoadingServers && servers.isEmpty()) {
-                EmptyServerList()
+                EmptyAreaList()
             } else {
-                ServerList(
+                AreaList(
                     servers = servers,
-                    onServerClick = { server -> onServerClick(id = server.id) },
+                    onServerClick = { server -> onAreaClick(id = server.id) },
                 )
             }
         }
@@ -102,12 +102,11 @@ fun ServerListScreen(navController: NavController) {
 }
 
 @Composable
-private fun ServerList(servers: List<Area>, onServerClick: (Area) -> Unit) {
+private fun AreaList(servers: List<Area>, onServerClick: (Area) -> Unit) {
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.id }) { index, server ->
             RowItem(
                 title = server.name,
-                content = server.osmAreaId.toString(),
                 hasTopDivider = index > 0,
                 onClick = { onServerClick(server) }
             )
@@ -116,7 +115,7 @@ private fun ServerList(servers: List<Area>, onServerClick: (Area) -> Unit) {
 }
 
 @Composable
-private fun EmptyServerList() {
+private fun EmptyAreaList() {
     EmptyFallback(
         title = stringResource(R.string.servers_list_empty_title),
         description = stringResource(R.string.servers_list_empty_description),

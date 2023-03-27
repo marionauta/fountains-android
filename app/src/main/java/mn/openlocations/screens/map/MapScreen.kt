@@ -83,8 +83,8 @@ fun MapScreen(id: String, navController: NavController) {
     val context = LocalContext.current
     fun closeMap() {
         val repository = PreferencesRepository(context)
-        repository.setLastServer(null)
-        navController.replace(AppScreen.ServerList.route)
+        repository.setLastAreaId(null)
+        navController.replace(AppScreen.AreaList.route)
     }
 
     fun deleteServer(server: Area?) {
