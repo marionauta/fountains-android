@@ -19,7 +19,7 @@ class StoredServersDataSource {
         return realm.query<StoredServer>().find()
     }
 
-    suspend fun allFlowList(): Flow<List<StoredServer>> {
+    fun allStream(): Flow<List<StoredServer>> {
         return realm.query<StoredServer>().asFlow().map { it.list.toList() }
     }
 
