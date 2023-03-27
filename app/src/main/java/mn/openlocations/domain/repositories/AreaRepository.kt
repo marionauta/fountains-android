@@ -1,9 +1,12 @@
 package mn.openlocations.domain.repositories
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import mn.openlocations.data.datasources.StoredAreasDataSource
 import mn.openlocations.data.models.StoredArea
-import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.Area
+import mn.openlocations.domain.models.Location
+import mn.openlocations.domain.models.intoDomain
 
 class AreaRepository {
     private val dataSource = StoredAreasDataSource()
@@ -32,8 +35,8 @@ class AreaRepository {
         }
     }
 
-    suspend fun all(): List<Area> {
-        return dataSource.all().map {
+    fun allStream(): Flow<List<Area>> {
+        return dataSource.allStream().map { list -> list.map {
             Area(
                 id = it.id,
                 name = it.name,
@@ -43,7 +46,7 @@ class AreaRepository {
                 ),
                 osmAreaId = it.osmAreaId,
             )
-        }
+        } }
     }
 
     suspend fun delete(area: Area) {

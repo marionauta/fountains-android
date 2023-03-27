@@ -7,7 +7,7 @@ class PreferencesRepository(private val context: Context) {
     companion object {
         private const val preferencesKey = "${BuildConfig.APPLICATION_ID}.PREFERENCES"
         private const val adsKey = "${BuildConfig.APPLICATION_ID}.ADS.${BuildConfig.VERSION_CODE}"
-        private const val lastServerKey = "${BuildConfig.APPLICATION_ID}.LAST_SERVER"
+        private const val lastAreaIdKey = "${BuildConfig.APPLICATION_ID}.LAST_AREA_ID"
     }
 
     fun getShowAds(): Boolean {
@@ -27,15 +27,15 @@ class PreferencesRepository(private val context: Context) {
         }
     }
 
-    fun getLastServer(): String? {
+    fun getLastAreaId(): String? {
         val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
-        return prefs?.getString(lastServerKey, null)
+        return prefs?.getString(lastAreaIdKey, null)
     }
 
-    fun setLastServer(value: String?) {
+    fun setLastAreaId(value: String?) {
         val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
         with(prefs.edit()) {
-            putString(lastServerKey, value)
+            putString(lastAreaIdKey, value)
             apply()
         }
     }
