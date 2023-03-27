@@ -27,13 +27,15 @@ import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
 import mn.openlocations.R
 import mn.openlocations.data.datasources.NominatimDataSource
+import mn.openlocations.data.datasources.OverpassDataSource
 import mn.openlocations.data.models.AreaOsm
-import mn.openlocations.domain.models.Server
+import mn.openlocations.domain.models.Area
+import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.ServerDiscoveryItem
 import mn.openlocations.domain.models.ServerInfo
 import mn.openlocations.domain.producers.discoveredServersProducer
 import mn.openlocations.domain.repositories.ServerInfoRepository
-import mn.openlocations.domain.repositories.ServerRepository
+import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.library.maybeUrl
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.views.AppBarLoader
@@ -87,42 +89,21 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
     }
 
     // Server Info
-    var serverInfo by remember { mutableStateOf<ServerInfo?>(null) }
-    var isLoadingServerInfo by rememberSaveable { mutableStateOf(false) }
+    var selectedArea by remember { mutableStateOf<Area?>(null) }
+    var isLoadingSelectedArea by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(isLoadingDiscovered, isLoadingServerInfo) {
-        setIsLoading(isLoadingDiscovered || isLoadingServerInfo)
+    LaunchedEffect(isLoadingDiscovered, isLoadingSelectedArea) {
+        setIsLoading(isLoadingDiscovered || isLoadingSelectedArea)
     }
 
     // Address Text Field
     var address by rememberSaveable { mutableStateOf("") }
 
-    fun checkServerInfo(serverAddress: String) {
-        var sanitizedAddress = serverAddress
-        if (!sanitizedAddress.startsWith("https://") && !sanitizedAddress.startsWith("http://")) {
-            sanitizedAddress = "https://$sanitizedAddress"
-        }
-        address = (sanitizedAddress)
-        val url = maybeUrl(sanitizedAddress) ?: return
-        val repository = ServerInfoRepository()
-        isLoadingServerInfo = true
+    fun saveSelectedArea(selectedArea: Area?) {
+        if (selectedArea == null) { return }
+        val repository = AreaRepository()
         coroutineScope.launch {
-            serverInfo = repository.get(baseUrl = url)
-            isLoadingServerInfo = false
-        }
-    }
-
-    fun saveServerInfo(serverInfo: ServerInfo?) {
-        if (serverInfo == null) return
-        val repository = ServerRepository()
-        val server = Server(
-            id = UUID.randomUUID().toString(),
-            address = serverInfo.address,
-            name = serverInfo.area.displayName,
-            location = serverInfo.area.location,
-        )
-        coroutineScope.launch {
-            repository.add(server)
+            repository.add(selectedArea)
         }
         navController.popBackStack()
     }
@@ -135,7 +116,6 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
                 autoCorrect = false,
-//                keyboardType = KeyboardType.Uri,
                 imeAction = ImeAction.Go,
             ),
             keyboardActions = KeyboardActions(
@@ -163,23 +143,34 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             }
             Spacer(modifier = Modifier.width(8.dp))
             Button(
-                onClick = { saveServerInfo(serverInfo) },
-                enabled = serverInfo != null,
+                onClick = { saveSelectedArea(selectedArea) },
+                enabled = selectedArea != null,
             ) {
                 Text(stringResource(R.string.servers_add_addButton))
             }
         }
 
-        if (serverInfo != null) {
+        if (selectedArea != null) {
             Text(
-                text = serverInfo!!.area.displayName,
+                text = selectedArea!!.name,
                 style = MaterialTheme.typography.h5,
                 modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             )
-            PreviewMap(serverInfo = serverInfo!!)
+            PreviewMap(selectedArea = selectedArea!!)
         } else {
-            AreasList(areas = areas) {
-                //checkServerInfo(it.address.toString())
+            AreasList(areas = areas) { area ->
+                val dataSource = OverpassDataSource()
+                val areaId = area.areaId() ?: return@AreasList
+                selectedArea = Area(
+                    id = UUID.randomUUID().toString(),
+                    name = area.display_name,
+                    location = Location(
+                        latitude = area.lat.toDouble(),
+                        longitude = area.lon.toDouble(),
+                    ),
+                    osmAreaId = areaId,
+                )
+                isLoadingSelectedArea = false
             }
         }
     }
@@ -232,12 +223,12 @@ fun DiscoveredServersList(
 }
 
 @Composable
-private fun PreviewMap(serverInfo: ServerInfo) {
+private fun PreviewMap(selectedArea: Area) {
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = CameraPositionState(
             position = CameraPosition.fromLatLngZoom(
-                serverInfo.area.location.let { LatLng(it.latitude, it.longitude) },
+                selectedArea.location.let { LatLng(it.latitude, it.longitude) },
                 13f
             )
         ),

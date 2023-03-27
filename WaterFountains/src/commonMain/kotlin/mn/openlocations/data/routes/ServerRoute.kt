@@ -12,4 +12,5 @@ sealed class ServerRoute: ApiRoute {
             DrinkingFountains -> "v1/drinking-fountains"
         }
     override val headers: Map<String, String> = emptyMap()
+    override val parameters: Map<String, String> = emptyMap()
 }

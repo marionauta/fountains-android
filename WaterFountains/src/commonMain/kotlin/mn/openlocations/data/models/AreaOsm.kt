@@ -8,4 +8,12 @@ data class AreaOsm(
     val lon: String,
     val display_name: String,
     val importance: Double,
-)
+) {
+    fun areaId(): Long? {
+        return when (osm_type) {
+            "way" -> osm_id + 2400000000
+            "relation" -> osm_id + 3600000000
+            else -> null
+        }
+    }
+}
