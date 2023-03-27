@@ -8,7 +8,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -27,20 +26,14 @@ import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
 import mn.openlocations.R
 import mn.openlocations.data.datasources.NominatimDataSource
-import mn.openlocations.data.datasources.OverpassDataSource
 import mn.openlocations.data.models.AreaOsm
 import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.models.Location
-import mn.openlocations.domain.models.ServerDiscoveryItem
-import mn.openlocations.domain.models.ServerInfo
-import mn.openlocations.domain.producers.discoveredServersProducer
-import mn.openlocations.domain.repositories.ServerInfoRepository
 import mn.openlocations.domain.repositories.AreaRepository
-import mn.openlocations.library.maybeUrl
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.RowItem
-import java.util.UUID
+import java.util.*
 
 @Composable
 fun AddServerScreen(navController: NavController) {
@@ -75,32 +68,30 @@ fun AddServerScreen(navController: NavController) {
 fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
-    // Server discovery
-    val discovered by discoveredServersProducer()
-    val (discoveredServers, isLoadingDiscovered) = discovered
-
     // Areas
+    var selectedArea by remember { mutableStateOf<Area?>(null) }
     val (areas, setAreas) = remember { mutableStateOf<List<AreaOsm>>(emptyList()) }
+    var isLoadingSelectedArea by rememberSaveable { mutableStateOf(false) }
     fun search(query: String) {
+        isLoadingSelectedArea = true
         val dataSource = NominatimDataSource()
         coroutineScope.launch {
             setAreas(dataSource.search(query) ?: emptyList())
+            isLoadingSelectedArea = false
         }
     }
 
-    // Server Info
-    var selectedArea by remember { mutableStateOf<Area?>(null) }
-    var isLoadingSelectedArea by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(isLoadingDiscovered, isLoadingSelectedArea) {
-        setIsLoading(isLoadingDiscovered || isLoadingSelectedArea)
+    LaunchedEffect(isLoadingSelectedArea) {
+        setIsLoading(isLoadingSelectedArea)
     }
 
     // Address Text Field
     var address by rememberSaveable { mutableStateOf("") }
 
     fun saveSelectedArea(selectedArea: Area?) {
-        if (selectedArea == null) { return }
+        if (selectedArea == null) {
+            return
+        }
         val repository = AreaRepository()
         coroutineScope.launch {
             repository.add(selectedArea)
@@ -159,7 +150,6 @@ fun AddServer(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             PreviewMap(selectedArea = selectedArea!!)
         } else {
             AreasList(areas = areas) { area ->
-                val dataSource = OverpassDataSource()
                 val areaId = area.areaId() ?: return@AreasList
                 selectedArea = Area(
                     id = UUID.randomUUID().toString(),
@@ -190,33 +180,9 @@ fun AreasList(
         itemsIndexed(areas, key = { _, item -> item.osm_id }) { index, area ->
             RowItem(
                 title = area.display_name,
-//                titleIcon = if (server.reviewed) Icons.Rounded.Star else null,
                 content = "${area.osm_id}, ${area.osm_type}",
                 hasTopDivider = index > 0,
                 onClick = { checkDiscoveryItem(area) }
-            )
-        }
-    }
-}
-
-@Composable
-fun DiscoveredServersList(
-    servers: List<ServerDiscoveryItem>,
-    checkDiscoveryItem: (ServerDiscoveryItem) -> Unit,
-) {
-    Text(
-        text = stringResource(R.string.servers_add_known_servers),
-        style = MaterialTheme.typography.h5,
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-    )
-    LazyColumn {
-        itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
-            RowItem(
-                title = server.name,
-                titleIcon = if (server.reviewed) Icons.Rounded.Star else null,
-                content = server.address.toString(),
-                hasTopDivider = index > 0,
-                onClick = { checkDiscoveryItem(server) }
             )
         }
     }
