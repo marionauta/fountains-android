@@ -4,7 +4,6 @@ import mn.openlocations.data.datasources.StoredServersDataSource
 import mn.openlocations.data.models.StoredServer
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.Server
-import mn.openlocations.domain.models.intoDomain
 import java.net.URL
 
 class ServerRepository {
