@@ -7,6 +7,7 @@ class KnownUris {
         const val discovery = website
         const val mapillary = "https://graph.mapillary.com"
         const val nominatim = "https://nominatim.openstreetmap.org"
+        const val overpass = "https://overpass-api.de/api"
 
         fun help(slug: String): String = "$website/help/${slug}"
     }

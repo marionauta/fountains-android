@@ -35,10 +35,10 @@ import mn.openlocations.R
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
-import mn.openlocations.domain.models.Server
+import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.domain.repositories.PreferencesRepository
-import mn.openlocations.domain.repositories.ServerRepository
+import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.navigation.replace
 import mn.openlocations.screens.fountain.FountainDetailScreen
@@ -49,7 +49,6 @@ import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
 import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
-import java.net.URL
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -57,7 +56,7 @@ import java.time.format.FormatStyle
 fun MapScreen(id: String, navController: NavController) {
     var isMenuShown by remember { mutableStateOf(false) }
 
-    val (server, setServer) = remember { mutableStateOf<Server?>(null) }
+    val (server, setServer) = remember { mutableStateOf<Area?>(null) }
     val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
 
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
@@ -68,7 +67,7 @@ fun MapScreen(id: String, navController: NavController) {
     }
 
     LaunchedEffect(id) {
-        val repository = ServerRepository()
+        val repository = AreaRepository()
         setServer(repository.get(id = id))
     }
 
@@ -88,11 +87,11 @@ fun MapScreen(id: String, navController: NavController) {
         navController.replace(AppScreen.ServerList.route)
     }
 
-    fun deleteServer(server: Server?) {
+    fun deleteServer(server: Area?) {
         if (server == null) {
             return
         }
-        val repository = ServerRepository()
+        val repository = AreaRepository()
         runBlocking {
             repository.delete(server)
         }

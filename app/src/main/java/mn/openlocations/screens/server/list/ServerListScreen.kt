@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mn.openlocations.R
-import mn.openlocations.domain.models.Server
+import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.producers.savedServersProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.navigation.AppScreen
@@ -27,7 +27,6 @@ import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerAd
 import mn.openlocations.ui.views.EmptyFallback
 import mn.openlocations.ui.views.RowItem
-import java.net.URLEncoder
 
 @Composable
 fun ServerListScreen(navController: NavController) {
@@ -103,12 +102,12 @@ fun ServerListScreen(navController: NavController) {
 }
 
 @Composable
-private fun ServerList(servers: List<Server>, onServerClick: (Server) -> Unit) {
+private fun ServerList(servers: List<Area>, onServerClick: (Area) -> Unit) {
     LazyColumn {
-        itemsIndexed(servers, key = { _, item -> item.address }) { index, server ->
+        itemsIndexed(servers, key = { _, item -> item.id }) { index, server ->
             RowItem(
                 title = server.name,
-                content = server.address.toString(),
+                content = server.osmAreaId.toString(),
                 hasTopDivider = index > 0,
                 onClick = { onServerClick(server) }
             )
