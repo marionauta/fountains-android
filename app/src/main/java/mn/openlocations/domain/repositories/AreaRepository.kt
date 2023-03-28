@@ -54,8 +54,8 @@ class AreaRepository {
         }
     }
 
-    suspend fun delete(area: Area) {
-        storedDataSource.delete(id = area.id)
+    suspend fun delete(areaId: String) {
+        storedDataSource.delete(id = areaId)
     }
 
     suspend fun search(name: String): List<Area>? {

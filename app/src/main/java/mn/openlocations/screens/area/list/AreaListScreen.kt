@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mn.openlocations.R
 import mn.openlocations.domain.models.Area
-import mn.openlocations.domain.producers.savedAreasProducer
+import mn.openlocations.domain.producers.storedAreasProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.navigation.replace
@@ -31,7 +31,7 @@ import mn.openlocations.ui.views.RowItem
 @Composable
 fun AreaListScreen(navController: NavController) {
     val context = LocalContext.current
-    val state by savedAreasProducer()
+    val state by storedAreasProducer()
     val (servers, isLoadingServers) = state
 
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
