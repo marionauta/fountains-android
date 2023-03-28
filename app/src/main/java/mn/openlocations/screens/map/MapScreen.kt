@@ -103,7 +103,7 @@ fun MapScreen(id: String, navController: NavController) {
             title = {
                 Column {
                     Text(
-                        text = server?.name ?: stringResource(R.string.map_fallback_title),
+                        text = server?.trimmedDisplayName ?: stringResource(R.string.map_fallback_title),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
