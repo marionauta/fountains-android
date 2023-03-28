@@ -25,11 +25,7 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
 import mn.openlocations.R
-import mn.openlocations.data.datasources.NominatimDataSource
-import mn.openlocations.data.models.AreaOsm
 import mn.openlocations.domain.models.Area
-import mn.openlocations.domain.models.Location
-import mn.openlocations.domain.models.intoDomain
 import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.views.AppBarLoader
@@ -70,13 +66,13 @@ fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
 
     // Areas
     var selectedArea by remember { mutableStateOf<Area?>(null) }
-    val (areas, setAreas) = remember { mutableStateOf<List<AreaOsm>>(emptyList()) }
+    val (areas, setAreas) = remember { mutableStateOf<List<Area>>(emptyList()) }
     var isLoadingSelectedArea by rememberSaveable { mutableStateOf(false) }
     fun search(query: String) {
         isLoadingSelectedArea = true
-        val dataSource = NominatimDataSource()
+        val repository = AreaRepository()
         coroutineScope.launch {
-            setAreas(dataSource.search(query) ?: emptyList())
+            setAreas(repository.search(query) ?: emptyList())
             isLoadingSelectedArea = false
         }
     }
@@ -149,17 +145,15 @@ fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
             )
             PreviewMap(selectedArea = selectedArea!!)
         } else {
-            AreasList(areas = areas) { area ->
-                selectedArea = area.intoDomain()
-            }
+            AreasList(areas = areas) { selectedArea = it }
         }
     }
 }
 
 @Composable
 fun AreasList(
-    areas: List<AreaOsm>,
-    checkDiscoveryItem: (AreaOsm) -> Unit,
+    areas: List<Area>,
+    checkDiscoveryItem: (Area) -> Unit,
 ) {
     Text(
         text = stringResource(R.string.servers_add_known_servers),
@@ -167,10 +161,9 @@ fun AreasList(
         modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
     )
     LazyColumn {
-        itemsIndexed(areas, key = { _, item -> item.osm_id }) { index, area ->
+        itemsIndexed(areas, key = { _, item -> item.id }) { index, area ->
             RowItem(
-                title = area.display_name,
-                content = "${area.osm_id}, ${area.osm_type}",
+                title = area.name,
                 hasTopDivider = index > 0,
                 onClick = { checkDiscoveryItem(area) }
             )

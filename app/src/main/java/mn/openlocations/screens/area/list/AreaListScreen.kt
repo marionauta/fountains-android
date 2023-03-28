@@ -106,7 +106,7 @@ private fun AreaList(servers: List<Area>, onServerClick: (Area) -> Unit) {
     LazyColumn {
         itemsIndexed(servers, key = { _, item -> item.id }) { index, server ->
             RowItem(
-                title = server.name,
+                title = server.trimmedDisplayName,
                 hasTopDivider = index > 0,
                 onClick = { onServerClick(server) }
             )
