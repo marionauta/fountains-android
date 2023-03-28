@@ -10,7 +10,7 @@ import java.net.URL
 class FountainRepository {
     private val dataSource = FountainDataSource()
 
-    suspend fun all(areaId: Long): FountainsResponse? {
+    private suspend fun all(areaId: Long): FountainsResponse? {
         return dataSource.all(areaId = areaId)?.intoDomain()
     }
 

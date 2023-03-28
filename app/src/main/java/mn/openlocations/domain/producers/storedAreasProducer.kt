@@ -7,7 +7,7 @@ import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.repositories.AreaRepository
 
 @Composable
-fun savedAreasProducer(): State<Pair<List<Area>, Boolean>> {
+fun storedAreasProducer(): State<Pair<List<Area>, Boolean>> {
     val repository = AreaRepository()
     return produceState(initialValue = Pair(listOf(), true), Unit) {
         repository.allStream().collect { areas ->

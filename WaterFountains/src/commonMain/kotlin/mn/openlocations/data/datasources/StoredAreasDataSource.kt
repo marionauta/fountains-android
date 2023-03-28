@@ -23,9 +23,9 @@ class StoredAreasDataSource {
         return realm.query<StoredArea>().asFlow().map { it.list.toList() }
     }
 
-    suspend fun add(server: StoredArea) {
+    suspend fun add(area: StoredArea) {
         realm.write {
-            copyToRealm(server)
+            copyToRealm(area)
         }
     }
 

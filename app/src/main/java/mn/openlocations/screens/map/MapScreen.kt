@@ -32,13 +32,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.R
+import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
-import mn.openlocations.domain.models.Area
+import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.domain.repositories.PreferencesRepository
-import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.navigation.AppScreen
 import mn.openlocations.navigation.replace
 import mn.openlocations.screens.fountain.FountainDetailScreen
@@ -56,7 +56,7 @@ import java.time.format.FormatStyle
 fun MapScreen(id: String, navController: NavController) {
     var isMenuShown by remember { mutableStateOf(false) }
 
-    val (server, setServer) = remember { mutableStateOf<Area?>(null) }
+    val (area, setArea) = remember { mutableStateOf<Area?>(null) }
     val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
 
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
@@ -68,16 +68,16 @@ fun MapScreen(id: String, navController: NavController) {
 
     LaunchedEffect(id) {
         val repository = AreaRepository()
-        setServer(repository.get(id = id))
+        setArea(repository.get(id = id))
     }
 
-    LaunchedEffect(server) {
-        if (server == null) {
+    LaunchedEffect(area) {
+        if (area == null) {
             setFountains(null)
             return@LaunchedEffect
         }
         val repository = FountainRepository()
-        setFountains(repository.all(server))
+        setFountains(repository.all(area = area))
     }
 
     val context = LocalContext.current
@@ -87,13 +87,13 @@ fun MapScreen(id: String, navController: NavController) {
         navController.replace(AppScreen.AreaList.route)
     }
 
-    fun deleteServer(server: Area?) {
-        if (server == null) {
+    fun deleteArea(area: Area?) {
+        if (area == null) {
             return
         }
         val repository = AreaRepository()
         runBlocking {
-            repository.delete(server)
+            repository.delete(areaId = area.id)
         }
         closeMap()
     }
@@ -103,7 +103,8 @@ fun MapScreen(id: String, navController: NavController) {
             title = {
                 Column {
                     Text(
-                        text = server?.trimmedDisplayName ?: stringResource(R.string.map_fallback_title),
+                        text = area?.trimmedDisplayName
+                            ?: stringResource(R.string.map_fallback_title),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -143,20 +144,20 @@ fun MapScreen(id: String, navController: NavController) {
                         imageVector = Icons.Rounded.Delete,
                         title = stringResource(R.string.map_delete_server),
                     ) {
-                        deleteServer(server)
+                        deleteArea(area)
                     }
                 }
             },
         )
     }) {
         Box(modifier = Modifier.padding(it)) {
-            if (server == null) {
+            if (area == null) {
                 NoServer()
             } else {
                 Column {
                     BannerAd()
                     Map(
-                        location = server.location,
+                        location = area.location,
                         fountains = fountains?.fountains ?: emptyList(),
                         onMarkerClick = { fountain -> selectedFountainId = fountain.id },
                     )
