@@ -119,13 +119,14 @@ fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
                 singleLine = true,
                 placeholder = {
                     Text(text = stringResource(R.string.servers_add_query_placeholder))
-                }
+                },
+                modifier = Modifier.weight(3f),
             )
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = { search(query = address) },
                 enabled = address.isNotBlank() && !isSearchingAreas,
-                modifier = Modifier.width(100.dp),
+                modifier = Modifier.weight(1f),
             ) {
                 Text(stringResource(R.string.servers_add_searchButton))
             }
