@@ -9,8 +9,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Star
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -21,7 +24,6 @@ import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.producers.storedAreasProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.navigation.AppScreen
-import mn.openlocations.navigation.replace
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerAd
@@ -39,16 +41,17 @@ fun AreaListScreen(navController: NavController) {
     fun onAreaClick(id: String) {
         val repository = PreferencesRepository(context)
         repository.setLastAreaId(id)
-        navController.replace(AppScreen.Map.route + "/${id}")
+        navController.navigate(AppScreen.Map.route + "/${id}")
+//        navController.replace(AppScreen.Map.route + "/${id}")
     }
 
-    LaunchedEffect(Unit) {
-        val repository = PreferencesRepository(context)
-        val lastAreaId = repository.getLastAreaId()
-        if (lastAreaId != null) {
-            onAreaClick(lastAreaId)
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        val repository = PreferencesRepository(context)
+//        val lastAreaId = repository.getLastAreaId()
+//        if (lastAreaId != null) {
+//            onAreaClick(lastAreaId)
+//        }
+//    }
 
     Scaffold(
         topBar = {
