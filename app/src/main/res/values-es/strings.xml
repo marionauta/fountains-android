@@ -26,7 +26,7 @@
     <string name="map_delete_server">Borrar ubicación</string>
     <string name="servers_add_title">Añadir ubicación</string>
     <string name="servers_add_addButton">Añadir</string>
-    <string name="servers_add_checkButton">Comprobar</string>
+    <string name="servers_add_searchButton">Buscar</string>
     <string name="servers_add_known_servers">Ubicaciones conocidas</string>
     <string name="servers_list_title">Ubicaciones</string>
     <string name="servers_list_addButton_description">Añadir ubicación</string>
@@ -41,4 +41,5 @@
     <string name="app_info_easteregg_title">Tonto</string>
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>
+    <string name="servers_add_query_placeholder">Sevilla, España</string>
 </resources>

@@ -41,8 +41,8 @@
 
     <string name="servers_add_title">Add location</string>
     <string name="servers_add_addButton">Add</string>
-    <string name="servers_add_checkButton">Check</string>
-    <string name="servers_add_address_placeholder" translatable="false">https://</string>
+    <string name="servers_add_searchButton">Search</string>
+    <string name="servers_add_query_placeholder">Berlin, Germany</string>
     <string name="servers_add_known_servers">Known locations</string>
 
     <string name="servers_list_title">Locations</string>

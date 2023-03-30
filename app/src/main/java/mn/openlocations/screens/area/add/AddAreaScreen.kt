@@ -16,18 +16,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
 import kotlinx.coroutines.launch
 import mn.openlocations.R
 import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.repositories.AreaRepository
-import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.RowItem
 
@@ -67,18 +61,18 @@ fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
     // Areas
     var selectedArea by remember { mutableStateOf<Area?>(null) }
     val (areas, setAreas) = remember { mutableStateOf<List<Area>>(emptyList()) }
-    var isLoadingSelectedArea by rememberSaveable { mutableStateOf(false) }
+    var isSearchingAreas by rememberSaveable { mutableStateOf(false) }
     fun search(query: String) {
-        isLoadingSelectedArea = true
+        isSearchingAreas = true
         val repository = AreaRepository()
         coroutineScope.launch {
             setAreas(repository.search(query) ?: emptyList())
-            isLoadingSelectedArea = false
+            isSearchingAreas = false
         }
     }
 
-    LaunchedEffect(isLoadingSelectedArea) {
-        setIsLoading(isLoadingSelectedArea)
+    LaunchedEffect(isSearchingAreas) {
+        setIsLoading(isSearchingAreas)
     }
 
     // Address Text Field
@@ -95,57 +89,50 @@ fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
         navController.popBackStack()
     }
 
-    Column {
-        Spacer(modifier = Modifier.height(16.dp))
-        TextField(
-            value = address,
-            onValueChange = { address = it },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
-                imeAction = ImeAction.Go,
-            ),
-            keyboardActions = KeyboardActions(
-                onGo = { search(query = address) }
-            ),
-            singleLine = true,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            placeholder = {
-                Text(text = stringResource(R.string.servers_add_address_placeholder))
+    selectedArea?.let {
+        Dialog(onDismissRequest = { selectedArea = null }) {
+            AreaPreviewModal(area = it) {
+                saveSelectedArea(it)
             }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+
+    Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
         ) {
-            Button(
-                onClick = { search(query = address) },
-                enabled = address.isNotBlank(),
-            ) {
-                Text("Search")
-            }
+            TextField(
+                value = address,
+                onValueChange = { address = it },
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrect = false,
+                    imeAction = ImeAction.Search,
+                ),
+                keyboardActions = KeyboardActions(
+                    onGo = { search(query = address) }
+                ),
+                singleLine = true,
+                placeholder = {
+                    Text(text = stringResource(R.string.servers_add_query_placeholder))
+                }
+            )
             Spacer(modifier = Modifier.width(8.dp))
             Button(
-                onClick = { saveSelectedArea(selectedArea) },
-                enabled = selectedArea != null,
+                onClick = { search(query = address) },
+                enabled = address.isNotBlank() && !isSearchingAreas,
+                modifier = Modifier.width(100.dp),
             ) {
-                Text(stringResource(R.string.servers_add_addButton))
+                Text(stringResource(R.string.servers_add_searchButton))
             }
         }
 
-        if (selectedArea != null) {
-            Text(
-                text = selectedArea!!.name,
-                style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            )
-            PreviewMap(selectedArea = selectedArea!!)
-        } else {
-            AreasList(areas = areas) { selectedArea = it }
+        AreasList(areas = areas) {
+            selectedArea = it
         }
     }
 }
@@ -155,11 +142,13 @@ fun AreasList(
     areas: List<Area>,
     checkDiscoveryItem: (Area) -> Unit,
 ) {
-    Text(
-        text = stringResource(R.string.servers_add_known_servers),
-        style = MaterialTheme.typography.h5,
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-    )
+    if (areas.isNotEmpty()) {
+        Text(
+            text = stringResource(R.string.servers_add_known_servers),
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+        )
+    }
     LazyColumn {
         itemsIndexed(areas, key = { _, item -> item.id }) { index, area ->
             RowItem(
@@ -169,32 +158,4 @@ fun AreasList(
             )
         }
     }
-}
-
-@Composable
-private fun PreviewMap(selectedArea: Area) {
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        cameraPositionState = CameraPositionState(
-            position = CameraPosition.fromLatLngZoom(
-                selectedArea.location.let { LatLng(it.latitude, it.longitude) },
-                13f
-            )
-        ),
-        properties = MapProperties(
-            mapStyleOptions = mapStyleOptions(),
-        ),
-        uiSettings = MapUiSettings(
-            compassEnabled = false,
-            myLocationButtonEnabled = false,
-            mapToolbarEnabled = false,
-            rotationGesturesEnabled = false,
-            scrollGesturesEnabled = false,
-            scrollGesturesEnabledDuringRotateOrZoom = false,
-            tiltGesturesEnabled = false,
-            zoomControlsEnabled = false,
-            zoomGesturesEnabled = false,
-            indoorLevelPickerEnabled = false,
-        )
-    )
 }
