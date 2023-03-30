@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
@@ -39,8 +39,6 @@ import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.domain.repositories.PreferencesRepository
-import mn.openlocations.navigation.AppScreen
-import mn.openlocations.navigation.replace
 import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
@@ -84,7 +82,8 @@ fun MapScreen(id: String, navController: NavController) {
     fun closeMap() {
         val repository = PreferencesRepository(context)
         repository.setLastAreaId(null)
-        navController.replace(AppScreen.AreaList.route)
+        navController.popBackStack()
+//        navController.replace(AppScreen.AreaList.route)
     }
 
     fun deleteArea(area: Area?) {
@@ -121,7 +120,7 @@ fun MapScreen(id: String, navController: NavController) {
             navigationIcon = {
                 IconButton(onClick = { closeMap() }) {
                     Icon(
-                        Icons.Rounded.Menu,
+                        Icons.Rounded.ArrowBack,
                         contentDescription = stringResource(R.string.general_back),
                     )
                 }
