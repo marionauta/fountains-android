@@ -34,5 +34,11 @@ fun FountainPropertiesDto.intoDomain(): FountainProperties = FountainProperties(
     bottle = parseBasic(bottle),
     wheelchair = parseWheelchair(wheelchair),
     mapillaryId = mapillaryId,
-    checkDate = checkDate?.let { LocalDate.parse(it) },
+    checkDate = checkDate?.let {
+        try {
+            LocalDate.parse(it)
+        } catch (e: Exception) {
+            null
+        }
+    },
 )
