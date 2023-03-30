@@ -1,6 +1,5 @@
 package mn.openlocations.data.datasources
 
-import kotlinx.datetime.Clock
 import mn.openlocations.data.models.FountainDto
 import mn.openlocations.data.models.FountainPropertiesDto
 import mn.openlocations.data.models.FountainsResponseDto
@@ -13,8 +12,8 @@ class FountainDataSource {
     private val overpassDataSource = OverpassDataSource()
 
     suspend fun all(areaId: Long): FountainsResponseDto? {
-        val nodes = overpassDataSource.getNodes(areaId = areaId)
-        val fountains = nodes.map { node ->
+        val response = overpassDataSource.getNodes(areaId = areaId) ?: return fountainsResponse
+        val fountains = response.elements.map { node ->
             FountainDto(
                 id = node.id.toString(),
                 name = node.tags["name"] ?: "",
@@ -31,7 +30,7 @@ class FountainDataSource {
             )
         }
         fountainsResponse = FountainsResponseDto(
-            lastUpdated = Clock.System.now(),
+            lastUpdated = response.lastUpdated(),
             fountains = fountains,
         )
         return fountainsResponse
