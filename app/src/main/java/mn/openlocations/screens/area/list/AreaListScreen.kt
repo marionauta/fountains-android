@@ -57,7 +57,7 @@ fun AreaListScreen(navController: NavController) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(R.string.servers_list_title))
+                    Text(stringResource(R.string.areas_list_title))
                 },
                 actions = {
                     AppBarLoader(
@@ -81,7 +81,7 @@ fun AreaListScreen(navController: NavController) {
             ) {
                 Icon(
                     Icons.Rounded.Add,
-                    contentDescription = stringResource(R.string.servers_list_addButton_description),
+                    contentDescription = stringResource(R.string.areas_list_add_button_description),
                 )
             }
         }
@@ -120,8 +120,8 @@ private fun AreaList(servers: List<Area>, onServerClick: (Area) -> Unit) {
 @Composable
 private fun EmptyAreaList() {
     EmptyFallback(
-        title = stringResource(R.string.servers_list_empty_title),
-        description = stringResource(R.string.servers_list_empty_description),
+        title = stringResource(R.string.areas_list_empty_title),
+        description = stringResource(R.string.areas_list_empty_description),
         modifier = Modifier.fillMaxSize(),
     )
 }

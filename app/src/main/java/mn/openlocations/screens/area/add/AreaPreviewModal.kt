@@ -37,7 +37,7 @@ fun AreaPreviewModal(area: Area, onAddArea: () -> Unit) {
             )
             PreviewMap(selectedArea = area)
             Button(onClick = onAddArea, modifier = Modifier.padding(16.dp)) {
-                Text(stringResource(R.string.servers_add_addButton))
+                Text(stringResource(R.string.areas_add_add_button))
             }
         }
     }

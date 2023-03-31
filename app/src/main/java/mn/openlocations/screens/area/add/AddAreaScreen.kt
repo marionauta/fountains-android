@@ -31,7 +31,7 @@ fun AddAreaScreen(navController: NavController) {
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text(stringResource(R.string.servers_add_title)) },
+            title = { Text(stringResource(R.string.areas_add_title)) },
             navigationIcon = {
                 IconButton(onClick = navController::navigateUp) {
                     Icon(
@@ -118,7 +118,7 @@ fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
                 ),
                 singleLine = true,
                 placeholder = {
-                    Text(text = stringResource(R.string.servers_add_query_placeholder))
+                    Text(text = stringResource(R.string.areas_add_query_placeholder))
                 },
                 modifier = Modifier.weight(3f),
             )
@@ -128,7 +128,7 @@ fun AddArea(navController: NavController, setIsLoading: (Boolean) -> Unit) {
                 enabled = address.isNotBlank() && !isSearchingAreas,
                 modifier = Modifier.weight(1f),
             ) {
-                Text(stringResource(R.string.servers_add_searchButton))
+                Text(stringResource(R.string.areas_add_search_button))
             }
         }
 
@@ -145,7 +145,7 @@ fun AreasList(
 ) {
     if (areas.isNotEmpty()) {
         Text(
-            text = stringResource(R.string.servers_add_known_servers),
+            text = stringResource(R.string.areas_add_search_results_title),
             style = MaterialTheme.typography.h5,
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
         )

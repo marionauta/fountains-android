@@ -39,14 +39,14 @@
     <string name="map_more_menu">Show menu</string>
     <string name="map_delete_server">Delete location</string>
 
-    <string name="servers_add_title">Add location</string>
-    <string name="servers_add_addButton">Add</string>
-    <string name="servers_add_searchButton">Search</string>
-    <string name="servers_add_query_placeholder">Berlin, Germany</string>
-    <string name="servers_add_known_servers">Known locations</string>
+    <string name="areas_add_title">Add location</string>
+    <string name="areas_add_add_button">Add</string>
+    <string name="areas_add_search_button">Search</string>
+    <string name="areas_add_query_placeholder">Berlin, Germany</string>
+    <string name="areas_add_search_results_title">Results</string>
 
-    <string name="servers_list_title">Locations</string>
-    <string name="servers_list_addButton_description">Add location</string>
-    <string name="servers_list_empty_title">No locations</string>
-    <string name="servers_list_empty_description">Add a location first.</string>
+    <string name="areas_list_title">Locations</string>
+    <string name="areas_list_add_button_description">Add location</string>
+    <string name="areas_list_empty_title">No locations</string>
+    <string name="areas_list_empty_description">Add a location first.</string>
 </resources>
