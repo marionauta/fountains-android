@@ -93,7 +93,7 @@ fun AreaListScreen(navController: NavController) {
             } else {
                 AreaList(
                     servers = servers,
-                    onServerClick = { server -> onAreaClick(id = server.id) },
+                    onAreaClick = { area -> onAreaClick(id = area.id) },
                 )
             }
         }
@@ -105,13 +105,14 @@ fun AreaListScreen(navController: NavController) {
 }
 
 @Composable
-private fun AreaList(servers: List<Area>, onServerClick: (Area) -> Unit) {
+private fun AreaList(servers: List<Area>, onAreaClick: (Area) -> Unit) {
     LazyColumn {
-        itemsIndexed(servers, key = { _, item -> item.id }) { index, server ->
+        itemsIndexed(servers, key = { _, item -> item.id }) { index, area ->
             RowItem(
-                title = server.trimmedDisplayName,
+                title = area.trimmedDisplayName,
+                content = area.name,
                 hasTopDivider = index > 0,
-                onClick = { onServerClick(server) }
+                onClick = { onAreaClick(area) }
             )
         }
     }

@@ -154,6 +154,7 @@ fun AreasList(
         itemsIndexed(areas, key = { _, item -> item.id }) { index, area ->
             RowItem(
                 title = area.name,
+                content = "ID: ${area.osmAreaId}",
                 hasTopDivider = index > 0,
                 onClick = { checkDiscoveryItem(area) }
             )
