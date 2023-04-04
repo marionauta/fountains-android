@@ -86,10 +86,12 @@ fun MapScreen(id: String, navController: NavController) {
 //        navController.replace(AppScreen.AreaList.route)
     }
 
+    var isDeletingArea by rememberSaveable { mutableStateOf(false) }
     fun deleteArea(area: Area?) {
         if (area == null) {
             return
         }
+        isDeletingArea = true
         val repository = AreaRepository()
         runBlocking {
             repository.delete(areaId = area.id)
@@ -142,6 +144,7 @@ fun MapScreen(id: String, navController: NavController) {
                     MenuItem(
                         imageVector = Icons.Rounded.Delete,
                         title = stringResource(R.string.map_delete_server),
+                        enabled = !isDeletingArea,
                     ) {
                         deleteArea(area)
                     }

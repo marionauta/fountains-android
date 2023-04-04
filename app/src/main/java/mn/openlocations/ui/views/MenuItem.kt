@@ -11,8 +11,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MenuItem(imageVector: ImageVector, title: String, onClick: () -> Unit) {
-    DropdownMenuItem(onClick = onClick) {
+fun MenuItem(
+    imageVector: ImageVector,
+    title: String,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    DropdownMenuItem(onClick = onClick, enabled = enabled) {
         Icon(
             imageVector = imageVector,
             contentDescription = title,

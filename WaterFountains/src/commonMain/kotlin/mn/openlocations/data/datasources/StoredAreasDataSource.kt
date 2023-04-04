@@ -31,7 +31,7 @@ class StoredAreasDataSource {
 
     suspend fun delete(id: String) {
         realm.write {
-            val results = query<StoredArea>("id == $0", id).find().first()
+            val results = query<StoredArea>("id == $0", id).find()
             delete(results)
         }
     }
