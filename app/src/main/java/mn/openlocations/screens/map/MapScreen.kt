@@ -113,6 +113,7 @@ fun MapScreen(id: String, navController: NavController) {
                         Text(
                             text = stringResource(R.string.map_last_updated).format(it),
                             style = Typography.caption,
+                            color = LocalContentColor.current.copy(alpha = .8f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
