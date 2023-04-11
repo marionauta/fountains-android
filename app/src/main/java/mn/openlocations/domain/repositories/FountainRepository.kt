@@ -1,11 +1,7 @@
 package mn.openlocations.domain.repositories
 
 import mn.openlocations.data.datasources.FountainDataSource
-import mn.openlocations.domain.models.Fountain
-import mn.openlocations.domain.models.FountainsResponse
-import mn.openlocations.domain.models.Area
-import mn.openlocations.domain.models.intoDomain
-import java.net.URL
+import mn.openlocations.domain.models.*
 
 class FountainRepository {
     private val dataSource = FountainDataSource()
@@ -16,6 +12,15 @@ class FountainRepository {
 
     suspend fun all(area: Area): FountainsResponse? {
         return all(areaId = area.osmAreaId)
+    }
+
+    suspend fun inside(northEast: Location, southWest: Location): FountainsResponse? {
+        return dataSource.inside(
+            north = northEast.latitude,
+            east = northEast.longitude,
+            south = southWest.latitude,
+            west = southWest.longitude,
+        )?.intoDomain()
     }
 
     fun get(fountainId: String): Fountain? = dataSource.get(fountainId)?.intoDomain()
