@@ -9,32 +9,8 @@ import mn.openlocations.data.models.LocationDto
 private var fountainsResponse: FountainsResponseDto? = null
 
 class FountainDataSource {
+    private val storedDataSource = StoredAreasDataSource()
     private val overpassDataSource = OverpassDataSource()
-
-    suspend fun all(areaId: Long): FountainsResponseDto? {
-        val response = overpassDataSource.getNodes(areaId = areaId) ?: return fountainsResponse
-        val fountains = response.elements.map { node ->
-            FountainDto(
-                id = node.id.toString(),
-                name = node.tags["name"] ?: "",
-                location = LocationDto(
-                    latitude = node.lat,
-                    longitude = node.lon,
-                ),
-                properties = FountainPropertiesDto(
-                    bottle = node.tags["bottle"] ?: "unknown",
-                    wheelchair = node.tags["wheelchair"] ?: "unknown",
-                    mapillaryId = node.tags["mapillary"],
-                    checkDate = node.tags["check_date"],
-                )
-            )
-        }
-        fountainsResponse = FountainsResponseDto(
-            lastUpdated = response.lastUpdated(),
-            fountains = fountains,
-        )
-        return fountainsResponse
-    }
 
     suspend fun inside(
         north: Double,
@@ -42,6 +18,9 @@ class FountainDataSource {
         south: Double,
         west: Double,
     ): FountainsResponseDto? {
+        // TODO: remove in the future
+        storedDataSource.deleteAll()
+
         val response =
             overpassDataSource.getNodes(north = north, east = east, south = south, west = west)
                 ?: return fountainsResponse

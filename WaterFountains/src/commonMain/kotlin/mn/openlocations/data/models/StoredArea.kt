@@ -4,6 +4,7 @@ import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.ObjectId
 
+@Deprecated("We no longer use areas")
 class StoredArea : RealmObject {
     @PrimaryKey
     var id: String = ObjectId().toHexString()

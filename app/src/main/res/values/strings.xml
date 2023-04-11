@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Water Finder</string>
 
-    <string name="general_back">Back</string>
     <string name="general_close">Close</string>
 
     <string name="property_value_no">No</string>
@@ -32,21 +31,7 @@
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
     <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 
-    <string name="map_fallback_title">Fountains</string>
     <string name="map_last_updated">Last updated: %s</string>
-    <string name="map_not_found_title">No location</string>
-    <string name="map_not_found_description">Unknown location. Go back.</string>
     <string name="map_more_menu">Show menu</string>
-    <string name="map_delete_server">Delete location</string>
 
-    <string name="areas_add_title">Add location</string>
-    <string name="areas_add_add_button">Add</string>
-    <string name="areas_add_search_button">Search</string>
-    <string name="areas_add_query_placeholder">Berlin, Germany</string>
-    <string name="areas_add_search_results_title">Results</string>
-
-    <string name="areas_list_title">Locations</string>
-    <string name="areas_list_add_button_description">Add location</string>
-    <string name="areas_list_empty_title">No locations</string>
-    <string name="areas_list_empty_description">Add a location first.</string>
 </resources>
