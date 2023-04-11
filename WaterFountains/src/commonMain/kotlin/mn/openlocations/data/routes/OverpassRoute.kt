@@ -19,3 +19,25 @@ data class OverpassRoute(val areaId: Long) : ApiRoute {
         ),
     )
 }
+
+data class OverpassGeoRoute(
+    val north: Double,
+    val east: Double,
+    val south: Double,
+    val west: Double,
+) : ApiRoute {
+    override val route: String = "interpreter"
+
+    override val headers: Map<String, String> = emptyMap()
+
+    override val parameters: Map<String, String> = mapOf(
+        Pair(
+            "data",
+            """
+            [out:json];
+            node[amenity=drinking_water](${south},${west},${north},${east});
+            out;
+            """.trimIndent()
+        ),
+    )
+}

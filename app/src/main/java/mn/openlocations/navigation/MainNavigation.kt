@@ -21,22 +21,10 @@ fun MainNavigation() {
 private fun MainNavGraph(controller: NavHostController) {
     NavHost(
         navController = controller,
-        startDestination = AppScreen.AreaList.route,
+        startDestination = AppScreen.Map.route,
     ) {
-        composable(AppScreen.AreaList.route) {
-            AreaListScreen(controller)
-        }
-        composable(AppScreen.AreaAdd.route) {
-            AddAreaScreen(controller)
-        }
-        composable(
-            route = AppScreen.Map.route + "/{id}",
-            arguments = listOf(navArgument(name = "id") {
-                type = NavType.StringType
-            }),
-        ) { entry ->
-            val id = entry.arguments?.getString("id")!!
-            MapScreen(id = id, navController = controller)
+        composable(AppScreen.Map.route) {
+            MapScreen()
         }
     }
 }

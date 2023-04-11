@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
@@ -20,25 +18,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.R
-import mn.openlocations.domain.models.Area
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
-import mn.openlocations.domain.repositories.AreaRepository
 import mn.openlocations.domain.repositories.FountainRepository
-import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
@@ -49,12 +42,14 @@ import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.math.sqrt
 
 @Composable
-fun MapScreen(id: String, navController: NavController) {
+fun MapScreen() {
     var isMenuShown by remember { mutableStateOf(false) }
 
-    val (area, setArea) = remember { mutableStateOf<Area?>(null) }
+    val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
+    var isLoadingFountains by rememberSaveable { mutableStateOf(false) }
     val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
 
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
@@ -64,39 +59,34 @@ fun MapScreen(id: String, navController: NavController) {
         selectedFountainId = null
     }
 
-    LaunchedEffect(id) {
-        val repository = AreaRepository()
-        setArea(repository.get(id = id))
-    }
-
-    LaunchedEffect(area) {
-        if (area == null) {
-            setFountains(null)
+    LaunchedEffect(bounds) {
+        if (bounds == null) {
             return@LaunchedEffect
         }
+        val d = calculateDistanceBetweenPoints(
+            bounds.northeast.longitude,
+            bounds.northeast.latitude,
+            bounds.southwest.longitude,
+            bounds.southwest.latitude,
+        )
+        if (d > 0.06) {
+            return@LaunchedEffect
+        }
+        isLoadingFountains = true
         val repository = FountainRepository()
-        setFountains(repository.all(area = area))
-    }
-
-    val context = LocalContext.current
-    fun closeMap() {
-        val repository = PreferencesRepository(context)
-        repository.setLastAreaId(null)
-        navController.popBackStack()
-//        navController.replace(AppScreen.AreaList.route)
-    }
-
-    var isDeletingArea by rememberSaveable { mutableStateOf(false) }
-    fun deleteArea(area: Area?) {
-        if (area == null) {
-            return
-        }
-        isDeletingArea = true
-        val repository = AreaRepository()
-        runBlocking {
-            repository.delete(areaId = area.id)
-        }
-        closeMap()
+        setFountains(
+            repository.inside(
+                northEast = Location(
+                    latitude = bounds.northeast.latitude,
+                    longitude = bounds.northeast.longitude,
+                ),
+                southWest = Location(
+                    latitude = bounds.southwest.latitude,
+                    longitude = bounds.southwest.longitude,
+                ),
+            )
+        )
+        isLoadingFountains = false
     }
 
     Scaffold(topBar = {
@@ -104,8 +94,7 @@ fun MapScreen(id: String, navController: NavController) {
             title = {
                 Column {
                     Text(
-                        text = area?.trimmedDisplayName
-                            ?: stringResource(R.string.map_fallback_title),
+                        text = stringResource(R.string.app_name),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -118,14 +107,6 @@ fun MapScreen(id: String, navController: NavController) {
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                }
-            },
-            navigationIcon = {
-                IconButton(onClick = { closeMap() }) {
-                    Icon(
-                        Icons.Rounded.ArrowBack,
-                        contentDescription = stringResource(R.string.general_back),
-                    )
                 }
             },
             actions = {
@@ -142,29 +123,19 @@ fun MapScreen(id: String, navController: NavController) {
                     ) {
                         isAppInfoOpen = true
                     }
-                    MenuItem(
-                        imageVector = Icons.Rounded.Delete,
-                        title = stringResource(R.string.map_delete_server),
-                        enabled = !isDeletingArea,
-                    ) {
-                        deleteArea(area)
-                    }
                 }
             },
         )
     }) {
         Box(modifier = Modifier.padding(it)) {
-            if (area == null) {
-                NoServer()
-            } else {
-                Column {
-                    BannerAd()
-                    Map(
-                        location = area.location,
-                        fountains = fountains?.fountains ?: emptyList(),
-                        onMarkerClick = { fountain -> selectedFountainId = fountain.id },
-                    )
-                }
+            Column {
+                BannerAd()
+                Map(
+                    location = Location(0.0, 0.0),
+                    fountains = fountains?.fountains ?: emptyList(),
+                    setBounds = setBounds,
+                    onMarkerClick = { fountain -> selectedFountainId = fountain.id },
+                )
             }
             Modal(
                 isOpen = selectedFountainId != null,
@@ -194,7 +165,12 @@ private fun NoServer() {
 
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
-private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (Fountain) -> Unit) {
+private fun Map(
+    location: Location,
+    fountains: List<Fountain>,
+    setBounds: (LatLngBounds) -> Unit,
+    onMarkerClick: (Fountain) -> Unit,
+) {
     val fineLocationPermission =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     val coarseLocationPermission =
@@ -213,9 +189,6 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
         position = CameraPosition.fromLatLngZoom(location.position, zoomLevel)
     }
 
-    var bounds by remember { mutableStateOf<LatLngBounds?>(null) }
-    val shownFountains = fountains.filter { bounds?.contains(it.location.position) ?: false }
-
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
@@ -223,7 +196,6 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
             isBuildingEnabled = false,
             isIndoorEnabled = false,
             isTrafficEnabled = false,
-            minZoomPreference = zoomLevel,
             isMyLocationEnabled = isMyLocationEnabled,
             mapStyleOptions = mapStyleOptions(),
         ),
@@ -233,10 +205,10 @@ private fun Map(location: Location, fountains: List<Fountain>, onMarkerClick: (F
 
         MapEffect(Unit) { map ->
             map.setOnCameraIdleListener {
-                bounds = map.projection.visibleRegion.latLngBounds
+                setBounds(map.projection.visibleRegion.latLngBounds)
             }
         }
-        for (fountain in shownFountains) {
+        for (fountain in fountains) {
             Marker(
                 state = MarkerState(position = fountain.location.position),
                 title = fountain.name,
@@ -272,4 +244,13 @@ private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): Bitm
     val canvas = android.graphics.Canvas(bm)
     drawable.draw(canvas)
     return BitmapDescriptorFactory.fromBitmap(bm)
+}
+
+private fun calculateDistanceBetweenPoints(
+    x1: Double,
+    y1: Double,
+    x2: Double,
+    y2: Double,
+): Double {
+    return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
 }
