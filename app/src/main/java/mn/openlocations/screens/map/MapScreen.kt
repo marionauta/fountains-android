@@ -17,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -36,8 +37,8 @@ import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.Typography
+import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerAd
-import mn.openlocations.ui.views.EmptyFallback
 import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
 import java.time.format.DateTimeFormatter
@@ -46,13 +47,12 @@ import kotlin.math.sqrt
 
 @Composable
 fun MapScreen() {
-    var isMenuShown by remember { mutableStateOf(false) }
+    var isMenuShown by rememberSaveable { mutableStateOf(false) }
+    var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
     val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
     var isLoadingFountains by rememberSaveable { mutableStateOf(false) }
     val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
-
-    var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
     var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
     fun deselectFountain() {
@@ -110,6 +110,10 @@ fun MapScreen() {
                 }
             },
             actions = {
+                AppBarLoader(
+                    isLoading = isLoadingFountains,
+                    modifier = Modifier.padding(end = 16.dp),
+                )
                 IconButton(onClick = { isMenuShown = true }) {
                     Icon(
                         Icons.Rounded.MoreVert,
@@ -148,19 +152,13 @@ fun MapScreen() {
             }
             AppInfoModal(
                 isOpen = isAppInfoOpen,
-                onClose = { isAppInfoOpen = false },
+                onClose = {
+                    isMenuShown = false
+                    isAppInfoOpen = false
+                },
             )
         }
     }
-}
-
-@Composable
-private fun NoServer() {
-    EmptyFallback(
-        title = stringResource(R.string.map_not_found_title),
-        description = stringResource(R.string.map_not_found_description),
-        modifier = Modifier.fillMaxSize(),
-    )
 }
 
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AguApp</string>
-    <string name="general_back">Volver</string>
     <string name="general_close">Cerrar</string>
     <string name="app_info_website_title">Sitio web</string>
     <string name="app_info_website_content">Saber más</string>
@@ -18,20 +17,8 @@
     <string name="fountain_detail_check_date_title">Comprobado</string>
     <string name="fountain_detail_check_date_description">La  última vez que alguien comprobó esta fuente.</string>
     <string name="fountain_detail_something_wrong_button">¿Algún error?</string>
-    <string name="map_fallback_title">Fuentes</string>
     <string name="map_last_updated">Actualizado: %s</string>
-    <string name="map_not_found_title">Sin ubicación</string>
-    <string name="map_not_found_description">Ubicación desconocida. Vuelve.</string>
     <string name="map_more_menu">Mostrar menú</string>
-    <string name="map_delete_server">Borrar ubicación</string>
-    <string name="areas_add_title">Añadir ubicación</string>
-    <string name="areas_add_add_button">Añadir</string>
-    <string name="areas_add_search_button">Buscar</string>
-    <string name="areas_add_search_results_title">Resultados</string>
-    <string name="areas_list_title">Ubicaciones</string>
-    <string name="areas_list_add_button_description">Añadir ubicación</string>
-    <string name="areas_list_empty_title">Sin ubicaciones</string>
-    <string name="areas_list_empty_description">Añade una ubicación primero.</string>
     <string name="property_value_no">No</string>
     <string name="property_value_limited">Limitado</string>
     <string name="property_value_yes">Sí</string>
@@ -41,5 +28,4 @@
     <string name="app_info_easteregg_title">Tonto</string>
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>
-    <string name="areas_add_query_placeholder">Sevilla, España</string>
 </resources>

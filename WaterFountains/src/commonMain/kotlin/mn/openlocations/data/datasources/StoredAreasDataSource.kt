@@ -35,4 +35,10 @@ class StoredAreasDataSource {
             delete(results)
         }
     }
+
+    suspend fun deleteAll() {
+        realm.write {
+            delete(StoredArea::class)
+        }
+    }
 }

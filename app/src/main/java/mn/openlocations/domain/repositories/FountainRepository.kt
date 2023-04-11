@@ -1,18 +1,13 @@
 package mn.openlocations.domain.repositories
 
 import mn.openlocations.data.datasources.FountainDataSource
-import mn.openlocations.domain.models.*
+import mn.openlocations.domain.models.Fountain
+import mn.openlocations.domain.models.FountainsResponse
+import mn.openlocations.domain.models.Location
+import mn.openlocations.domain.models.intoDomain
 
 class FountainRepository {
     private val dataSource = FountainDataSource()
-
-    private suspend fun all(areaId: Long): FountainsResponse? {
-        return dataSource.all(areaId = areaId)?.intoDomain()
-    }
-
-    suspend fun all(area: Area): FountainsResponse? {
-        return all(areaId = area.osmAreaId)
-    }
 
     suspend fun inside(northEast: Location, southWest: Location): FountainsResponse? {
         return dataSource.inside(
