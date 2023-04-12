@@ -38,6 +38,7 @@ class ApiClient(val baseUrl: String) {
             }
             response.body()
         } catch (exception: Exception) {
+            println(exception.message)
             null
         }
     }

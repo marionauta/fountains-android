@@ -31,7 +31,6 @@
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
     <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 
-    <string name="map_last_updated">Last updated: %s</string>
     <string name="map_more_menu">Show menu</string>
 
 </resources>
