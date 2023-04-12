@@ -3,18 +3,18 @@ package mn.openlocations.screens.map
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,9 +52,10 @@ fun MapScreen() {
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
     val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
-    var isLoadingFountains by rememberSaveable { mutableStateOf(false) }
-    val fountains by produceFountains(bounds = bounds?.domain)
     val locationName by produceLocationName(coordinate = bounds?.center?.location)
+    val fountainsResult by produceFountains(bounds = bounds?.domain)
+    val isLoadingFountains = fountainsResult.isLoading
+    val fountains = fountainsResult.response
 
     var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
     fun deselectFountain() {
@@ -110,6 +111,17 @@ fun MapScreen() {
                     fountains = fountains?.fountains ?: emptyList(),
                     setBounds = setBounds,
                     onMarkerClick = { fountain -> selectedFountainId = fountain.id },
+                )
+            }
+            if (fountainsResult.tooFarAway) {
+                Text(
+                    text = stringResource(R.string.map_too_far_away),
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .offset(y = 100.dp)
+                        .background(Color.Black.copy(alpha = .75f))
+                        .padding(12.dp),
                 )
             }
             Modal(

@@ -7,39 +7,56 @@ import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.debounce
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
+data class ProduceFountainsResult(
+    val response: FountainsResponse? = null,
+    val tooFarAway: Boolean = false,
+    val isLoading: Boolean = false,
+)
+
 @Composable
-fun produceFountains(bounds: Pair<Location, Location>?): State<FountainsResponse?> {
+fun produceFountains(bounds: Pair<Location, Location>?): State<ProduceFountainsResult> {
     val repository = FountainRepository()
-    return produceState<FountainsResponse?>(initialValue = null, bounds) {
+    return produceState(initialValue = ProduceFountainsResult(isLoading = true), bounds) {
         if (bounds == null) {
             return@produceState
         }
-        val d = calculateDistanceBetweenPoints(
+        val d = calculateMetersBetweenPoints(
             bounds.first.longitude,
             bounds.first.latitude,
             bounds.second.longitude,
             bounds.second.latitude,
         )
-        if (d > 0.06) {
+        if (d >= 5_000) {
+            value = value.copy(tooFarAway = true)
             return@produceState
         }
-        val debounced = debounce<Pair<Location, Location>, FountainsResponse?>(
+        val debounced = debounce<Pair<Location, Location>, ProduceFountainsResult>(
             waitMs = 50,
             coroutineScope = this,
         ) {
-            return@debounce repository.inside(it.first, bounds.second)
+            value = value.copy(isLoading = true)
+            val response = repository.inside(it.first, bounds.second)
+            return@debounce ProduceFountainsResult(response = response)
         }(bounds)
-        value = debounced?.await()
+        value = debounced?.await() ?: ProduceFountainsResult()
     }
 }
 
-private fun calculateDistanceBetweenPoints(
-    x1: Double,
-    y1: Double,
-    x2: Double,
-    y2: Double,
+fun calculateMetersBetweenPoints(
+    lat1: Double,
+    lng1: Double,
+    lat2: Double,
+    lng2: Double,
 ): Double {
-    return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
+    val earthRadius = 6371000.0 // meters
+    val dLat = Math.toRadians((lat2 - lat1))
+    val dLng = Math.toRadians((lng2 - lng1))
+    val a = sin(dLat / 2) * sin(dLat / 2) + cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) * sin(dLng / 2) * sin(dLng / 2)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    return (earthRadius * c)
 }

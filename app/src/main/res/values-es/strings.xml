@@ -18,6 +18,7 @@
     <string name="fountain_detail_check_date_description">La  última vez que alguien comprobó esta fuente.</string>
     <string name="fountain_detail_something_wrong_button">¿Algún error?</string>
     <string name="map_more_menu">Mostrar menú</string>
+    <string name="map_too_far_away">Demasiado lejos. Haz zoom, por favor.</string>
     <string name="property_value_no">No</string>
     <string name="property_value_limited">Limitado</string>
     <string name="property_value_yes">Sí</string>
