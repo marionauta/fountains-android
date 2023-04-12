@@ -156,9 +156,12 @@ private fun Map(
     LaunchedEffect(isMyLocationEnabled) {
         if (isMyLocationEnabled) {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-            fusedLocationClient.lastLocation.addOnSuccessListener {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location == null) {
+                    return@addOnSuccessListener
+                }
                 cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                    LatLng(it.latitude, it.longitude),
+                    LatLng(location.latitude, location.longitude),
                     zoomLevel,
                 )
             }
@@ -178,7 +181,6 @@ private fun Map(
             mapStyleOptions = mapStyleOptions(),
         ),
     ) {
-        val context = LocalContext.current
         val fountainIcon = bitmapDescriptorFromVector(context, vectorResId = R.drawable.marker)
 
         MapEffect(Unit) { map ->
