@@ -30,8 +30,8 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.R
 import mn.openlocations.domain.models.Fountain
-import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
+import mn.openlocations.domain.producers.produceFountains
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
@@ -43,7 +43,6 @@ import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import kotlin.math.sqrt
 
 @Composable
 fun MapScreen() {
@@ -52,41 +51,11 @@ fun MapScreen() {
 
     val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
     var isLoadingFountains by rememberSaveable { mutableStateOf(false) }
-    val (fountains, setFountains) = remember { mutableStateOf<FountainsResponse?>(null) }
+    val fountains by produceFountains(bounds = bounds?.domain)
 
     var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
     fun deselectFountain() {
         selectedFountainId = null
-    }
-
-    LaunchedEffect(bounds) {
-        if (bounds == null) {
-            return@LaunchedEffect
-        }
-        val d = calculateDistanceBetweenPoints(
-            bounds.northeast.longitude,
-            bounds.northeast.latitude,
-            bounds.southwest.longitude,
-            bounds.southwest.latitude,
-        )
-        if (d > 0.06) {
-            return@LaunchedEffect
-        }
-        isLoadingFountains = true
-        val repository = FountainRepository()
-        setFountains(
-            repository.inside(
-                northEast = Location(
-                    latitude = bounds.northeast.latitude,
-                    longitude = bounds.northeast.longitude,
-                ),
-                southWest = Location(
-                    latitude = bounds.southwest.latitude,
-                    longitude = bounds.southwest.longitude,
-                ),
-            )
-        )
-        isLoadingFountains = false
     }
 
     Scaffold(topBar = {
@@ -224,6 +193,12 @@ private fun Map(
 private val Location.position: LatLng
     get() = LatLng(latitude, longitude)
 
+private val LatLng.location: Location
+    get() = Location(latitude, longitude)
+
+private val LatLngBounds.domain: Pair<Location, Location>
+    get() = northeast.location to southwest.location
+
 private val Instant.readable: String
     get() {
         val dateTime = toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
@@ -242,13 +217,4 @@ private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): Bitm
     val canvas = android.graphics.Canvas(bm)
     drawable.draw(canvas)
     return BitmapDescriptorFactory.fromBitmap(bm)
-}
-
-private fun calculateDistanceBetweenPoints(
-    x1: Double,
-    y1: Double,
-    x2: Double,
-    y2: Double,
-): Double {
-    return sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1))
 }
