@@ -32,7 +32,7 @@ import mn.openlocations.R
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.producers.produceFountains
-import mn.openlocations.domain.repositories.FountainRepository
+import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
@@ -52,6 +52,7 @@ fun MapScreen() {
     val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
     var isLoadingFountains by rememberSaveable { mutableStateOf(false) }
     val fountains by produceFountains(bounds = bounds?.domain)
+    val locationName by produceLocationName(coordinate = bounds?.center?.location)
 
     var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
     fun deselectFountain() {
@@ -63,13 +64,13 @@ fun MapScreen() {
             title = {
                 Column {
                     Text(
-                        text = stringResource(R.string.app_name),
+                        text = locationName ?: stringResource(R.string.app_name),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     fountains?.lastUpdated?.readable?.let {
                         Text(
-                            text = stringResource(R.string.map_last_updated).format(it),
+                            text = it,
                             style = Typography.caption,
                             color = LocalContentColor.current.copy(alpha = .8f),
                             maxLines = 1,

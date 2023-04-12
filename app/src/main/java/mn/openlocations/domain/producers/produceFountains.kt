@@ -3,10 +3,10 @@ package mn.openlocations.domain.producers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
-import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.FountainRepository
+import mn.openlocations.library.debounce
 import kotlin.math.sqrt
 
 @Composable
@@ -25,8 +25,13 @@ fun produceFountains(bounds: Pair<Location, Location>?): State<FountainsResponse
         if (d > 0.06) {
             return@produceState
         }
-        val response = repository.inside(bounds.first, bounds.second)
-        value = response
+        val debounced = debounce<Pair<Location, Location>, FountainsResponse?>(
+            waitMs = 50,
+            coroutineScope = this,
+        ) {
+            return@debounce repository.inside(it.first, bounds.second)
+        }(bounds)
+        value = debounced?.await()
     }
 }
 
