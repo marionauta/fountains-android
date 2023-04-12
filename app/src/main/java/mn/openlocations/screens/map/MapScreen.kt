@@ -1,5 +1,6 @@
 package mn.openlocations.screens.map
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.compose.*
 import kotlinx.datetime.Instant
@@ -105,7 +107,6 @@ fun MapScreen() {
             Column {
                 BannerAd()
                 Map(
-                    location = Location(0.0, 0.0),
                     fountains = fountains?.fountains ?: emptyList(),
                     setBounds = setBounds,
                     onMarkerClick = { fountain -> selectedFountainId = fountain.id },
@@ -131,10 +132,10 @@ fun MapScreen() {
     }
 }
 
+@SuppressLint("MissingPermission")
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
 private fun Map(
-    location: Location,
     fountains: List<Fountain>,
     setBounds: (LatLngBounds) -> Unit,
     onMarkerClick: (Fountain) -> Unit,
@@ -145,16 +146,25 @@ private fun Map(
         rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION)
     val isMyLocationEnabled =
         fineLocationPermission.status.isGranted || coarseLocationPermission.status.isGranted
-    LaunchedEffect(isMyLocationEnabled) {
-        if (isMyLocationEnabled) {
-            return@LaunchedEffect
-        }
-        fineLocationPermission.launchPermissionRequest()
-    }
 
     val zoomLevel = 15f
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(location.position, zoomLevel)
+        position = CameraPosition.fromLatLngZoom(LatLng(.0, .0), zoomLevel)
+    }
+
+    val context = LocalContext.current
+    LaunchedEffect(isMyLocationEnabled) {
+        if (isMyLocationEnabled) {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+            fusedLocationClient.lastLocation.addOnSuccessListener {
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                    LatLng(it.latitude, it.longitude),
+                    zoomLevel,
+                )
+            }
+        } else {
+            fineLocationPermission.launchPermissionRequest()
+        }
     }
 
     GoogleMap(
