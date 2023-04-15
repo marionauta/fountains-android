@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.google.android.gms.ads.MobileAds
 import mn.openlocations.navigation.MainNavigation
 import mn.openlocations.ui.theme.FountainsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MobileAds.initialize(this) {}
         setContent {
             FountainsTheme {
                 // A surface container using the 'background' color from the theme
