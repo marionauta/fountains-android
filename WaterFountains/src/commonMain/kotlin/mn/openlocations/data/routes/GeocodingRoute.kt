@@ -4,7 +4,7 @@ import mn.openlocations.data.models.LocationDto
 import mn.openlocations.networking.ApiRoute
 
 sealed interface GeocodingRoute : ApiRoute {
-    class Reverse(coordinate: LocationDto) : ApiRoute {
+    class Reverse(coordinate: LocationDto) : GeocodingRoute {
         override val route: String = "reverse"
         override val headers: Map<String, String> = emptyMap()
         override val parameters: Map<String, String> = mapOf(
