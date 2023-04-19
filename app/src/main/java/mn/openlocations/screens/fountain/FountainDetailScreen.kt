@@ -44,7 +44,7 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
     fun onFountainProblem() {
         var uri = KnownUris.help("corregir")
         if (fountain != null) {
-            uri += "?lat=${fountain.location.latitude}&lng=${fountain.location.longitude}"
+            uri += "&lat=${fountain.location.latitude}&lng=${fountain.location.longitude}"
         }
         uriHandler.openUri(uri)
     }
