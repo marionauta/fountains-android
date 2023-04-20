@@ -4,6 +4,7 @@ import mn.openlocations.data.models.FountainDto
 import mn.openlocations.data.models.FountainPropertiesDto
 import mn.openlocations.data.models.FountainsResponseDto
 import mn.openlocations.data.models.LocationDto
+import mn.openlocations.data.models.OverpassNode
 
 // TODO: Improve this "in memory" cache
 private var fountainsResponse: FountainsResponseDto? = null
@@ -42,11 +43,11 @@ class FountainDataSource {
         }
         fountainsResponse = FountainsResponseDto(
             lastUpdated = response.lastUpdated(),
-            fountains = fountains,
+            fountains = response.elements,
         )
         return fountainsResponse
     }
 
-    fun get(fountainId: String): FountainDto? =
-        fountainsResponse?.fountains?.firstOrNull { it.id == fountainId }
+    fun get(fountainId: String): OverpassNode? =
+        fountainsResponse?.fountains?.firstOrNull { it.id.toString() == fountainId }
 }

@@ -19,6 +19,7 @@ import kotlinx.datetime.toJavaLocalDate
 import mn.openlocations.R
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.Fountain
+import mn.openlocations.domain.models.ParsedOverpassNode
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
@@ -30,7 +31,7 @@ import java.time.format.FormatStyle
 
 @Composable
 fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
-    val (fountain, setFountain) = remember { mutableStateOf<Fountain?>(null) }
+    val (fountain, setFountain) = remember { mutableStateOf<ParsedOverpassNode?>(null) }
 
     LaunchedEffect(fountainId) {
         if (fountainId == null) {
@@ -44,7 +45,7 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
     fun onFountainProblem() {
         var uri = KnownUris.help("corregir")
         if (fountain != null) {
-            uri += "&lat=${fountain.location.latitude}&lng=${fountain.location.longitude}"
+            uri += "&lat=${fountain.geopoint.latitude}&lng=${fountain.geopoint.longitude}"
         }
         uriHandler.openUri(uri)
     }
@@ -70,10 +71,11 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
             if (fountain == null) {
                 NoFountain()
             } else {
-                FountainDetail(
-                    fountain = fountain,
-                    onFountainProblem = ::onFountainProblem,
-                )
+                Text(fountain.name)
+//                FountainDetail(
+//                    fountain = fountain,
+//                    onFountainProblem = ::onFountainProblem,
+//                )
             }
         }
     }

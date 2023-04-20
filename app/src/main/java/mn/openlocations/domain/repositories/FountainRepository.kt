@@ -2,9 +2,9 @@ package mn.openlocations.domain.repositories
 
 import mn.openlocations.data.datasources.FountainDataSource
 import mn.openlocations.data.datasources.StoredAreasDataSource
-import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
+import mn.openlocations.domain.models.ParsedOverpassNode
 import mn.openlocations.domain.models.intoDomain
 
 class FountainRepository {
@@ -21,5 +21,5 @@ class FountainRepository {
         )?.intoDomain()
     }
 
-    fun get(fountainId: String): Fountain? = dataSource.get(fountainId)?.intoDomain()
+    fun get(fountainId: String): ParsedOverpassNode? = dataSource.get(fountainId)?.intoDomain()
 }

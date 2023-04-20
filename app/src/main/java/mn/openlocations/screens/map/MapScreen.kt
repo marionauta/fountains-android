@@ -32,7 +32,11 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.R
 import mn.openlocations.domain.models.Fountain
+import mn.openlocations.domain.models.FountainNode
+import mn.openlocations.domain.models.Geopoint
 import mn.openlocations.domain.models.Location
+import mn.openlocations.domain.models.ParsedOverpassNode
+import mn.openlocations.domain.models.RestroomNode
 import mn.openlocations.domain.producers.produceFountains
 import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.fountain.FountainDetailScreen
@@ -144,7 +148,7 @@ fun MapScreen() {
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
 private fun Map(
-    fountains: List<Fountain>,
+    fountains: List<ParsedOverpassNode>,
     setBounds: (LatLngBounds) -> Unit,
     onMarkerClick: (Fountain) -> Unit,
 ) {
@@ -197,21 +201,35 @@ private fun Map(
             }
         }
         for (fountain in fountains) {
-            Marker(
-                state = MarkerState(position = fountain.location.position),
-                title = fountain.name,
-                icon = fountainIcon,
-                anchor = Offset(.5f, .5f),
-                onClick = {
-                    onMarkerClick(fountain)
-                    return@Marker true
-                },
-            )
+            when (fountain) {
+                is FountainNode -> Marker(
+                    state = MarkerState(position = fountain.geopoint.position),
+                    title = fountain.name,
+                    icon = fountainIcon,
+                    anchor = Offset(.5f, .5f),
+                    onClick = {
+//                    onMarkerClick(fountain)
+                        return@Marker true
+                    },
+                )
+                is RestroomNode -> Marker(
+                    state = MarkerState(position = fountain.geopoint.position),
+                    title = fountain.name,
+                    anchor = Offset(.5f, .5f),
+                    onClick = {
+//                    onMarkerClick(fountain)
+                        return@Marker true
+                    },
+                )
+            }
         }
     }
 }
 
 private val Location.position: LatLng
+    get() = LatLng(latitude, longitude)
+
+private val Geopoint.position: LatLng
     get() = LatLng(latitude, longitude)
 
 private val LatLng.location: Location
