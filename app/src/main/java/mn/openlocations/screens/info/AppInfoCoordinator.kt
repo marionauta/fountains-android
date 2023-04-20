@@ -47,7 +47,7 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
             title = stringResource(R.string.app_info_website_title),
             content = stringResource(R.string.app_info_website_content),
             onClick = {
-                uriHandler.openUri(KnownUris.website)
+                uriHandler.openUri(KnownUris.website())
             },
         ),
         AppInfo(
