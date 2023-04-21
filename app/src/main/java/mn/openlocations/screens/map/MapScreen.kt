@@ -150,7 +150,7 @@ fun MapScreen() {
 private fun Map(
     fountains: List<ParsedOverpassNode>,
     setBounds: (LatLngBounds) -> Unit,
-    onMarkerClick: (Fountain) -> Unit,
+    onMarkerClick: (ParsedOverpassNode) -> Unit,
 ) {
     val fineLocationPermission =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -209,7 +209,7 @@ private fun Map(
                     icon = fountainIcon,
                     anchor = Offset(.5f, .5f),
                     onClick = {
-//                    onMarkerClick(fountain)
+                    onMarkerClick(fountain)
                         return@Marker true
                     },
                 )
@@ -219,7 +219,7 @@ private fun Map(
                     icon = restroomIcon,
                     anchor = Offset(.5f, .5f),
                     onClick = {
-//                    onMarkerClick(fountain)
+                    onMarkerClick(fountain)
                         return@Marker true
                     },
                 )

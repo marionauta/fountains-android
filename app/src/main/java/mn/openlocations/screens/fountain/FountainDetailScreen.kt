@@ -6,6 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -19,7 +20,9 @@ import kotlinx.datetime.toJavaLocalDate
 import mn.openlocations.R
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.Fountain
+import mn.openlocations.domain.models.FountainNode
 import mn.openlocations.domain.models.ParsedOverpassNode
+import mn.openlocations.domain.models.RestroomNode
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
@@ -71,11 +74,10 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
             if (fountain == null) {
                 NoFountain()
             } else {
-                Text(fountain.name)
-//                FountainDetail(
-//                    fountain = fountain,
-//                    onFountainProblem = ::onFountainProblem,
-//                )
+                FountainDetail(
+                    node = fountain,
+                    onFountainProblem = ::onFountainProblem,
+                )
             }
         }
     }
@@ -91,51 +93,67 @@ private fun NoFountain() {
 }
 
 @Composable
-private fun FountainDetail(fountain: Fountain, onFountainProblem: () -> Unit) {
-    val imageUrl by produceMapillaryImageUrl(mapillaryId = fountain.properties.mapillaryId)
+private fun FountainDetail(node: ParsedOverpassNode, onFountainProblem: () -> Unit) {
+    val imageUrl by produceMapillaryImageUrl(mapillaryId = node.mapillaryId)
+    var loadingImage by rememberSaveable { mutableStateOf(false) }
 
     LazyColumn {
         if (imageUrl != null) {
             item {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = stringResource(R.string.fountain_detail_photo_description),
-                    contentScale = ContentScale.Crop,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp),
-                )
-                Divider()
+                ) {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = stringResource(R.string.fountain_detail_photo_description),
+                        onLoading = { loadingImage = true },
+                        onSuccess = { loadingImage = false },
+                        onError = { loadingImage = false },
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                    if (loadingImage) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
-        item {
-            PropertyRow(
-                name = stringResource(R.string.fountain_detail_bottle_title),
-                description = stringResource(R.string.fountain_detail_bottle_description),
-                value = fountain.properties.bottle,
-            )
-            Divider()
-        }
-        item {
-            PropertyRow(
-                name = stringResource(R.string.fountain_detail_wheelchair_title),
-                description = stringResource(R.string.fountain_detail_wheelchair_description),
-                value = fountain.properties.wheelchair,
-            )
-            Divider()
-        }
-        if (fountain.properties.checkDate != null) {
-            item {
-                PropertyRow(
-                    name = stringResource(R.string.fountain_detail_check_date_title),
-                    description = stringResource(R.string.fountain_detail_check_date_description),
-                    value = fountain.properties.checkDate.let {
-                        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        it.toJavaLocalDate().format(formatter)
-                    },
-                )
-                Divider()
+        when (node) {
+            is FountainNode -> {
+                item {
+                    PropertyRow(
+                        name = stringResource(R.string.fountain_detail_bottle_title),
+                        description = stringResource(R.string.fountain_detail_bottle_description),
+                        value = node.properties.bottle,
+                    )
+                    Divider()
+                }
+                item {
+                    PropertyRow(
+                        name = stringResource(R.string.fountain_detail_wheelchair_title),
+                        description = stringResource(R.string.fountain_detail_wheelchair_description),
+                        value = node.properties.wheelchair,
+                    )
+                    Divider()
+                }
+                if (node.properties.checkDate != null) {
+                    item {
+                        PropertyRow(
+                            name = stringResource(R.string.fountain_detail_check_date_title),
+                            description = stringResource(R.string.fountain_detail_check_date_description),
+                            value = node.properties.checkDate!!.let {
+                                val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+                                it.toJavaLocalDate().format(formatter)
+                            },
+                        )
+                        Divider()
+                    }
+                }
             }
+            is RestroomNode -> {}
         }
         item {
             Column(
