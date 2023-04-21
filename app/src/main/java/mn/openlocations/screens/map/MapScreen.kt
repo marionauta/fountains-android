@@ -193,7 +193,8 @@ private fun Map(
             mapStyleOptions = mapStyleOptions(),
         ),
     ) {
-        val fountainIcon = bitmapDescriptorFromVector(context, vectorResId = R.drawable.marker)
+        val fountainIcon = bitmapDescriptorFromVector(context, vectorResId = R.drawable.marker_fountain)
+        val restroomIcon = bitmapDescriptorFromVector(context, vectorResId = R.drawable.marker_restroom)
 
         MapEffect(Unit) { map ->
             map.setOnCameraIdleListener {
@@ -215,6 +216,7 @@ private fun Map(
                 is RestroomNode -> Marker(
                     state = MarkerState(position = fountain.geopoint.position),
                     title = fountain.name,
+                    icon = restroomIcon,
                     anchor = Offset(.5f, .5f),
                     onClick = {
 //                    onMarkerClick(fountain)
