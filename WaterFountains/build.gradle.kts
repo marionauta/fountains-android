@@ -7,7 +7,7 @@ plugins {
     id("io.realm.kotlin") version "1.6.0"
 }
 
-val ktorVersion = "2.1.3"
+val ktorVersion = "2.3.1"
 
 kotlin {
     android {
