@@ -40,6 +40,7 @@ import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
+import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
 import java.time.format.DateTimeFormatter
@@ -104,11 +105,14 @@ fun MapScreen() {
         )
     }) {
         Box(modifier = Modifier.padding(it)) {
-            Map(
-                fountains = fountains?.fountains ?: emptyList(),
-                setBounds = setBounds,
-                onMarkerClick = { fountain -> selectedFountainId = fountain.id },
-            )
+            Column {
+                BannerView()
+                Map(
+                    fountains = fountains?.fountains ?: emptyList(),
+                    setBounds = setBounds,
+                    onMarkerClick = { fountain -> selectedFountainId = fountain.id },
+                )
+            }
             if (fountainsResult.tooFarAway) {
                 Text(
                     text = stringResource(R.string.map_too_far_away),
