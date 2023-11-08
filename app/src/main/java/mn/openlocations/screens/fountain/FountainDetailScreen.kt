@@ -1,11 +1,30 @@
 package mn.openlocations.screens.fountain
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -15,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import kotlinx.datetime.toJavaLocalDate
 import mn.openlocations.R
 import mn.openlocations.domain.models.BasicValue
@@ -24,6 +44,7 @@ import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.ui.theme.Typography
+import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.EmptyFallback
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -91,18 +112,23 @@ private fun NoFountain() {
 @Composable
 private fun FountainDetail(fountain: Fountain, onFountainProblem: () -> Unit) {
     val imageUrl by produceMapillaryImageUrl(mapillaryId = fountain.properties.mapillaryId)
+    var isLoadingImage by rememberSaveable { mutableStateOf(false) }
 
     LazyColumn {
         if (imageUrl != null) {
             item {
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = stringResource(R.string.fountain_detail_photo_description),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = stringResource(R.string.fountain_detail_photo_description),
+                        onState = { isLoadingImage = it is AsyncImagePainter.State.Loading },
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                    )
+                    AppBarLoader(isLoading = isLoadingImage)
+                }
                 Divider()
             }
         }
