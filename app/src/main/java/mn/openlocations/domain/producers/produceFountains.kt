@@ -31,7 +31,7 @@ fun produceFountains(bounds: Pair<Location, Location>?): State<ProduceFountainsR
             bounds.second.longitude,
             bounds.second.latitude,
         )
-        if (d >= 5_000) {
+        if (d >= 40_000) {
             value = value.copy(tooFarAway = true)
             return@produceState
         }

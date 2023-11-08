@@ -1,10 +1,11 @@
 package mn.openlocations.screens.map
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Bitmap
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
@@ -13,19 +14,23 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.*
+import com.google.maps.android.clustering.Cluster
+import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.compose.*
+import com.google.maps.android.compose.clustering.Clustering
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -38,6 +43,7 @@ import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
+import mn.openlocations.ui.theme.ColorPrimary
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
@@ -182,6 +188,12 @@ private fun Map(
         }
     }
 
+    val fountainIcon = painterResource(id = R.drawable.marker)
+    var clusterItems by rememberSaveable { mutableStateOf<List<FountainClusterItem>>(emptyList()) }
+    LaunchedEffect(fountains) {
+        clusterItems = fountains.map { FountainClusterItem(it) }
+    }
+
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
@@ -193,25 +205,62 @@ private fun Map(
             mapStyleOptions = mapStyleOptions(),
         ),
     ) {
-        val fountainIcon = bitmapDescriptorFromVector(context, vectorResId = R.drawable.marker)
-
         MapEffect(Unit) { map ->
             map.setOnCameraIdleListener {
                 setBounds(map.projection.visibleRegion.latLngBounds)
             }
         }
-        for (fountain in fountains) {
-            Marker(
-                state = MarkerState(position = fountain.location.position),
-                title = fountain.name,
-                icon = fountainIcon,
-                anchor = Offset(.5f, .5f),
-                onClick = {
-                    onMarkerClick(fountain)
-                    return@Marker true
-                },
+        Clustering(
+            items = clusterItems,
+            onClusterClick = { true }, // Do nothing
+            onClusterItemClick = {
+                onMarkerClick(it.fountain)
+                return@Clustering true
+            },
+            clusterContent = { cluster ->
+                ClusterContent(cluster = cluster)
+            },
+            clusterItemContent = {
+                Image(fountainIcon, it.title)
+            },
+        )
+    }
+}
+
+@Composable
+private fun <T : ClusterItem> ClusterContent(cluster: Cluster<T>) {
+    Surface(
+        Modifier.size(30.dp),
+        shape = CircleShape,
+        color = ColorPrimary,
+        contentColor = Color.White,
+        border = BorderStroke(1.dp, Color.White)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = "%,d".format(cluster.size),
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+private class FountainClusterItem(val fountain: Fountain) : ClusterItem {
+    override fun getPosition(): LatLng {
+        return fountain.location.position
+    }
+
+    override fun getTitle(): String {
+        return fountain.name
+    }
+
+    override fun getSnippet(): String? {
+        return null
+    }
+
+    override fun getZIndex(): Float? {
+        return null
     }
 }
 
@@ -230,16 +279,3 @@ private val Instant.readable: String
         val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
         return dateTime.format(formatter)
     }
-
-private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-    val drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
-    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-    val bm = Bitmap.createBitmap(
-        drawable.intrinsicWidth,
-        drawable.intrinsicHeight,
-        Bitmap.Config.ARGB_8888,
-    )
-    val canvas = android.graphics.Canvas(bm)
-    drawable.draw(canvas)
-    return BitmapDescriptorFactory.fromBitmap(bm)
-}
