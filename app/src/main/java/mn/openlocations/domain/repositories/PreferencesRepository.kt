@@ -3,45 +3,30 @@ package mn.openlocations.domain.repositories
 import android.content.Context
 import mn.openlocations.BuildConfig
 
-class PreferencesRepository(private val context: Context) {
+class PreferencesRepository(context: Context) {
     companion object {
         private const val preferencesKey = "${BuildConfig.APPLICATION_ID}.PREFERENCES"
         private const val adsKey = "${BuildConfig.APPLICATION_ID}.ADS.${BuildConfig.VERSION_CODE}"
         private const val mapClusterKey = "${BuildConfig.APPLICATION_ID}.CONFIG.CLUSTER"
-        private const val lastAreaIdKey = "${BuildConfig.APPLICATION_ID}.LAST_AREA_ID"
     }
+
+    private val preferences = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
 
     fun getShowAds(): Boolean {
         if (BuildConfig.DEBUG) {
             return false
         }
-        val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
-        return prefs.getBoolean(adsKey, true)
+        return preferences.getBoolean(adsKey, true)
     }
 
     fun getMapClusteringEnabled(): Boolean {
-        val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
-        return prefs.getBoolean(mapClusterKey, false)
+        return preferences.getBoolean(mapClusterKey, false)
     }
 
     fun toggleShowAds() {
-        val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE) ?: return
-        val current = prefs.getBoolean(adsKey, true)
-        with(prefs.edit()) {
+        val current = preferences.getBoolean(adsKey, true)
+        with(preferences.edit()) {
             putBoolean(adsKey, !current)
-            apply()
-        }
-    }
-
-    fun getLastAreaId(): String? {
-        val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
-        return prefs?.getString(lastAreaIdKey, null)
-    }
-
-    fun setLastAreaId(value: String?) {
-        val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
-        with(prefs.edit()) {
-            putString(lastAreaIdKey, value)
             apply()
         }
     }
