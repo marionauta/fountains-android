@@ -1,6 +1,8 @@
 package mn.openlocations.screens.map
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -22,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -38,6 +42,7 @@ import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.R
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.Location
+import mn.openlocations.domain.producers.mapClusteringEnabledProducer
 import mn.openlocations.domain.producers.produceFountains
 import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.fountain.FountainDetailScreen
@@ -188,9 +193,14 @@ private fun Map(
         }
     }
 
+    val clusteringEnabled by mapClusteringEnabledProducer()
+
     val fountainIcon = painterResource(id = R.drawable.marker)
     var clusterItems by rememberSaveable { mutableStateOf<List<FountainClusterItem>>(emptyList()) }
     LaunchedEffect(fountains) {
+        if (!clusteringEnabled) {
+            return@LaunchedEffect
+        }
         clusterItems = fountains.map { FountainClusterItem(it) }
     }
 
@@ -210,20 +220,36 @@ private fun Map(
                 setBounds(map.projection.visibleRegion.latLngBounds)
             }
         }
-        Clustering(
-            items = clusterItems,
-            onClusterClick = { true }, // Do nothing
-            onClusterItemClick = {
-                onMarkerClick(it.fountain)
-                return@Clustering true
-            },
-            clusterContent = { cluster ->
-                ClusterContent(cluster = cluster)
-            },
-            clusterItemContent = {
-                Image(fountainIcon, it.title)
-            },
-        )
+        if (clusteringEnabled) {
+            Clustering(
+                items = clusterItems,
+                onClusterClick = { true }, // Do nothing
+                onClusterItemClick = {
+                    onMarkerClick(it.fountain)
+                    return@Clustering true
+                },
+                clusterContent = { cluster ->
+                    ClusterContent(cluster = cluster)
+                },
+                clusterItemContent = {
+                    Image(fountainIcon, it.title)
+                },
+            )
+        } else {
+            val fountainBitmapIcon = bitmapDescriptorFromVector(context, R.drawable.marker)
+            for (fountain in fountains) {
+                Marker(
+                    state = MarkerState(position = fountain.location.position),
+                    title = fountain.name,
+                    icon = fountainBitmapIcon,
+                    anchor = Offset(.5f, .5f),
+                    onClick = {
+                        onMarkerClick(fountain)
+                        return@Marker true
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -279,3 +305,17 @@ private val Instant.readable: String
         val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
         return dateTime.format(formatter)
     }
+
+
+private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+    val drawable = ContextCompat.getDrawable(context, vectorResId) ?: return null
+    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+    val bm = Bitmap.createBitmap(
+        drawable.intrinsicWidth,
+        drawable.intrinsicHeight,
+        Bitmap.Config.ARGB_8888,
+    )
+    val canvas = android.graphics.Canvas(bm)
+    drawable.draw(canvas)
+    return BitmapDescriptorFactory.fromBitmap(bm)
+}

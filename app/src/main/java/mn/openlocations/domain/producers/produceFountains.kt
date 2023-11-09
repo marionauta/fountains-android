@@ -2,6 +2,7 @@ package mn.openlocations.domain.producers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
@@ -20,6 +21,8 @@ data class ProduceFountainsResult(
 
 @Composable
 fun produceFountains(bounds: Pair<Location, Location>?): State<ProduceFountainsResult> {
+    val clusteringEnabled by mapClusteringEnabledProducer()
+    val tooFarDistance = if (clusteringEnabled) 40_000 else 4_000
     val repository = FountainRepository()
     return produceState(initialValue = ProduceFountainsResult(isLoading = true), bounds) {
         if (bounds == null) {
@@ -31,7 +34,7 @@ fun produceFountains(bounds: Pair<Location, Location>?): State<ProduceFountainsR
             bounds.second.longitude,
             bounds.second.latitude,
         )
-        if (d >= 40_000) {
+        if (d >= tooFarDistance) {
             value = value.copy(tooFarAway = true)
             return@produceState
         }

@@ -7,6 +7,7 @@ class PreferencesRepository(private val context: Context) {
     companion object {
         private const val preferencesKey = "${BuildConfig.APPLICATION_ID}.PREFERENCES"
         private const val adsKey = "${BuildConfig.APPLICATION_ID}.ADS.${BuildConfig.VERSION_CODE}"
+        private const val mapClusterKey = "${BuildConfig.APPLICATION_ID}.CONFIG.CLUSTER"
         private const val lastAreaIdKey = "${BuildConfig.APPLICATION_ID}.LAST_AREA_ID"
     }
 
@@ -15,7 +16,12 @@ class PreferencesRepository(private val context: Context) {
             return false
         }
         val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
-        return prefs?.getBoolean(adsKey, true) ?: true
+        return prefs.getBoolean(adsKey, true)
+    }
+
+    fun getMapClusteringEnabled(): Boolean {
+        val prefs = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
+        return prefs.getBoolean(mapClusterKey, false)
     }
 
     fun toggleShowAds() {
