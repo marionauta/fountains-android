@@ -16,39 +16,47 @@ fun RowItem(
     content: String? = null,
     contentIsFaded: Boolean = true,
     hasTopDivider: Boolean = true,
+    trailingContent: (@Composable () -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     Column {
         if (hasTopDivider) {
             Divider()
         }
-        Column(
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clickable(onClick = onClick)
                 .padding(all = 16.dp)
                 .fillMaxWidth(),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (titleIcon != null) {
-                    Icon(
-                        imageVector = titleIcon,
-                        contentDescription = null,
-                        modifier = Modifier.size(15.dp),
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (titleIcon != null) {
+                        Icon(
+                            imageVector = titleIcon,
+                            contentDescription = null,
+                            modifier = Modifier.size(15.dp),
+                        )
+                    }
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.subtitle1,
                     )
                 }
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.subtitle1,
-                )
+                if (content != null) {
+                    Text(
+                        text = content,
+                        style = MaterialTheme.typography.caption,
+                        color = if (contentIsFaded) LocalContentColor.current.copy(alpha = .5f) else LocalContentColor.current
+                    )
+                }
             }
-            if (content != null) {
-                Text(
-                    text = content,
-                    style = MaterialTheme.typography.caption,
-                    color = if (contentIsFaded) LocalContentColor.current.copy(alpha = .5f) else LocalContentColor.current
-                )
+            if (trailingContent != null) {
+                trailingContent()
             }
         }
     }

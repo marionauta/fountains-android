@@ -23,8 +23,10 @@
     <string name="property_value_limited">Limitado</string>
     <string name="property_value_yes">Sí</string>
     <string name="property_value_unknown">Desconocido</string>
-    <string name="app_info_menu_item">Info de la app</string>
-    <string name="app_info_title">Información de la app</string>
+    <string name="app_info_menu_item">Ajustes</string>
+    <string name="app_info_title">Ajustes</string>
+    <string name="app_info_map_clustering_title">Agrupación de marcadores</string>
+    <string name="app_info_map_clustering_content">Funcionalidad experimental</string>
     <string name="app_info_easteregg_title">Tonto</string>
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>

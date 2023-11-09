@@ -199,6 +199,7 @@ private fun Map(
     var clusterItems by rememberSaveable { mutableStateOf<List<FountainClusterItem>>(emptyList()) }
     LaunchedEffect(fountains) {
         if (!clusteringEnabled) {
+            clusterItems = emptyList()
             return@LaunchedEffect
         }
         clusterItems = fountains.map { FountainClusterItem(it) }

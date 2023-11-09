@@ -1,6 +1,9 @@
 package mn.openlocations.domain.repositories
 
 import android.content.Context
+import com.fredporciuncula.flow.preferences.FlowSharedPreferences
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import mn.openlocations.BuildConfig
 
 class PreferencesRepository(context: Context) {
@@ -11,22 +14,31 @@ class PreferencesRepository(context: Context) {
     }
 
     private val preferences = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
+    private val flowing = FlowSharedPreferences(preferences)
 
-    fun getShowAds(): Boolean {
+    fun getShowAds(): Flow<Boolean> {
         if (BuildConfig.DEBUG) {
-            return false
+            return flow { emit(false) }
         }
-        return preferences.getBoolean(adsKey, true)
-    }
-
-    fun getMapClusteringEnabled(): Boolean {
-        return preferences.getBoolean(mapClusterKey, false)
+        return flowing.getBoolean(adsKey, true).asFlow()
     }
 
     fun toggleShowAds() {
         val current = preferences.getBoolean(adsKey, true)
         with(preferences.edit()) {
             putBoolean(adsKey, !current)
+            apply()
+        }
+    }
+
+    fun getMapClusteringEnabled(): Flow<Boolean> {
+        return flowing.getBoolean(mapClusterKey, false).asFlow()
+    }
+
+    fun toggleMapClustering() {
+        val current = preferences.getBoolean(mapClusterKey, false)
+        with(preferences.edit()) {
+            putBoolean(mapClusterKey, !current)
             apply()
         }
     }
