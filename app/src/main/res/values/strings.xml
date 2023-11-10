@@ -10,6 +10,8 @@
 
     <string name="app_info_menu_item">Settings</string>
     <string name="app_info_title">Settings</string>
+    <string name="app_info_max_distance_title">Min zoom: %.0fkm</string>
+    <string name="app_info_max_distance_content">Might impact performance on older devices</string>
     <string name="app_info_map_clustering_title">Map clustering</string>
     <string name="app_info_map_clustering_content">Experimental feature</string>
     <string name="app_info_website_title">Website</string>

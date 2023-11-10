@@ -21,8 +21,7 @@ data class ProduceFountainsResult(
 
 @Composable
 fun produceFountains(bounds: Pair<Location, Location>?): State<ProduceFountainsResult> {
-    val clusteringEnabled by mapClusteringEnabledProducer()
-    val tooFarDistance = if (clusteringEnabled) 40_000 else 4_000
+    val tooFarDistance by mapMaxDistanceProducer()
     val repository = FountainRepository()
     return produceState(initialValue = ProduceFountainsResult(isLoading = true), bounds) {
         if (bounds == null) {

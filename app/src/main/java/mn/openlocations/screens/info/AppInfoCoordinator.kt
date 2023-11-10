@@ -10,12 +10,15 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -26,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.producers.mapClusteringEnabledProducer
+import mn.openlocations.domain.producers.mapMaxDistanceProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.ui.views.Modal
@@ -46,16 +50,37 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
     val context = LocalContext.current
     val repository = PreferencesRepository(context)
     val isClusteringEnabled by mapClusteringEnabledProducer()
+    val mapMaxDistance by mapMaxDistanceProducer()
+    var localMapMaxDistance by rememberSaveable { mutableFloatStateOf(4f) }
+    LaunchedEffect(mapMaxDistance) {
+        localMapMaxDistance = mapMaxDistance / 1000
+    }
 
     fun toggleSettings() {
         repository.toggleShowAds()
         tapped = 0
     }
 
+    fun setMapMaxDistance(km: Float) {
+        repository.setMapMaxDistance(km * 1000)
+    }
+
     val infos = listOf(
         AppInfo(
-            title = stringResource(id = R.string.app_info_map_clustering_title),
-            content = stringResource(id = R.string.app_info_map_clustering_content),
+            title = stringResource(R.string.app_info_max_distance_title, localMapMaxDistance),
+            content = stringResource(R.string.app_info_max_distance_content),
+            bottom = {
+                Slider(
+                    value = localMapMaxDistance,
+                    valueRange = 4f..40f,
+                    onValueChange = { localMapMaxDistance = it },
+                    onValueChangeFinished = { setMapMaxDistance(km = localMapMaxDistance) },
+                )
+            }
+        ),
+        AppInfo(
+            title = stringResource(R.string.app_info_map_clustering_title),
+            content = stringResource(R.string.app_info_map_clustering_content),
             trailing = {
                 Checkbox(
                     checked = isClusteringEnabled,
@@ -133,6 +158,7 @@ private fun AppInfoScreen(infos: List<AppInfo>) {
                 content = info.content,
                 contentIsFaded = false,
                 trailingContent = info.trailing,
+                bottomContent = info.bottom,
                 hasTopDivider = index > 0,
                 onClick = info.onClick,
             )
@@ -144,6 +170,7 @@ private data class AppInfo(
     val title: String,
     val content: String,
     val trailing: @Composable () -> Unit = {},
+    val bottom: @Composable () -> Unit = {},
     val onClick: () -> Unit = {},
 )
 

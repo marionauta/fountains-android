@@ -17,6 +17,7 @@ fun RowItem(
     contentIsFaded: Boolean = true,
     hasTopDivider: Boolean = true,
     trailingContent: (@Composable () -> Unit)? = null,
+    bottomContent: (@Composable () -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     Column {
@@ -53,6 +54,9 @@ fun RowItem(
                         style = MaterialTheme.typography.caption,
                         color = if (contentIsFaded) LocalContentColor.current.copy(alpha = .5f) else LocalContentColor.current
                     )
+                }
+                if (bottomContent != null) {
+                    bottomContent()
                 }
             }
             if (trailingContent != null) {

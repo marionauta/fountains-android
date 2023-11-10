@@ -11,6 +11,7 @@ class PreferencesRepository(context: Context) {
         private const val preferencesKey = "${BuildConfig.APPLICATION_ID}.PREFERENCES"
         private const val adsKey = "${BuildConfig.APPLICATION_ID}.ADS.${BuildConfig.VERSION_CODE}"
         private const val mapClusterKey = "${BuildConfig.APPLICATION_ID}.CONFIG.CLUSTER"
+        private const val mapMaxDistanceKey = "${BuildConfig.APPLICATION_ID}.CONFIG.MAP_MAX_DISTANCE"
     }
 
     private val preferences = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
@@ -39,6 +40,17 @@ class PreferencesRepository(context: Context) {
         val current = preferences.getBoolean(mapClusterKey, false)
         with(preferences.edit()) {
             putBoolean(mapClusterKey, !current)
+            apply()
+        }
+    }
+
+    fun getMapMaxDistance(): Flow<Float> {
+        return flowing.getFloat(mapMaxDistanceKey, 4_000f).asFlow()
+    }
+
+    fun setMapMaxDistance(distance: Float) {
+        with(preferences.edit()) {
+            putFloat(mapMaxDistanceKey, distance)
             apply()
         }
     }

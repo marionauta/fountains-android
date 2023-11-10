@@ -25,6 +25,8 @@
     <string name="property_value_unknown">Desconocido</string>
     <string name="app_info_menu_item">Ajustes</string>
     <string name="app_info_title">Ajustes</string>
+    <string name="app_info_max_distance_title">Zoom mínimo: %.0fkm</string>
+    <string name="app_info_max_distance_content">Puede afectar al rendimiento en dispositivos antiguos</string>
     <string name="app_info_map_clustering_title">Agrupación de marcadores</string>
     <string name="app_info_map_clustering_content">Funcionalidad experimental</string>
     <string name="app_info_easteregg_title">Tonto</string>
