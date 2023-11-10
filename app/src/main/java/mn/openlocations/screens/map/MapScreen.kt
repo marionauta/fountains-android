@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,7 +52,6 @@ import mn.openlocations.ui.theme.ColorPrimary
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
-import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
 import mn.openlocations.ui.views.NeedsLocationBannerView
 import java.time.format.DateTimeFormatter
@@ -101,19 +99,11 @@ fun MapScreen() {
                     isLoading = isLoadingFountains,
                     modifier = Modifier.padding(end = 16.dp),
                 )
-                IconButton(onClick = { isMenuShown = true }) {
+                IconButton(onClick = { isAppInfoOpen = true }) {
                     Icon(
-                        Icons.Rounded.MoreVert,
-                        contentDescription = stringResource(R.string.map_more_menu)
+                        Icons.Rounded.Settings,
+                        contentDescription = stringResource(R.string.app_info_title),
                     )
-                }
-                DropdownMenu(expanded = isMenuShown, onDismissRequest = { isMenuShown = false }) {
-                    MenuItem(
-                        imageVector = Icons.Rounded.Settings,
-                        title = stringResource(R.string.app_info_menu_item),
-                    ) {
-                        isAppInfoOpen = true
-                    }
                 }
             },
         )

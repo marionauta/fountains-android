@@ -8,7 +8,6 @@
     <string name="property_value_yes">Yes</string>
     <string name="property_value_unknown">Unknown</string>
 
-    <string name="app_info_menu_item">Settings</string>
     <string name="app_info_title">Settings</string>
     <string name="app_info_max_distance_title">Min zoom: %.0fkm</string>
     <string name="app_info_max_distance_content">Might impact performance on older devices</string>
@@ -35,7 +34,6 @@
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
     <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 
-    <string name="map_more_menu">Show menu</string>
     <string name="map_too_far_away">Too far away. Please zoom in.</string>
     <string name="map_location_disabled">Location services are disabled. Enable it to center you on the map.</string>
 </resources>
