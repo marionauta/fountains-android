@@ -11,7 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -109,7 +109,7 @@ fun MapScreen() {
                 }
                 DropdownMenu(expanded = isMenuShown, onDismissRequest = { isMenuShown = false }) {
                     MenuItem(
-                        imageVector = Icons.Rounded.Star,
+                        imageVector = Icons.Rounded.Settings,
                         title = stringResource(R.string.app_info_menu_item),
                     ) {
                         isAppInfoOpen = true
