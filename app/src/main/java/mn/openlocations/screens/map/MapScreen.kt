@@ -120,15 +120,21 @@ fun MapScreen() {
                 )
             }
             if (fountainsResult.tooFarAway) {
-                Text(
-                    text = stringResource(R.string.map_too_far_away),
-                    color = MaterialTheme.colors.onPrimary,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .offset(y = 100.dp)
-                        .background(Color.Black.copy(alpha = .75f))
-                        .padding(12.dp),
-                )
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.map_too_far_away),
+                        color = MaterialTheme.colors.onPrimary,
+                        modifier = Modifier
+                            .offset(y = 100.dp)
+                            .background(Color.Black.copy(alpha = .75f))
+                            .padding(12.dp),
+                    )
+                }
             }
             Modal(
                 isOpen = selectedFountainId != null,

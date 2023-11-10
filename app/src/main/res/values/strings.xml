@@ -34,6 +34,6 @@
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
     <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 
-    <string name="map_too_far_away">Too far away. Please zoom in.</string>
+    <string name="map_too_far_away">Too far away. Please zoom in or edit zoom in settings.</string>
     <string name="map_location_disabled">Location services are disabled. Enable it to center you on the map.</string>
 </resources>
