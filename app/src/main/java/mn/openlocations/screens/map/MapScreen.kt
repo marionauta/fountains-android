@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.*
@@ -54,6 +55,7 @@ import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.MenuItem
 import mn.openlocations.ui.views.Modal
+import mn.openlocations.ui.views.NeedsLocationBannerView
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -72,6 +74,7 @@ fun MapScreen() {
     fun deselectFountain() {
         selectedFountainId = null
     }
+    val (needsLocation, setNeedsLocation) = rememberSaveable { mutableStateOf(true) }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -118,9 +121,11 @@ fun MapScreen() {
         Box(modifier = Modifier.padding(it)) {
             Column {
                 BannerView()
+                NeedsLocationBannerView(isLocationEnabled = needsLocation)
                 Map(
                     fountains = fountains?.fountains ?: emptyList(),
                     setBounds = setBounds,
+                    setNeedsLocation = setNeedsLocation,
                     onMarkerClick = { fountain -> selectedFountainId = fountain.id },
                 )
             }
@@ -161,18 +166,26 @@ fun MapScreen() {
 private fun Map(
     fountains: List<Fountain>,
     setBounds: (LatLngBounds) -> Unit,
+    setNeedsLocation: (Boolean) -> Unit,
     onMarkerClick: (Fountain) -> Unit,
 ) {
     val fineLocationPermission =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
-    val coarseLocationPermission =
-        rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION)
-    val isMyLocationEnabled =
-        fineLocationPermission.status.isGranted || coarseLocationPermission.status.isGranted
+    val locationPermissions = rememberMultiplePermissionsState(
+        listOf(
+            android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        )
+    )
+    val isMyLocationEnabled = locationPermissions.permissions.any { it.status.isGranted }
+    LaunchedEffect(isMyLocationEnabled, locationPermissions) {
+        val fine = isMyLocationEnabled && !locationPermissions.shouldShowRationale
+        setNeedsLocation(fine)
+    }
 
     val zoomLevel = 15f
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(.0, .0), zoomLevel)
+        position = CameraPosition.fromLatLngZoom(LatLng(.0, .0), 2f)
     }
 
     val context = LocalContext.current
