@@ -6,7 +6,7 @@ plugins {
     id("com.android.library")
 }
 
-val ktorVersion = "2.3.1"
+val ktorVersion = "2.3.5"
 
 kotlin {
     android {
@@ -31,7 +31,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
@@ -66,9 +66,9 @@ kotlin {
 
 android {
     namespace = "mn.openlocations.shared"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
     }
 }
