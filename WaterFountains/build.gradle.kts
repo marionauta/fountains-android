@@ -2,14 +2,14 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.8.10"
+    kotlin("plugin.serialization") version "1.9.20"
     id("com.android.library")
 }
 
 val ktorVersion = "2.3.5"
 
 kotlin {
-    android {
+    androidTarget {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
