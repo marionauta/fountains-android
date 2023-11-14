@@ -4,7 +4,6 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization") version "1.8.10"
     id("com.android.library")
-    id("io.realm.kotlin") version "1.6.0"
 }
 
 val ktorVersion = "2.3.1"
@@ -37,7 +36,6 @@ kotlin {
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("io.realm.kotlin:library-base:1.6.0")
             }
         }
         val commonTest by getting
