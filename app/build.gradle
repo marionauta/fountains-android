@@ -62,9 +62,6 @@ dependencies {
     // Ads
     implementation "com.google.android.gms:play-services-ads:22.6.0"
 
-    // Storage
-    implementation("io.realm.kotlin:library-base:1.6.0")
-
     // Date Time
     implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 
