@@ -39,6 +39,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.Location
@@ -110,7 +111,7 @@ fun MapScreen() {
     }) {
         Box(modifier = Modifier.padding(it)) {
             Column {
-                BannerView()
+                BannerView(unitId = BuildConfig.ADMOB_MAP_AD_UNIT_ID)
                 NeedsLocationBannerView(isLocationEnabled = needsLocation)
                 Map(
                     fountains = fountains?.fountains ?: emptyList(),

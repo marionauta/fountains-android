@@ -18,7 +18,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
-import mn.openlocations.BuildConfig
 import mn.openlocations.domain.producers.showAdsProducer
 
 private enum class BannerViewStage {
@@ -39,7 +38,7 @@ private class BannerViewAdListener(private val onStageChanged: (BannerViewStage)
 }
 
 @Composable
-fun BannerView(unitId: String = BuildConfig.ADMOB_AD_UNIT_ID) {
+fun BannerView(unitId: String) {
     var stage by remember { mutableStateOf(BannerViewStage.Loading) }
     val showAds by showAdsProducer()
     val width = LocalConfiguration.current.screenWidthDp

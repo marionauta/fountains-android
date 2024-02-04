@@ -54,13 +54,13 @@ dependencies {
     implementation project(":WaterFountains")
 
     // Maps
-    implementation "com.google.android.gms:play-services-location:21.0.1"
+    implementation "com.google.android.gms:play-services-location:21.1.0"
     implementation "com.google.maps.android:maps-compose:4.1.1"
     implementation "com.google.maps.android:maps-compose-utils:4.1.1"
     implementation "com.google.accompanist:accompanist-permissions:0.32.0"
 
     // Ads
-    implementation "com.google.android.gms:play-services-ads:22.5.0"
+    implementation "com.google.android.gms:play-services-ads:22.6.0"
 
     // Storage
     implementation("io.realm.kotlin:library-base:1.6.0")

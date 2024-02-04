@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import kotlinx.datetime.toJavaLocalDate
+import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.Fountain
@@ -45,6 +46,7 @@ import mn.openlocations.library.parsePropertyValue
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
+import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -131,6 +133,9 @@ private fun FountainDetail(fountain: Fountain, onFountainProblem: () -> Unit) {
                 }
                 Divider()
             }
+        }
+        item {
+            BannerView(unitId = BuildConfig.ADMOB_DETAIL_AD_UNIT_ID)
         }
         item {
             PropertyRow(
