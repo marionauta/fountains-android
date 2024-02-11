@@ -20,8 +20,8 @@ kotlin {
     listOf(
         iosArm64(),
         iosSimulatorArm64(),
-        macosX64(),
-        macosArm64(),
+//        macosX64(),
+//        macosArm64(),
     ).forEach {
         it.binaries.framework {
             baseName = "WaterFountains"
