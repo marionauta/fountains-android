@@ -72,6 +72,14 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
         uriHandler.openUri(uri)
     }
 
+    fun onOpenInMaps() {
+        var uri = KnownUris.googleMaps
+        if (fountain != null) {
+            uri += "?api=1&query=${fountain.location.latitude},${fountain.location.longitude}"
+        }
+        uriHandler.openUri(uri)
+    }
+
     Scaffold(topBar = {
         TopAppBar(
             title = {
@@ -96,6 +104,7 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
                 FountainDetail(
                     fountain = fountain,
                     onFountainProblem = ::onFountainProblem,
+                    onOpenInMaps = ::onOpenInMaps,
                 )
             }
         }
@@ -112,7 +121,11 @@ private fun NoFountain() {
 }
 
 @Composable
-private fun FountainDetail(fountain: Fountain, onFountainProblem: () -> Unit) {
+private fun FountainDetail(
+    fountain: Fountain,
+    onFountainProblem: () -> Unit,
+    onOpenInMaps: () -> Unit
+) {
     val imageUrl by produceMapillaryImageUrl(mapillaryId = fountain.properties.mapillaryId)
     var isLoadingImage by rememberSaveable { mutableStateOf(false) }
 
@@ -164,6 +177,18 @@ private fun FountainDetail(fountain: Fountain, onFountainProblem: () -> Unit) {
                     },
                 )
                 Divider()
+            }
+        }
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+            ) {
+                Button(onClick = onOpenInMaps) {
+                    Text(text = stringResource(R.string.fountain_detail_open_maps_button))
+                }
             }
         }
         item {

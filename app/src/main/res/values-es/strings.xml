@@ -31,4 +31,5 @@
     <string name="app_info_easteregg_title">Tonto</string>
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>
+    <string name="fountain_detail_open_maps_button">Abrir en Maps</string>
 </resources>
