@@ -277,7 +277,7 @@ private fun Map(
             val fountainBitmapIcon = bitmapDescriptorFromVector(context, R.drawable.marker)
             for (fountain in fountains) {
                 Marker(
-                    state = MarkerState(position = fountain.location.position),
+                    state = remember { MarkerState(position = fountain.location.position) },
                     title = fountain.name,
                     icon = fountainBitmapIcon,
                     anchor = Offset(.5f, .5f),
