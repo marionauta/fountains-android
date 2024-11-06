@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,11 +8,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
-
-val compose_version = "1.5.4"
-val compose_ui_version = "1.6.1"
-val ktor_version = "2.3.8"
-val kotlin_version = "1.9.20"
 
 kotlin {
     androidTarget {
@@ -41,34 +35,28 @@ kotlin {
             implementation(projects.openLocationsShared)
 
             // Maps
-            implementation("com.google.android.gms:play-services-location:21.3.0")
-            implementation("com.google.android.gms:play-services-location:21.3.0")
-            implementation("com.google.maps.android:maps-compose:6.1.1")
-            implementation("com.google.maps.android:maps-compose-utils:6.1.1")
-            implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+            implementation(libs.play.services.location)
+            implementation(libs.maps.compose)
+            implementation(libs.maps.compose.utils)
+            implementation(libs.accompanist.permissions)
 
             // Ads
-            implementation("com.google.android.gms:play-services-ads:23.3.0")
+            implementation(libs.play.services.ads)
 
             // Date Time
             implementation(libs.kotlinx.datetime)
 
             // Images
-            implementation("io.coil-kt:coil-compose:2.5.0")
+            implementation(libs.coil.compose)
 
-            implementation("androidx.core:core-ktx:1.12.0")
-            implementation("androidx.compose.foundation:foundation:1.6.2")
-            implementation("androidx.compose.ui:ui:$compose_ui_version")
-            implementation("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
-            implementation("androidx.compose.material:material:$compose_ui_version")
-            implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-            implementation("androidx.navigation:navigation-compose:2.7.7")
-            implementation("androidx.activity:activity-compose:1.8.2")
+            // Network
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.android)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
-            implementation("com.fredporciuncula:flow-preferences:1.9.1")
+
+            implementation(libs.androidx.navigation.compose)
+            implementation(libs.flow.preferences)
         }
     }
 }
