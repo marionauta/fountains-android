@@ -176,7 +176,7 @@ private fun FountainDetail(
                     description = stringResource(R.string.fountain_detail_check_date_description),
                     value = fountain.properties.checkDate?.let {
                         val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        it.toLocalDateTime(timeZone = TimeZone.UTC).toJavaLocalDateTime().format(formatter)
+                        it.toJavaLocalDate().format(formatter)
                     } ?: "",
                 )
                 Divider()

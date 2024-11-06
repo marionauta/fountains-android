@@ -1,13 +1,13 @@
 package mn.openlocations.domain.models
 
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import mn.openlocations.data.models.FountainPropertiesDto
 
 data class FountainProperties(
     val bottle: BasicValue,
     val wheelchair: WheelchairValue,
     val mapillaryId: String?,
-    val checkDate: Instant?,
+    val checkDate: LocalDate?,
 )
 
 enum class BasicValue {
@@ -36,7 +36,7 @@ fun FountainPropertiesDto.intoDomain(): FountainProperties = FountainProperties(
     mapillaryId = mapillaryId,
     checkDate = checkDate?.let {
         try {
-            Instant.parse(it)
+            LocalDate.parse(it)
         } catch (e: Exception) {
             null
         }

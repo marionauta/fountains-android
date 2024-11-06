@@ -51,7 +51,7 @@ kotlin {
             implementation("com.google.android.gms:play-services-ads:23.3.0")
 
             // Date Time
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+            implementation(libs.kotlinx.datetime)
 
             // Images
             implementation("io.coil-kt:coil-compose:2.5.0")
