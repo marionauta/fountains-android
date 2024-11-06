@@ -64,10 +64,10 @@ kotlin {
             implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
             implementation("androidx.navigation:navigation-compose:2.7.7")
             implementation("androidx.activity:activity-compose:1.8.2")
-            implementation("io.ktor:ktor-client-core:$ktor_version")
-            implementation("io.ktor:ktor-client-android:$ktor_version")
-            implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.android)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
             implementation("com.fredporciuncula:flow-preferences:1.9.1")
         }
     }

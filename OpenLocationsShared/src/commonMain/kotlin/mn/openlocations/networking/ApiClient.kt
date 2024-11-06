@@ -7,11 +7,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
 class ApiClient(val baseUrl: String) {
-    @OptIn(ExperimentalSerializationApi::class)
     val client = HttpClient {
         install(ContentNegotiation) {
             json(Json {
