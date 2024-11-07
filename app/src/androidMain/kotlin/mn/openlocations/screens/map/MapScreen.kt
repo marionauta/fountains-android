@@ -64,7 +64,6 @@ import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
-import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.producers.mapClusteringEnabledProducer
 import mn.openlocations.domain.producers.produceFountains
@@ -238,7 +237,8 @@ private fun Map(
             clusterRestrooms = emptyList()
             return@LaunchedEffect
         }
-        clusterFountains = amenities.filter { it is Fountain }.map { AmenityClusterItem(it) }
+        clusterFountains =
+            amenities.filter { it is Amenity.Fountain }.map { AmenityClusterItem(it) }
         clusterRestrooms =
             amenities.filter { it is Amenity.Restroom }.map { AmenityClusterItem(it) }
     }
@@ -273,7 +273,7 @@ private fun Map(
                     },
                     clusterItemContent = {
                         when (it.amenity) {
-                            is Fountain -> FountainContent(it.amenity)
+                            is Amenity.Fountain -> FountainContent(it.amenity)
                             is Amenity.Restroom -> RestroomContent()
                         }
                     },
@@ -291,7 +291,7 @@ private fun Map(
                     },
                 ) {
                     when (amenity) {
-                        is Fountain -> FountainContent(amenity)
+                        is Amenity.Fountain -> FountainContent(amenity)
                         is Amenity.Restroom -> RestroomContent()
                     }
                 }
@@ -301,7 +301,7 @@ private fun Map(
 }
 
 @Composable
-private fun FountainContent(fountain: Fountain) {
+private fun FountainContent(fountain: Amenity.Fountain) {
     Surface(
         Modifier.size(28.dp),
         shape = CircleShape,
@@ -341,7 +341,7 @@ private fun ClusterContent(cluster: Cluster<AmenityClusterItem>) {
         Modifier.size(30.dp),
         shape = CircleShape,
         color = when (cluster.items.firstOrNull()?.amenity) {
-            is Fountain -> ColorMarkerFountain
+            is Amenity.Fountain -> ColorMarkerFountain
             is Amenity.Restroom -> ColorMarkerRestroom
             else -> ColorPrimary
         },

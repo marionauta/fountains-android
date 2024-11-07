@@ -39,7 +39,6 @@ import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.BasicValue
-import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
@@ -100,14 +99,11 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
             if (fountain == null) {
                 NoFountain()
             } else {
-                when (fountain) {
-                    is Fountain -> FountainDetail(
-                        fountain = fountain,
-                        onFountainProblem = ::onFountainProblem,
-                        onOpenInMaps = ::onOpenInMaps,
-                    )
-                    else -> Text(fountain.name)
-                }
+                FountainDetail(
+                    amenity = fountain,
+                    onAmenityProblem = ::onFountainProblem,
+                    onOpenInMaps = ::onOpenInMaps,
+                )
             }
         }
     }
@@ -124,11 +120,11 @@ private fun NoFountain() {
 
 @Composable
 private fun FountainDetail(
-    fountain: Fountain,
-    onFountainProblem: () -> Unit,
+    amenity: Amenity,
+    onAmenityProblem: () -> Unit,
     onOpenInMaps: () -> Unit
 ) {
-    val imageUrl by produceMapillaryImageUrl(mapillaryId = fountain.properties.mapillaryId)
+    val imageUrl by produceMapillaryImageUrl(mapillaryId = amenity.properties.mapillaryId)
     var isLoadingImage by rememberSaveable { mutableStateOf(false) }
 
     LazyColumn {
@@ -154,26 +150,42 @@ private fun FountainDetail(
         }
         item {
             PropertyRow(
-                name = stringResource(R.string.fountain_detail_bottle_title),
-                description = stringResource(R.string.fountain_detail_bottle_description),
-                value = fountain.properties.bottle,
-            )
-            Divider()
-        }
-        item {
-            PropertyRow(
                 name = stringResource(R.string.fountain_detail_wheelchair_title),
                 description = stringResource(R.string.fountain_detail_wheelchair_description),
-                value = fountain.properties.wheelchair,
+                value = amenity.properties.wheelchair,
             )
             Divider()
         }
-        if (fountain.properties.checkDate != null) {
+        when (amenity) {
+            is Amenity.Fountain -> {
+                item {
+                    PropertyRow(
+                        name = stringResource(R.string.fountain_detail_bottle_title),
+                        description = stringResource(R.string.fountain_detail_bottle_description),
+                        value = amenity.properties.bottle,
+                    )
+                    Divider()
+                }
+
+            }
+
+            is Amenity.Restroom -> {
+                item {
+                    PropertyRow(
+                        name = "Diaper Changing Table",
+                        description = "Provides a surface for changing the nappy (diaper) of an infant or young child.",
+                        value = amenity.properties.changingTable,
+                    )
+                    Divider()
+                }
+            }
+        }
+        if (amenity.properties.checkDate != null) {
             item {
                 PropertyRow(
                     name = stringResource(R.string.fountain_detail_check_date_title),
                     description = stringResource(R.string.fountain_detail_check_date_description),
-                    value = fountain.properties.checkDate?.readableDate ?: "",
+                    value = amenity.properties.checkDate?.readableDate ?: "",
                 )
                 Divider()
             }
@@ -197,7 +209,7 @@ private fun FountainDetail(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
             ) {
-                Button(onClick = onFountainProblem) {
+                Button(onClick = onAmenityProblem) {
                     Text(text = stringResource(R.string.fountain_detail_something_wrong_button))
                 }
             }
