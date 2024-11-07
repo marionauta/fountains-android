@@ -68,6 +68,7 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
+import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.producers.mapClusteringEnabledProducer
@@ -141,10 +142,10 @@ fun MapScreen() {
                 BannerView(unitId = BuildConfig.ADMOB_MAP_AD_UNIT_ID)
                 NeedsLocationBannerView(isLocationEnabled = needsLocation)
                 Map(
-                    fountains = fountains?.fountains ?: emptyList(),
+                    amenities = fountains?.fountains ?: emptyList(),
                     setBounds = setBounds,
                     setNeedsLocation = setNeedsLocation,
-                    onMarkerClick = { fountain -> selectedFountainId = fountain.id },
+                    onMarkerClick = { amenity -> selectedFountainId = amenity.id },
                 )
             }
             if (fountainsResult.tooFarAway) {
@@ -188,10 +189,10 @@ fun MapScreen() {
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
 private fun Map(
-    fountains: List<Fountain>,
+    amenities: List<Amenity>,
     setBounds: (LatLngBounds) -> Unit,
     setNeedsLocation: (Boolean) -> Unit,
-    onMarkerClick: (Fountain) -> Unit,
+    onMarkerClick: (Amenity) -> Unit,
 ) {
     val fineLocationPermission =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -232,14 +233,15 @@ private fun Map(
 
     val clusteringEnabled by mapClusteringEnabledProducer()
 
-    val fountainIcon = painterResource(id = R.drawable.marker)
+    val fountainIcon = painterResource(id = R.drawable.marker_fountain)
+    val restroomIcon = painterResource(id = R.drawable.marker_restroom)
     var clusterItems by remember { mutableStateOf<List<FountainClusterItem>>(emptyList()) }
-    LaunchedEffect(fountains) {
+    LaunchedEffect(amenities) {
         if (!clusteringEnabled) {
             clusterItems = emptyList()
             return@LaunchedEffect
         }
-        clusterItems = fountains.map { FountainClusterItem(it) }
+        clusterItems = amenities.map { FountainClusterItem(it) }
     }
 
     GoogleMap(
@@ -263,26 +265,33 @@ private fun Map(
                 items = clusterItems,
                 onClusterClick = { true }, // Do nothing
                 onClusterItemClick = {
-                    onMarkerClick(it.fountain)
+                    onMarkerClick(it.amenity)
                     return@Clustering true
                 },
                 clusterContent = { cluster ->
                     ClusterContent(cluster = cluster)
                 },
                 clusterItemContent = {
-                    Image(fountainIcon, it.title)
+                    when (it.amenity) {
+                        is Fountain -> Image(fountainIcon, it.title)
+                        is Amenity.Restroom -> Image(restroomIcon, it.title)
+                    }
                 },
             )
         } else {
-            val fountainBitmapIcon = bitmapDescriptorFromVector(context, R.drawable.marker)
-            for (fountain in fountains) {
+            val fountainBitmapIcon = bitmapDescriptorFromVector(context, R.drawable.marker_fountain)
+            val restroomBitmapIcon = bitmapDescriptorFromVector(context, R.drawable.marker_restroom)
+            for (amenity in amenities) {
                 Marker(
-                    state = remember { MarkerState(position = fountain.location.position) },
-                    title = fountain.name,
-                    icon = fountainBitmapIcon,
+                    state = remember { MarkerState(position = amenity.location.position) },
+                    title = amenity.name,
+                    icon = when (amenity) {
+                        is Fountain -> fountainBitmapIcon
+                        is Amenity.Restroom -> restroomBitmapIcon
+                    },
                     anchor = Offset(.5f, .5f),
                     onClick = {
-                        onMarkerClick(fountain)
+                        onMarkerClick(amenity)
                         return@Marker true
                     },
                 )
@@ -310,13 +319,13 @@ private fun <T : ClusterItem> ClusterContent(cluster: Cluster<T>) {
     }
 }
 
-private data class FountainClusterItem(val fountain: Fountain) : ClusterItem {
+private data class FountainClusterItem(val amenity: Amenity) : ClusterItem {
     override fun getPosition(): LatLng {
-        return fountain.location.position
+        return amenity.location.position
     }
 
     override fun getTitle(): String {
-        return fountain.name
+        return amenity.name
     }
 
     override fun getSnippet(): String? {

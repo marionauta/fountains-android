@@ -4,6 +4,8 @@ import mn.openlocations.data.models.FountainDto
 import mn.openlocations.data.models.FountainPropertiesDto
 import mn.openlocations.data.models.FountainsResponseDto
 import mn.openlocations.data.models.LocationDto
+import mn.openlocations.data.models.OverpassNode
+import mn.openlocations.data.models.intoFountainDto
 
 // TODO: Improve this "in memory" cache
 private var fountainsResponse: FountainsResponseDto? = null
@@ -21,28 +23,15 @@ class FountainDataSource {
             overpassDataSource.getNodes(north = north, east = east, south = south, west = west)
                 ?: return fountainsResponse
         val fountains = response.elements.map { node ->
-            FountainDto(
-                id = node.id.toString(),
-                name = node.tags["name"] ?: "",
-                location = LocationDto(
-                    latitude = node.lat,
-                    longitude = node.lon,
-                ),
-                properties = FountainPropertiesDto(
-                    bottle = node.tags["bottle"] ?: "unknown",
-                    wheelchair = node.tags["wheelchair"] ?: "unknown",
-                    mapillaryId = node.tags["mapillary"],
-                    checkDate = node.tags["check_date"],
-                )
-            )
+            node.intoFountainDto()
         }
         fountainsResponse = FountainsResponseDto(
             lastUpdated = response.lastUpdated(),
-            fountains = fountains,
+            fountains = response.elements,
         )
         return fountainsResponse
     }
 
-    fun get(fountainId: String): FountainDto? =
-        fountainsResponse?.fountains?.firstOrNull { it.id == fountainId }
+    fun get(fountainId: String): OverpassNode? =
+        fountainsResponse?.fountains?.firstOrNull { it.id.toString() == fountainId }
 }

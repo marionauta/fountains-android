@@ -1,7 +1,7 @@
 package mn.openlocations.domain.repositories
 
 import mn.openlocations.data.datasources.FountainDataSource
-import mn.openlocations.domain.models.Fountain
+import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.FountainsResponse
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.intoDomain
@@ -18,5 +18,5 @@ class FountainRepository {
         )?.intoDomain()
     }
 
-    fun get(fountainId: String): Fountain? = dataSource.get(fountainId)?.intoDomain()
+    fun get(fountainId: String): Amenity? = dataSource.get(fountainId)?.intoDomain()
 }

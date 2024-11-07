@@ -40,6 +40,7 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
+import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.Fountain
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
@@ -55,7 +56,7 @@ import java.time.format.FormatStyle
 
 @Composable
 fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
-    val (fountain, setFountain) = remember { mutableStateOf<Fountain?>(null) }
+    val (fountain, setFountain) = remember { mutableStateOf<Amenity?>(null) }
 
     LaunchedEffect(fountainId) {
         if (fountainId == null) {
@@ -103,11 +104,14 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
             if (fountain == null) {
                 NoFountain()
             } else {
-                FountainDetail(
-                    fountain = fountain,
-                    onFountainProblem = ::onFountainProblem,
-                    onOpenInMaps = ::onOpenInMaps,
-                )
+                when (fountain) {
+                    is Fountain -> FountainDetail(
+                        fountain = fountain,
+                        onFountainProblem = ::onFountainProblem,
+                        onOpenInMaps = ::onOpenInMaps,
+                    )
+                    else -> Text(fountain.name)
+                }
             }
         }
     }
