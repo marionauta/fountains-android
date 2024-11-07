@@ -12,6 +12,7 @@ sealed class Amenity {
         override val id: String,
         override val name: String,
         override val location: Location,
+        val properties: RestroomProperties,
     ): Amenity()
 }
 
@@ -22,6 +23,7 @@ fun OverpassNode.intoDomain(): Amenity? {
             id = id.toString(),
             name = tags["name"] ?: "",
             location = Location(lat, lon),
+            properties = tags.toRestroomProperties()
         )
         else -> null
     }

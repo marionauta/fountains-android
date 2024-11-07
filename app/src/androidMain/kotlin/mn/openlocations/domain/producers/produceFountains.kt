@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
-import mn.openlocations.domain.models.FountainsResponse
+import mn.openlocations.domain.models.AmenitiesResponse
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.debounce
@@ -14,7 +14,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class ProduceFountainsResult(
-    val response: FountainsResponse? = null,
+    val response: AmenitiesResponse? = null,
     val tooFarAway: Boolean = false,
     val isLoading: Boolean = false,
 )

@@ -35,9 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
@@ -47,12 +44,11 @@ import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
 import mn.openlocations.networking.KnownUris
+import mn.openlocations.screens.map.readableDate
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Composable
 fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
@@ -177,11 +173,7 @@ private fun FountainDetail(
                 PropertyRow(
                     name = stringResource(R.string.fountain_detail_check_date_title),
                     description = stringResource(R.string.fountain_detail_check_date_description),
-                    value = fountain.properties.checkDate?.let {
-                        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        it.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
-                            .format(formatter)
-                    } ?: "",
+                    value = fountain.properties.checkDate?.readableDate ?: "",
                 )
                 Divider()
             }

@@ -18,8 +18,8 @@ enum class BasicValue {
     UNKNOWN, NO, YES
 }
 
-private fun parseBasic(value: String): BasicValue = try {
-    BasicValue.valueOf(value.uppercase())
+internal fun parseBasic(value: String?): BasicValue = try {
+    BasicValue.valueOf(value?.uppercase() ?: "unknown")
 } catch (e: IllegalArgumentException) {
     BasicValue.UNKNOWN
 }
@@ -28,8 +28,8 @@ enum class WheelchairValue {
     UNKNOWN, NO, LIMITED, YES
 }
 
-private fun parseWheelchair(value: String): WheelchairValue = try {
-    WheelchairValue.valueOf(value.uppercase())
+internal fun parseWheelchair(value: String?): WheelchairValue = try {
+    WheelchairValue.valueOf(value?.uppercase() ?: "unknown")
 } catch (e: IllegalArgumentException) {
     WheelchairValue.UNKNOWN
 }
