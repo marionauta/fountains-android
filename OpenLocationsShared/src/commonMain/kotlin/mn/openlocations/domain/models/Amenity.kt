@@ -41,6 +41,7 @@ fun OverpassNode.intoDomain(): Amenity? {
             location = Location(lat, lon),
             properties = tags.toRestroomProperties()
         )
+
         else -> null
     }
 }

@@ -18,7 +18,7 @@ enum class BasicValue {
 
 internal fun parseBasic(value: String?): BasicValue = try {
     BasicValue.valueOf(value?.uppercase() ?: "unknown")
-} catch (e: IllegalArgumentException) {
+} catch (_: IllegalArgumentException) {
     BasicValue.UNKNOWN
 }
 
@@ -28,15 +28,31 @@ enum class WheelchairValue {
 
 internal fun parseWheelchair(value: String?): WheelchairValue = try {
     WheelchairValue.valueOf(value?.uppercase() ?: "unknown")
-} catch (e: IllegalArgumentException) {
+} catch (_: IllegalArgumentException) {
     WheelchairValue.UNKNOWN
+}
+
+sealed interface FeeValue {
+    data object Unknown : FeeValue
+    data object No : FeeValue
+    data object Donation : FeeValue
+    data class Yes(val amount: String?) : FeeValue
+}
+
+internal fun String?.parseFee(amount: String?): FeeValue = this.let {
+    when (it) {
+        "no" -> FeeValue.No
+        "donation" -> FeeValue.Donation
+        "yes" -> FeeValue.Yes(amount)
+        else -> if (amount.isNullOrBlank()) FeeValue.Unknown else FeeValue.Yes(amount)
+    }
 }
 
 internal fun String.parsePortableDate(): PortableDate? {
     return try {
         val dateTime = LocalDateTime(LocalDate.parse(this), LocalTime(12, 0, 0))
         dateTime.toInstant(TimeZone.currentSystemDefault()).toPortableDate()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 }

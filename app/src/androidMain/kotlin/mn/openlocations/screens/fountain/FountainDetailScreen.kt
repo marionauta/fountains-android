@@ -39,6 +39,7 @@ import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.BasicValue
+import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
@@ -177,6 +178,16 @@ private fun FountainDetail(
                         value = amenity.properties.changingTable,
                     )
                     Divider()
+                }
+                if (amenity.properties.fee != FeeValue.Unknown) {
+                    item {
+                        PropertyRow(
+                            name = "Fee",
+                            description = "Indicate if money is charged to use this facility.",
+                            value = amenity.properties.fee.toString(),
+                        )
+                        Divider()
+                    }
                 }
             }
         }
