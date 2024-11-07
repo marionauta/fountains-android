@@ -35,7 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.BasicValue
@@ -173,7 +175,8 @@ private fun FountainDetail(
                     description = stringResource(R.string.fountain_detail_check_date_description),
                     value = fountain.properties.checkDate?.let {
                         val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-                        it.toJavaLocalDate().format(formatter)
+                        it.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+                            .format(formatter)
                     } ?: "",
                 )
                 Divider()
