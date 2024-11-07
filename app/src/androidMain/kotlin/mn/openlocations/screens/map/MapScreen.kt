@@ -58,7 +58,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
-import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -77,6 +77,8 @@ import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.fountain.FountainDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
+import mn.openlocations.ui.theme.ColorMarkerFountain
+import mn.openlocations.ui.theme.ColorMarkerRestroom
 import mn.openlocations.ui.theme.ColorPrimary
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
@@ -233,15 +235,17 @@ private fun Map(
 
     val clusteringEnabled by mapClusteringEnabledProducer()
 
-    val fountainIcon = painterResource(id = R.drawable.marker_fountain)
-    val restroomIcon = painterResource(id = R.drawable.marker_restroom)
-    var clusterItems by remember { mutableStateOf<List<FountainClusterItem>>(emptyList()) }
+    var clusterFountains by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
+    var clusterRestrooms by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     LaunchedEffect(amenities) {
         if (!clusteringEnabled) {
-            clusterItems = emptyList()
+            clusterFountains = emptyList()
+            clusterRestrooms = emptyList()
             return@LaunchedEffect
         }
-        clusterItems = amenities.map { FountainClusterItem(it) }
+        clusterFountains = amenities.filter { it is Fountain }.map { AmenityClusterItem(it) }
+        clusterRestrooms =
+            amenities.filter { it is Amenity.Restroom }.map { AmenityClusterItem(it) }
     }
 
     GoogleMap(
@@ -261,51 +265,91 @@ private fun Map(
             }
         }
         if (clusteringEnabled) {
-            Clustering(
-                items = clusterItems,
-                onClusterClick = { true }, // Do nothing
-                onClusterItemClick = {
-                    onMarkerClick(it.amenity)
-                    return@Clustering true
-                },
-                clusterContent = { cluster ->
-                    ClusterContent(cluster = cluster)
-                },
-                clusterItemContent = {
-                    when (it.amenity) {
-                        is Fountain -> Image(fountainIcon, it.title)
-                        is Amenity.Restroom -> Image(restroomIcon, it.title)
-                    }
-                },
-            )
+            for (cluster in listOf(clusterFountains, clusterRestrooms)) {
+                Clustering(
+                    items = cluster,
+                    onClusterClick = { true }, // Do nothing
+                    onClusterItemClick = {
+                        onMarkerClick(it.amenity)
+                        return@Clustering true
+                    },
+                    clusterContent = { cluster ->
+                        ClusterContent(cluster = cluster)
+                    },
+                    clusterItemContent = {
+                        when (it.amenity) {
+                            is Fountain -> FountainContent(it.amenity)
+                            is Amenity.Restroom -> RestroomContent()
+                        }
+                    },
+                )
+            }
         } else {
-            val fountainBitmapIcon = bitmapDescriptorFromVector(context, R.drawable.marker_fountain)
-            val restroomBitmapIcon = bitmapDescriptorFromVector(context, R.drawable.marker_restroom)
             for (amenity in amenities) {
-                Marker(
+                MarkerComposable(
                     state = remember { MarkerState(position = amenity.location.position) },
                     title = amenity.name,
-                    icon = when (amenity) {
-                        is Fountain -> fountainBitmapIcon
-                        is Amenity.Restroom -> restroomBitmapIcon
-                    },
                     anchor = Offset(.5f, .5f),
                     onClick = {
                         onMarkerClick(amenity)
-                        return@Marker true
+                        return@MarkerComposable true
                     },
-                )
+                ) {
+                    when (amenity) {
+                        is Fountain -> FountainContent(amenity)
+                        is Amenity.Restroom -> RestroomContent()
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun <T : ClusterItem> ClusterContent(cluster: Cluster<T>) {
+private fun FountainContent(fountain: Fountain) {
+    Surface(
+        Modifier.size(28.dp),
+        shape = CircleShape,
+        color = Color.White,
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Image(
+                painter = painterResource(id = R.drawable.marker_fountain),
+                contentDescription = fountain.name
+            )
+        }
+    }
+}
+
+@Composable
+private fun RestroomContent() {
+    Surface(
+        Modifier.size(28.dp),
+        shape = CircleShape,
+        color = ColorMarkerRestroom,
+        contentColor = Color.White,
+        border = BorderStroke(1.5.dp, Color.White),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = "WC",
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+private fun ClusterContent(cluster: Cluster<AmenityClusterItem>) {
     Surface(
         Modifier.size(30.dp),
         shape = CircleShape,
-        color = ColorPrimary,
+        color = when (cluster.items.firstOrNull()?.amenity) {
+            is Fountain -> ColorMarkerFountain
+            is Amenity.Restroom -> ColorMarkerRestroom
+            else -> ColorPrimary
+        },
         contentColor = Color.White,
         border = BorderStroke(1.dp, Color.White)
     ) {
@@ -319,7 +363,7 @@ private fun <T : ClusterItem> ClusterContent(cluster: Cluster<T>) {
     }
 }
 
-private data class FountainClusterItem(val amenity: Amenity) : ClusterItem {
+private data class AmenityClusterItem(val amenity: Amenity) : ClusterItem {
     override fun getPosition(): LatLng {
         return amenity.location.position
     }

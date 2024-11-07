@@ -7,7 +7,7 @@ data class Fountain(
     override val name: String,
     override val location: Location,
     val properties: FountainProperties,
-): Amenity
+): Amenity()
 
 fun FountainDto.intoDomain(): Fountain = Fountain(
     id = id,
