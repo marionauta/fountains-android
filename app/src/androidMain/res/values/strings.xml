@@ -22,7 +22,6 @@
     <string name="app_info_easteregg_content">Deez nuts</string>
     <string name="app_info_easteregg_ok">@android:string/ok</string>
 
-    <string name="fountain_detail_fallback_title">Fountain</string>
     <string name="fountain_detail_not_found_title">No fountain</string>
     <string name="fountain_detail_not_found_description">Unknown fountain. Go back.</string>
     <string name="fountain_detail_photo_description">A photo of the fountain.</string>
@@ -34,6 +33,8 @@
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
     <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 
+    <string name="amenity_detail_fountain_title">Fountain</string>
+    <string name="amenity_detail_restroom_title">Restroom</string>
     <string name="amenity_detail_handwashing_title">Handwashing</string>
     <string name="amenity_detail_handwashing_description">If the toilets have a sink and soap for handwashing.</string>
     <string name="amenity_detail_changing_table_title">Diaper Changing Table</string>

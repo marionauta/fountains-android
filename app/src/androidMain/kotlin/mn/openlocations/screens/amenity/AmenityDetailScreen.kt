@@ -82,7 +82,12 @@ fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
         TopAppBar(
             title = {
                 fountain?.name
-                    ?.ifBlank { stringResource(R.string.fountain_detail_fallback_title) }
+                    ?.ifBlank {
+                        when (fountain) {
+                            is Amenity.Fountain -> stringResource(R.string.amenity_detail_fountain_title)
+                            is Amenity.Restroom -> stringResource(R.string.amenity_detail_restroom_title)
+                        }
+                    }
                     ?.let { Text(it, maxLines = 1, overflow = TextOverflow.Ellipsis) }
             },
             navigationIcon = {

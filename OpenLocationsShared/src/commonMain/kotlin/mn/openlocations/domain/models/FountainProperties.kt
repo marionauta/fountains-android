@@ -1,5 +1,10 @@
 package mn.openlocations.domain.models
 
+import mn.openlocations.domain.utils.parseBasic
+import mn.openlocations.domain.utils.parseFee
+import mn.openlocations.domain.utils.parsePortableDate
+import mn.openlocations.domain.utils.parseWheelchair
+
 data class FountainProperties(
     val bottle: BasicValue,
     override val fee: FeeValue,
@@ -9,9 +14,9 @@ data class FountainProperties(
 ) : AmenityProperties
 
 fun Map<String, String>.toFountainProperties(): FountainProperties = FountainProperties(
-    bottle = parseBasic(get("bottle")),
+    bottle = get("bottle").parseBasic(),
     fee = get("fee").parseFee(amount = get("charge")),
-    wheelchair = parseWheelchair(get("wheelchair")),
+    wheelchair = get("wheelchair").parseWheelchair(),
     mapillaryId = get("mapillary"),
-    checkDate = get("check_date")?.parsePortableDate(),
+    checkDate = get("check_date").parsePortableDate(),
 )

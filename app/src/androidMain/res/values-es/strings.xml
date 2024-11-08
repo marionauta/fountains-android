@@ -6,7 +6,6 @@
     <string name="app_info_website_content">Saber más</string>
     <string name="app_info_developer_title">Desarrollador</string>
     <string name="app_info_app_version_title">Versión de la app</string>
-    <string name="fountain_detail_fallback_title">Fuente</string>
     <string name="fountain_detail_not_found_title">Sin fuente</string>
     <string name="fountain_detail_not_found_description">Fuente desconocida. Vuelve.</string>
     <string name="fountain_detail_photo_description">Una foto de la fuente.</string>
@@ -32,6 +31,8 @@
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>
     <string name="fountain_detail_open_maps_button">Abrir en Maps</string>
+    <string name="amenity_detail_fountain_title">Fuente</string>
+    <string name="amenity_detail_restroom_title">Baño</string>
     <string name="amenity_detail_handwashing_title">Lavado de manos</string>
     <string name="amenity_detail_handwashing_description">Si el baño incluye un lavabo y jabón.</string>
     <string name="amenity_detail_changing_table_title">Cambiar pañales</string>
