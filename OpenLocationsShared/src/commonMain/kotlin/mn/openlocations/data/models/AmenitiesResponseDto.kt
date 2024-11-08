@@ -4,7 +4,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FountainsResponseDto(
+internal data class AmenitiesResponseDto(
     val lastUpdated: Instant,
     val fountains: List<OverpassNode>,
 )

@@ -1,8 +1,6 @@
 package mn.openlocations.domain.models
 
-import mn.openlocations.data.models.FountainDto
 import mn.openlocations.data.models.OverpassNode
-import mn.openlocations.data.models.intoFountainDto
 
 sealed class Amenity {
     abstract val id: String
@@ -25,16 +23,15 @@ sealed class Amenity {
     ) : Amenity()
 }
 
-fun FountainDto.intoDomain(): Amenity.Fountain = Amenity.Fountain(
-    id = id,
-    name = name,
-    location = location.intoDomain(),
-    properties = properties.intoDomain(),
-)
-
 fun OverpassNode.intoDomain(): Amenity? {
     return when (tags["amenity"]) {
-        "drinking_water" -> intoFountainDto().intoDomain()
+        "drinking_water" -> Amenity.Fountain(
+            id = id.toString(),
+            name = tags["name"] ?: "",
+            location = Location(lat, lon),
+            properties = tags.toFountainProperties()
+        )
+
         "toilets" -> Amenity.Restroom(
             id = id.toString(),
             name = tags["name"] ?: "",

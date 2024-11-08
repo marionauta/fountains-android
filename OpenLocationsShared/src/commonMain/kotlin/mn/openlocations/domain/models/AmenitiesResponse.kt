@@ -1,6 +1,6 @@
 package mn.openlocations.domain.models
 
-import mn.openlocations.data.models.FountainsResponseDto
+import mn.openlocations.data.models.AmenitiesResponseDto
 import mn.openlocations.data.models.OverpassNode
 
 data class AmenitiesResponse(
@@ -8,7 +8,7 @@ data class AmenitiesResponse(
     val amenities: List<Amenity>,
 )
 
-fun FountainsResponseDto.intoDomain(): AmenitiesResponse = AmenitiesResponse(
+internal fun AmenitiesResponseDto.intoDomain(): AmenitiesResponse = AmenitiesResponse(
     lastUpdated = lastUpdated.toPortableDate(),
     amenities = fountains.mapNotNull(OverpassNode::intoDomain),
 )

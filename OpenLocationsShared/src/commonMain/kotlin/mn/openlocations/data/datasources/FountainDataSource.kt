@@ -1,16 +1,12 @@
 package mn.openlocations.data.datasources
 
-import mn.openlocations.data.models.FountainDto
-import mn.openlocations.data.models.FountainPropertiesDto
-import mn.openlocations.data.models.FountainsResponseDto
-import mn.openlocations.data.models.LocationDto
+import mn.openlocations.data.models.AmenitiesResponseDto
 import mn.openlocations.data.models.OverpassNode
-import mn.openlocations.data.models.intoFountainDto
 
 // TODO: Improve this "in memory" cache
-private var fountainsResponse: FountainsResponseDto? = null
+private var fountainsResponse: AmenitiesResponseDto? = null
 
-class FountainDataSource {
+internal class FountainDataSource {
     private val overpassDataSource = OverpassDataSource()
 
     suspend fun inside(
@@ -18,14 +14,11 @@ class FountainDataSource {
         east: Double,
         south: Double,
         west: Double,
-    ): FountainsResponseDto? {
+    ): AmenitiesResponseDto? {
         val response =
             overpassDataSource.getNodes(north = north, east = east, south = south, west = west)
                 ?: return fountainsResponse
-        val fountains = response.elements.map { node ->
-            node.intoFountainDto()
-        }
-        fountainsResponse = FountainsResponseDto(
+        fountainsResponse = AmenitiesResponseDto(
             lastUpdated = response.lastUpdated(),
             fountains = response.elements,
         )

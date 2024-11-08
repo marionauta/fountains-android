@@ -7,6 +7,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 
 sealed interface AmenityProperties {
+    val fee: FeeValue
     val wheelchair: WheelchairValue
     val mapillaryId: String?
     val checkDate: PortableDate?

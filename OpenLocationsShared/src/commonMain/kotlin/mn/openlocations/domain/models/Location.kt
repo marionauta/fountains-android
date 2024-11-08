@@ -7,7 +7,7 @@ data class Location(
     val longitude: Double,
 )
 
-fun LocationDto.intoDomain(): Location = Location(
+internal fun LocationDto.intoDomain(): Location = Location(
     latitude = latitude,
     longitude = longitude,
 )
