@@ -1,4 +1,4 @@
-package mn.openlocations.screens.fountain
+package mn.openlocations.screens.amenity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,15 +31,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
-import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
+import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
 import mn.openlocations.library.parsePropertyValue
@@ -51,7 +50,7 @@ import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
 
 @Composable
-fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
+fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
     val (fountain, setFountain) = remember { mutableStateOf<Amenity?>(null) }
 
     LaunchedEffect(fountainId) {
@@ -100,7 +99,7 @@ fun FountainDetailScreen(fountainId: String?, onClose: () -> Unit) {
             if (fountain == null) {
                 NoFountain()
             } else {
-                FountainDetail(
+                AmenityDetail(
                     amenity = fountain,
                     onAmenityProblem = ::onFountainProblem,
                     onOpenInMaps = ::onOpenInMaps,
@@ -120,35 +119,20 @@ private fun NoFountain() {
 }
 
 @Composable
-private fun FountainDetail(
+private fun AmenityDetail(
     amenity: Amenity,
     onAmenityProblem: () -> Unit,
     onOpenInMaps: () -> Unit
 ) {
-    val imageUrl by produceMapillaryImageUrl(mapillaryId = amenity.properties.mapillaryId)
-    var isLoadingImage by rememberSaveable { mutableStateOf(false) }
 
     LazyColumn {
-        if (imageUrl != null) {
-            item {
-                Box(contentAlignment = Alignment.Center) {
-                    AsyncImage(
-                        model = imageUrl,
-                        contentDescription = stringResource(R.string.fountain_detail_photo_description),
-                        onState = { isLoadingImage = it is AsyncImagePainter.State.Loading },
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(250.dp),
-                    )
-                    AppBarLoader(isLoading = isLoadingImage)
-                }
-                Divider()
-            }
+        item {
+            AmenityImageRow(mapillaryId = amenity.properties.mapillaryId)
         }
         item {
             BannerView(unitId = BuildConfig.ADMOB_DETAIL_AD_UNIT_ID)
         }
+
         when (amenity) {
             is Amenity.Fountain -> {
                 item {
@@ -159,37 +143,47 @@ private fun FountainDetail(
                     )
                     Divider()
                 }
-
             }
 
             is Amenity.Restroom -> {
                 item {
                     PropertyRow(
-                        name = "Diaper Changing Table",
-                        description = "Provides a surface for changing the nappy (diaper) of an infant or young child.",
+                        name = stringResource(R.string.amenity_detail_handwashing_title),
+                        description = stringResource(R.string.amenity_detail_handwashing_description),
+                        value = amenity.properties.handwashing,
+                    )
+                    Divider()
+                }
+                item {
+                    PropertyRow(
+                        name = stringResource(R.string.amenity_detail_changing_table_title),
+                        description = stringResource(R.string.amenity_detail_changing_table_description),
                         value = amenity.properties.changingTable,
                     )
                     Divider()
                 }
             }
         }
+
         if (amenity.properties.fee != FeeValue.Unknown) {
             item {
                 PropertyRow(
-                    name = "Fee",
-                    description = "Indicate if money is charged to use this facility.",
+                    name = stringResource(R.string.amenity_detail_fee_title),
+                    description = stringResource(R.string.amenity_detail_fee_description),
                     value = amenity.properties.fee.title,
                 )
                 Divider()
             }
         }
-        item {
-            PropertyRow(
-                name = stringResource(R.string.fountain_detail_wheelchair_title),
-                description = stringResource(R.string.fountain_detail_wheelchair_description),
-                value = amenity.properties.wheelchair,
-            )
-            Divider()
+        if (amenity.properties.wheelchair != WheelchairValue.UNKNOWN) {
+            item {
+                PropertyRow(
+                    name = stringResource(R.string.fountain_detail_wheelchair_title),
+                    description = stringResource(R.string.fountain_detail_wheelchair_description),
+                    value = amenity.properties.wheelchair,
+                )
+                Divider()
+            }
         }
         if (amenity.properties.checkDate != null) {
             item {
@@ -229,6 +223,28 @@ private fun FountainDetail(
 }
 
 @Composable
+private fun AmenityImageRow(mapillaryId: String?) {
+    if (mapillaryId == null) return
+
+    val imageUrl by produceMapillaryImageUrl(mapillaryId = mapillaryId)
+    var isLoadingImage by rememberSaveable { mutableStateOf(false) }
+
+    Box(contentAlignment = Alignment.Center) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = stringResource(R.string.fountain_detail_photo_description),
+            onState = { isLoadingImage = it is AsyncImagePainter.State.Loading },
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp),
+        )
+        AppBarLoader(isLoading = isLoadingImage)
+    }
+    Divider()
+}
+
+@Composable
 private fun <T : Enum<T>> PropertyRow(name: String, description: String, value: T) {
     PropertyRow(name = name, description = description, value = value.name)
 }
@@ -255,14 +271,4 @@ private fun PropertyRow(name: String, description: String, value: String) {
             style = Typography.caption
         )
     }
-}
-
-@Preview
-@Composable
-private fun RowPreview() {
-    PropertyRow(
-        name = stringResource(R.string.fountain_detail_wheelchair_title),
-        description = stringResource(R.string.fountain_detail_wheelchair_description),
-        value = BasicValue.UNKNOWN,
-    )
 }

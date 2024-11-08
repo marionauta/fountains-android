@@ -70,7 +70,7 @@ import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.producers.mapClusteringEnabledProducer
 import mn.openlocations.domain.producers.produceFountains
 import mn.openlocations.domain.producers.produceLocationName
-import mn.openlocations.screens.fountain.FountainDetailScreen
+import mn.openlocations.screens.amenity.AmenityDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.ColorMarkerFountain
@@ -168,7 +168,7 @@ fun MapScreen() {
                 isOpen = selectedFountainId != null,
                 onClose = ::deselectFountain,
             ) {
-                FountainDetailScreen(
+                AmenityDetailScreen(
                     fountainId = selectedFountainId,
                     onClose = ::deselectFountain,
                 )

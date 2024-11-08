@@ -32,4 +32,10 @@
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>
     <string name="fountain_detail_open_maps_button">Abrir en Maps</string>
+    <string name="amenity_detail_handwashing_title">Lavado de manos</string>
+    <string name="amenity_detail_handwashing_description">Si el baño incluye un lavabo y jabón.</string>
+    <string name="amenity_detail_changing_table_title">Cambiar pañales</string>
+    <string name="amenity_detail_changing_table_description">Hay una superficie para cambiar pañales de bebés o niños.</string>
+    <string name="amenity_detail_fee_title">Tarifa</string>
+    <string name="amenity_detail_fee_description">El uso de esta instalación cuesta dinero.</string>
 </resources>

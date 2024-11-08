@@ -34,6 +34,13 @@
     <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
     <string name="fountain_detail_something_wrong_button">Something wrong?</string>
 
+    <string name="amenity_detail_handwashing_title">Handwashing</string>
+    <string name="amenity_detail_handwashing_description">If the toilets have a sink and soap for handwashing.</string>
+    <string name="amenity_detail_changing_table_title">Diaper Changing Table</string>
+    <string name="amenity_detail_changing_table_description">Provides a surface for changing the nappy (diaper) of an infant or young child.</string>
+    <string name="amenity_detail_fee_title">Fee</string>
+    <string name="amenity_detail_fee_description">Indicate if money is charged to use this facility.</string>
+
     <string name="map_too_far_away">Too far away. Please zoom in or edit zoom in settings.</string>
     <string name="map_location_disabled">Location services are disabled. Enable it to center you on the map.</string>
     <string name="fountain_detail_open_maps_button">Open in Maps</string>
