@@ -149,14 +149,6 @@ private fun FountainDetail(
         item {
             BannerView(unitId = BuildConfig.ADMOB_DETAIL_AD_UNIT_ID)
         }
-        item {
-            PropertyRow(
-                name = stringResource(R.string.fountain_detail_wheelchair_title),
-                description = stringResource(R.string.fountain_detail_wheelchair_description),
-                value = amenity.properties.wheelchair,
-            )
-            Divider()
-        }
         when (amenity) {
             is Amenity.Fountain -> {
                 item {
@@ -179,17 +171,25 @@ private fun FountainDetail(
                     )
                     Divider()
                 }
-                if (amenity.properties.fee != FeeValue.Unknown) {
-                    item {
-                        PropertyRow(
-                            name = "Fee",
-                            description = "Indicate if money is charged to use this facility.",
-                            value = amenity.properties.fee.toString(),
-                        )
-                        Divider()
-                    }
-                }
             }
+        }
+        if (amenity.properties.fee != FeeValue.Unknown) {
+            item {
+                PropertyRow(
+                    name = "Fee",
+                    description = "Indicate if money is charged to use this facility.",
+                    value = amenity.properties.fee.title,
+                )
+                Divider()
+            }
+        }
+        item {
+            PropertyRow(
+                name = stringResource(R.string.fountain_detail_wheelchair_title),
+                description = stringResource(R.string.fountain_detail_wheelchair_description),
+                value = amenity.properties.wheelchair,
+            )
+            Divider()
         }
         if (amenity.properties.checkDate != null) {
             item {

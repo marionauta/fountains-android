@@ -38,15 +38,19 @@ sealed interface FeeValue {
     data object No : FeeValue
     data object Donation : FeeValue
     data class Yes(val amount: String?) : FeeValue
+
+    val title: String
+        get() = when (this) {
+            is Yes -> if (amount.isNullOrBlank()) "Yes" else amount
+            else -> toString()
+        }
 }
 
-internal fun String?.parseFee(amount: String?): FeeValue = this.let {
-    when (it) {
-        "no" -> FeeValue.No
-        "donation" -> FeeValue.Donation
-        "yes" -> FeeValue.Yes(amount)
-        else -> if (amount.isNullOrBlank()) FeeValue.Unknown else FeeValue.Yes(amount)
-    }
+internal fun String?.parseFee(amount: String?): FeeValue = when (this) {
+    "no" -> FeeValue.No
+    "donation" -> FeeValue.Donation
+    "yes" -> FeeValue.Yes(amount)
+    else -> if (amount.isNullOrBlank()) FeeValue.Unknown else FeeValue.Yes(amount)
 }
 
 internal fun String.parsePortableDate(): PortableDate? {

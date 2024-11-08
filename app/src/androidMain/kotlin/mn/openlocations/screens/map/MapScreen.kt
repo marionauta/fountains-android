@@ -30,6 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -64,6 +65,7 @@ import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
+import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.producers.mapClusteringEnabledProducer
 import mn.openlocations.domain.producers.produceFountains
@@ -74,6 +76,7 @@ import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.ColorMarkerFountain
 import mn.openlocations.ui.theme.ColorMarkerRestroom
 import mn.openlocations.ui.theme.ColorPrimary
+import mn.openlocations.ui.theme.ColorSecondary
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
@@ -272,10 +275,7 @@ private fun Map(
                         ClusterContent(cluster = cluster)
                     },
                     clusterItemContent = {
-                        when (it.amenity) {
-                            is Amenity.Fountain -> FountainContent(it.amenity)
-                            is Amenity.Restroom -> RestroomContent()
-                        }
+                        MarkerContent(amenity = it.amenity)
                     },
                 )
             }
@@ -290,10 +290,39 @@ private fun Map(
                         return@MarkerComposable true
                     },
                 ) {
-                    when (amenity) {
-                        is Amenity.Fountain -> FountainContent(amenity)
-                        is Amenity.Restroom -> RestroomContent()
-                    }
+                    MarkerContent(amenity = amenity)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MarkerContent(amenity: Amenity) {
+    Box(
+        contentAlignment = Alignment.TopEnd,
+        modifier = Modifier.padding(top = 2.dp, end = 4.dp),
+    ) {
+        when (amenity) {
+            is Amenity.Fountain -> FountainContent(fountain = amenity)
+            is Amenity.Restroom -> RestroomContent()
+        }
+        if (amenity.properties.fee is FeeValue.Yes) {
+            Surface(
+                Modifier
+                    .size(15.dp)
+                    .offset(x = 4.dp, y = (-2).dp),
+                shape = CircleShape,
+                color = ColorSecondary,
+                contentColor = Color.White,
+                border = BorderStroke(1.dp, Color.White),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "$",
+                        fontSize = 11.sp,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
         }
@@ -302,17 +331,17 @@ private fun Map(
 
 @Composable
 private fun FountainContent(fountain: Amenity.Fountain) {
-    Surface(
-        Modifier.size(28.dp),
-        shape = CircleShape,
-        color = Color.White,
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(28.dp)
+            .clip(CircleShape)
+            .background(Color.White)
     ) {
-        Box(contentAlignment = Alignment.Center) {
-            Image(
-                painter = painterResource(id = R.drawable.marker_fountain),
-                contentDescription = fountain.name
-            )
-        }
+        Image(
+            painter = painterResource(id = R.drawable.marker_fountain),
+            contentDescription = fountain.name
+        )
     }
 }
 
