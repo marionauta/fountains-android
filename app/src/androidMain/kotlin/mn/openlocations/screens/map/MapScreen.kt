@@ -313,8 +313,8 @@ private fun MarkerContent(amenity: Amenity) {
                     .size(15.dp)
                     .offset(x = 4.dp, y = (-2).dp),
                 shape = CircleShape,
-                color = ColorSecondary,
-                contentColor = Color.White,
+                color = MaterialTheme.colors.secondary,
+                contentColor = MaterialTheme.colors.onSecondary,
                 border = BorderStroke(1.dp, Color.White),
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -372,7 +372,7 @@ private fun ClusterContent(cluster: Cluster<AmenityClusterItem>) {
         color = when (cluster.items.firstOrNull()?.amenity) {
             is Amenity.Fountain -> ColorMarkerFountain
             is Amenity.Restroom -> ColorMarkerRestroom
-            else -> ColorPrimary
+            else -> MaterialTheme.colors.primary
         },
         contentColor = Color.White,
         border = BorderStroke(1.dp, Color.White)
