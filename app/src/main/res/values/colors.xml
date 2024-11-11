@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#264653</color>
+    <color name="property_positive">#5bc759</color>
+    <color name="property_limited">#ed9303</color>
+    <color name="property_negative">#e83731</color>
+    <color name="property_unknown">#8e8e93</color>
 </resources>

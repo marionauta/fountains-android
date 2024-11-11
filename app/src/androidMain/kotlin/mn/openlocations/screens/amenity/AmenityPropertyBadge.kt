@@ -1,20 +1,22 @@
 package mn.openlocations.screens.amenity
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Text
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import mn.openlocations.ui.theme.ColorSecondary
+import mn.openlocations.R
 
 enum class Variant {
     Positive,
@@ -25,22 +27,41 @@ enum class Variant {
 
 @Composable
 fun AmenityPropertyBadge(variant: Variant) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(22.dp)
-            .clip(CircleShape)
-            .background(ColorSecondary)
-            .border(BorderStroke(2.dp, Color.White), CircleShape)
+    Surface(
+        Modifier.size(22.dp),
+        shape = CircleShape,
+        color = colorResource(
+            when (variant) {
+                Variant.Negative -> R.color.property_negative
+                Variant.Limited -> R.color.property_limited
+                Variant.Positive -> R.color.property_positive
+                Variant.Unknown -> R.color.property_unknown
+            }
+        ),
+        contentColor = MaterialTheme.colors.onPrimary,
+        border = BorderStroke(2.dp, Color.White),
     ) {
-        Text(
-            text = when (variant) {
-                Variant.Negative -> "x"
-                Variant.Limited -> "!"
-                Variant.Unknown -> "?"
-                Variant.Positive -> ""
-            },
-            color = Color.White,
-        )
+        Box(contentAlignment = Alignment.Center) {
+            Image(
+                painter = painterResource(
+                    when (variant) {
+                        Variant.Negative -> R.drawable.variant_negative
+                        Variant.Limited -> R.drawable.variant_limited
+                        Variant.Positive -> R.drawable.variant_positive
+                        Variant.Unknown -> R.drawable.variant_unknown
+                    }
+                ),
+                contentDescription = stringResource(
+                    when (variant) {
+                        Variant.Negative -> R.string.property_value_no
+                        Variant.Limited -> R.string.property_value_limited
+                        Variant.Positive -> R.string.property_value_yes
+                        Variant.Unknown -> R.string.property_value_unknown
+                    }
+                ),
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
+                modifier = Modifier.size(14.dp),
+            )
+        }
     }
 }

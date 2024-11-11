@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="property_positive">#60d258</color>
+    <color name="property_limited">#ef9e0e</color>
+    <color name="property_negative">#e8423b</color>
+    <color name="property_unknown">#8e8e93</color>
+</resources>
