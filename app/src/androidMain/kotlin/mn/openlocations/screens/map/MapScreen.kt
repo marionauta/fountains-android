@@ -424,6 +424,6 @@ val Instant.readableDateTime: String
 val Instant.readableDate: String
     get() {
         val dateTime = toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
-        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
         return dateTime.format(formatter)
     }

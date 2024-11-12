@@ -11,7 +11,7 @@
     <string name="fountain_detail_photo_description">Una foto de la fuente.</string>
     <string name="fountain_detail_bottle_title">Rellenado de botellas</string>
     <string name="fountain_detail_bottle_description">Una botella de agua se puede llenar fácilmente.</string>
-    <string name="fountain_detail_wheelchair_title">Acceso con silla de ruedas</string>
+    <string name="fountain_detail_wheelchair_title">Accesible</string>
     <string name="fountain_detail_wheelchair_description">La fuente se puede acceder con silla de ruedas.</string>
     <string name="fountain_detail_check_date_title">Comprobado</string>
     <string name="fountain_detail_check_date_description">La  última vez que alguien comprobó esta fuente.</string>
