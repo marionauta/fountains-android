@@ -135,6 +135,8 @@ private fun AmenityDetail(
     onAmenityProblem: () -> Unit,
     onOpenInMaps: () -> Unit
 ) {
+    val imageAlpha = 0.6f
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -153,21 +155,29 @@ private fun AmenityDetail(
 
         item {
             AmenityPropertyCell(
-                title = stringResource(R.string.amenity_detail_fee_title),
+                title = stringResource(
+                    when (amenity.properties.fee) {
+                        is FeeValue.No -> R.string.fee_value_no_title
+                        is FeeValue.Yes -> R.string.fee_value_yes_title
+                        is FeeValue.Unknown -> R.string.fee_value_unknown_title
+                        is FeeValue.Donation -> R.string.fee_value_donation_title
+                    }
+                ),
+                subtitle = (amenity.properties.fee as? FeeValue.Yes)?.amount,
                 image = {
                     Image(
                         painter = painterResource(R.drawable.property_fee),
                         contentDescription = stringResource(R.string.amenity_detail_fee_description),
+                        alpha = imageAlpha,
                         colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                         modifier = it,
                     )
                 },
                 badge = {
                     when (amenity.properties.fee) {
-                        is FeeValue.No -> AmenityPropertyBadge(Variant.Negative)
-                        is FeeValue.Yes -> AmenityPropertyBadge(Variant.Positive)
+                        is FeeValue.Yes, is FeeValue.Donation -> AmenityPropertyBadge(Variant.Limited)
                         is FeeValue.Unknown -> AmenityPropertyBadge(Variant.Unknown)
-                        is FeeValue.Donation -> AmenityPropertyBadge(Variant.Limited)
+                        else -> {}
                     }
                 }
             )
@@ -182,6 +192,7 @@ private fun AmenityDetail(
                             Image(
                                 painter = painterResource(R.drawable.property_bottle),
                                 contentDescription = stringResource(R.string.fountain_detail_bottle_description),
+                                alpha = imageAlpha,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                                 modifier = it,
                             )
@@ -205,6 +216,7 @@ private fun AmenityDetail(
                             Image(
                                 painter = painterResource(R.drawable.property_handwashing),
                                 contentDescription = stringResource(R.string.amenity_detail_handwashing_description),
+                                alpha = imageAlpha,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                                 modifier = it,
                             )
@@ -226,6 +238,7 @@ private fun AmenityDetail(
                             Image(
                                 painter = painterResource(R.drawable.property_changing_table),
                                 contentDescription = stringResource(R.string.amenity_detail_changing_table_description),
+                                alpha = imageAlpha,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                                 modifier = it,
                             )
@@ -249,6 +262,7 @@ private fun AmenityDetail(
                     Image(
                         painter = painterResource(R.drawable.property_wheelchair),
                         contentDescription = stringResource(R.string.fountain_detail_wheelchair_description),
+                        alpha = imageAlpha,
                         colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                         modifier = it,
                     )
@@ -273,6 +287,7 @@ private fun AmenityDetail(
                         Image(
                             painter = painterResource(R.drawable.property_check_date),
                             contentDescription = stringResource(R.string.fountain_detail_check_date_description),
+                            alpha = imageAlpha,
                             colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                             modifier = it,
                         )
@@ -286,8 +301,7 @@ private fun AmenityDetail(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                    .fillMaxWidth(),
             ) {
                 Button(onClick = onOpenInMaps) {
                     Text(text = stringResource(R.string.fountain_detail_open_maps_button))
@@ -299,8 +313,7 @@ private fun AmenityDetail(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                    .fillMaxWidth(),
             ) {
                 Button(onClick = onAmenityProblem) {
                     Text(text = stringResource(R.string.fountain_detail_something_wrong_button))

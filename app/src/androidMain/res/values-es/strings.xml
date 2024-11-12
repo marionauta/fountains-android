@@ -39,4 +39,8 @@
     <string name="amenity_detail_changing_table_description">Hay una superficie para cambiar pañales de bebés o niños.</string>
     <string name="amenity_detail_fee_title">Tarifa</string>
     <string name="amenity_detail_fee_description">El uso de esta instalación cuesta dinero.</string>
+    <string name="fee_value_donation_title">Acepta donativo</string>
+    <string name="fee_value_no_title">Gratis</string>
+    <string name="fee_value_unknown_title">Tarifa desconocida</string>
+    <string name="fee_value_yes_title">Requiere pago</string>
 </resources>

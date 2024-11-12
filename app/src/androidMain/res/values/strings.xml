@@ -45,4 +45,8 @@
     <string name="map_too_far_away">Too far away. Please zoom in or edit zoom in settings.</string>
     <string name="map_location_disabled">Location services are disabled. Enable it to center you on the map.</string>
     <string name="fountain_detail_open_maps_button">Open in Maps</string>
+    <string name="fee_value_donation_title">Accepts donation</string>
+    <string name="fee_value_no_title">Free</string>
+    <string name="fee_value_unknown_title">Fee unknown</string>
+    <string name="fee_value_yes_title">Requires payment</string>
 </resources>
