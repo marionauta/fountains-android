@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import kotlinx.coroutines.launch
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
@@ -49,6 +51,7 @@ import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
+import mn.openlocations.domain.usecases.SendFeedbackUseCase
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.screens.map.readableDate
 import mn.openlocations.ui.views.AppBarLoader
@@ -136,6 +139,9 @@ private fun AmenityDetail(
     onOpenInMaps: () -> Unit
 ) {
     val imageAlpha = 0.6f
+
+    val coroutineScope = rememberCoroutineScope()
+    val sendFeedbackUseCase = SendFeedbackUseCase()
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -315,8 +321,28 @@ private fun AmenityDetail(
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
-                Button(onClick = onAmenityProblem) {
-                    Text(text = stringResource(R.string.fountain_detail_something_wrong_button))
+                Button(onClick = {
+                    coroutineScope.launch {
+                        sendFeedbackUseCase(
+                            amenity.id,
+                            true,
+                            "empty"
+                        )
+                    }
+                }) {
+                    Text("Good")
+                }
+
+                Button(onClick = {
+                    coroutineScope.launch {
+                        sendFeedbackUseCase(
+                            amenity.id,
+                            false,
+                            "empty"
+                        )
+                    }
+                }) {
+                    Text("Bad")
                 }
             }
         }
