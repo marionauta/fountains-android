@@ -42,12 +42,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
+import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
@@ -325,7 +327,7 @@ private fun AmenityDetail(
                     coroutineScope.launch {
                         sendFeedbackUseCase(
                             amenity.id,
-                            true,
+                            FeedbackState.Good,
                             "empty"
                         )
                     }
@@ -337,7 +339,7 @@ private fun AmenityDetail(
                     coroutineScope.launch {
                         sendFeedbackUseCase(
                             amenity.id,
-                            false,
+                            FeedbackState.Bad,
                             "empty"
                         )
                     }
