@@ -8,12 +8,13 @@ import mn.openlocations.networking.KnownUris
 internal class FeedbackDataSource {
     private val client = ApiClient(baseUrl = KnownUris.reporting)
 
-    suspend fun report(osmId: String, state: FeedbackState, comment: String) {
+    suspend fun report(osmId: String, state: FeedbackState, comment: String, authorId: String) {
         client.form(
             route = FeedbackRoute(
                 osmId = osmId,
                 state = state,
                 comment = comment,
+                authorId = authorId,
             )
         )
     }

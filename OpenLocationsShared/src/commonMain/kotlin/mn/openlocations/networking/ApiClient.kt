@@ -58,6 +58,11 @@ class ApiClient(val baseUrl: String, logLevel: LogLevel = LogLevel.NONE) {
                 url {
                     appendPathSegments(route.route)
                 }
+                headers {
+                    for (header in route.headers) {
+                        append(header.key, header.value)
+                    }
+                }
             }
         } catch (exception: Exception) {
             println(exception.message)
