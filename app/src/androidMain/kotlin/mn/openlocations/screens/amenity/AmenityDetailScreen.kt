@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +28,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,7 +42,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import kotlinx.coroutines.launch
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
@@ -53,9 +51,9 @@ import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.FountainRepository
-import mn.openlocations.domain.repositories.StringStorageRepository
-import mn.openlocations.domain.usecases.SendFeedbackUseCase
 import mn.openlocations.networking.KnownUris
+import mn.openlocations.screens.feedback.FeedbackButton
+import mn.openlocations.screens.feedback.FeedbackScreen
 import mn.openlocations.screens.map.readableDate
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
@@ -64,6 +62,7 @@ import mn.openlocations.ui.views.EmptyFallback
 @Composable
 fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
     val (fountain, setFountain) = remember { mutableStateOf<Amenity?>(null) }
+    val (feedback, setFeedback) = remember { mutableStateOf<FeedbackState?>(null) }
 
     LaunchedEffect(fountainId) {
         if (fountainId == null) {
@@ -74,12 +73,8 @@ fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
     }
 
     val uriHandler = LocalUriHandler.current
-    fun onFountainProblem() {
-        var uri = KnownUris.help("corregir")
-        if (fountain != null) {
-            uri += "&lat=${fountain.location.latitude}&lng=${fountain.location.longitude}"
-        }
-        uriHandler.openUri(uri)
+    fun onAmenityFeedback(state: FeedbackState) {
+        setFeedback(state)
     }
 
     fun onOpenInMaps() {
@@ -118,9 +113,16 @@ fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
             } else {
                 AmenityDetail(
                     amenity = fountain,
-                    onAmenityProblem = ::onFountainProblem,
+                    onAmenityFeedback = ::onAmenityFeedback,
                     onOpenInMaps = ::onOpenInMaps,
                 )
+                if (feedback != null) {
+                    FeedbackScreen(
+                        amenityId = fountain.id,
+                        state = feedback,
+                        onClose = { setFeedback(null) }
+                    )
+                }
             }
         }
     }
@@ -138,13 +140,10 @@ private fun NoFountain() {
 @Composable
 private fun AmenityDetail(
     amenity: Amenity,
-    onAmenityProblem: () -> Unit,
+    onAmenityFeedback: (state: FeedbackState) -> Unit,
     onOpenInMaps: () -> Unit
 ) {
     val imageAlpha = 0.6f
-
-    val coroutineScope = rememberCoroutineScope()
-    val sendFeedbackUseCase = SendFeedbackUseCase(StringStorageRepository(LocalContext.current))
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -321,31 +320,32 @@ private fun AmenityDetail(
         item(span = { GridItemSpan(maxLineSpan) }) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(top = 8.dp),
             ) {
-                Button(onClick = {
-                    coroutineScope.launch {
-                        sendFeedbackUseCase(
-                            amenity.id,
-                            FeedbackState.Good,
-                            "empty"
-                        )
-                    }
-                }) {
-                    Text("Good")
-                }
+                Text(
+                    text = stringResource(R.string.amenity_detail_feedback_title),
+                    style = MaterialTheme.typography.subtitle2,
+                )
 
-                Button(onClick = {
-                    coroutineScope.launch {
-                        sendFeedbackUseCase(
-                            amenity.id,
-                            FeedbackState.Bad,
-                            "empty"
-                        )
-                    }
-                }) {
-                    Text("Bad")
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                ) {
+                    FeedbackButton(
+                        modifier = Modifier.weight(1f, fill = true),
+                        variant = FeedbackState.Good,
+                        selected = false,
+                        onClick = onAmenityFeedback,
+                    )
+                    FeedbackButton(
+                        modifier = Modifier.weight(1f, fill = true),
+                        variant = FeedbackState.Bad,
+                        selected = false,
+                        onClick = onAmenityFeedback,
+                    )
                 }
             }
         }

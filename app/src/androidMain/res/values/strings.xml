@@ -49,4 +49,8 @@
     <string name="fee_value_no_title">Free</string>
     <string name="fee_value_unknown_title">Fee unknown</string>
     <string name="fee_value_yes_title">Requires payment</string>
+    <string name="amenity_detail_feedback_title">How accurate is this description?</string>
+    <string name="feedback_screen_title">Send feedback</string>
+    <string name="feedback_screen_send">Send</string>
+    <string name="feedback_screen_comment_placeholder">Leave a comment explaining your feedback.</string>
 </resources>

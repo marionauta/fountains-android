@@ -43,4 +43,8 @@
     <string name="fee_value_no_title">Gratis</string>
     <string name="fee_value_unknown_title">Tarifa desconocida</string>
     <string name="fee_value_yes_title">Requiere pago</string>
+    <string name="amenity_detail_feedback_title">¿Es buena la descripción?</string>
+    <string name="feedback_screen_title">Enviar comentario</string>
+    <string name="feedback_screen_send">Enviar</string>
+    <string name="feedback_screen_comment_placeholder">Deja un comentario explicativo.</string>
 </resources>
