@@ -14,12 +14,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
@@ -95,13 +95,21 @@ fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
                             is Amenity.Restroom -> stringResource(R.string.amenity_detail_restroom_title)
                         }
                     }
-                    ?.let { Text(it, maxLines = 1, overflow = TextOverflow.Ellipsis) }
+                    ?.let { Text(it, maxLines = 2, overflow = TextOverflow.Ellipsis) }
             },
             navigationIcon = {
                 IconButton(onClick = onClose) {
                     Icon(
                         Icons.Rounded.Close,
                         contentDescription = stringResource(R.string.general_close),
+                    )
+                }
+            },
+            actions = {
+                TextButton(onClick = ::onOpenInMaps) {
+                    Text(
+                        text = stringResource(R.string.fountain_detail_open_maps_button),
+                        color = MaterialTheme.colors.onPrimary,
                     )
                 }
             }
@@ -114,7 +122,6 @@ fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
                 AmenityDetail(
                     amenity = fountain,
                     onAmenityFeedback = ::onAmenityFeedback,
-                    onOpenInMaps = ::onOpenInMaps,
                 )
                 if (feedback != null) {
                     FeedbackScreen(
@@ -141,7 +148,6 @@ private fun NoFountain() {
 private fun AmenityDetail(
     amenity: Amenity,
     onAmenityFeedback: (state: FeedbackState) -> Unit,
-    onOpenInMaps: () -> Unit
 ) {
     val imageAlpha = 0.6f
 
@@ -302,18 +308,6 @@ private fun AmenityDetail(
                     },
                     badge = {},
                 )
-            }
-        }
-
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth(),
-            ) {
-                Button(onClick = onOpenInMaps) {
-                    Text(text = stringResource(R.string.fountain_detail_open_maps_button))
-                }
             }
         }
 
