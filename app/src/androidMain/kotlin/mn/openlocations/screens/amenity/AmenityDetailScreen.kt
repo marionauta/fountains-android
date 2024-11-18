@@ -60,27 +60,36 @@ import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
 
 @Composable
-fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
-    val (fountain, setFountain) = remember { mutableStateOf<Amenity?>(null) }
+fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
+    val (amenity, setAmenity) = remember { mutableStateOf<Amenity?>(null) }
     val (feedback, setFeedback) = remember { mutableStateOf<FeedbackState?>(null) }
 
-    LaunchedEffect(fountainId) {
-        if (fountainId == null) {
+    LaunchedEffect(amenityId) {
+        if (amenityId == null) {
             return@LaunchedEffect
         }
         val repository = FountainRepository()
-        setFountain(repository.get(fountainId = fountainId))
+        setAmenity(repository.get(fountainId = amenityId))
     }
 
-    val uriHandler = LocalUriHandler.current
     fun onAmenityFeedback(state: FeedbackState) {
         setFeedback(state)
     }
 
+    val uriHandler = LocalUriHandler.current
+
     fun onOpenInMaps() {
         var uri = KnownUris.googleMaps
-        if (fountain != null) {
-            uri += "?api=1&query=${fountain.location.latitude},${fountain.location.longitude}"
+        amenity?.let {
+            uri += "?api=1&query=${it.location.latitude},${it.location.longitude}"
+        }
+        uriHandler.openUri(uri)
+    }
+
+    fun onOpenFixGuide() {
+        var uri = KnownUris.help("fix")
+        amenity?.let {
+            uri += "&lat=${it.location.latitude}&lng=${it.location.longitude}"
         }
         uriHandler.openUri(uri)
     }
@@ -88,9 +97,9 @@ fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
     Scaffold(topBar = {
         TopAppBar(
             title = {
-                fountain?.name
+                amenity?.name
                     ?.ifBlank {
-                        when (fountain) {
+                        when (amenity) {
                             is Amenity.Fountain -> stringResource(R.string.amenity_detail_fountain_title)
                             is Amenity.Restroom -> stringResource(R.string.amenity_detail_restroom_title)
                         }
@@ -116,20 +125,21 @@ fun AmenityDetailScreen(fountainId: String?, onClose: () -> Unit) {
         )
     }) {
         Box(modifier = Modifier.padding(it)) {
-            if (fountain == null) {
+            if (amenity == null) {
                 NoFountain()
             } else {
                 AmenityDetail(
-                    amenity = fountain,
+                    amenity = amenity,
                     onAmenityFeedback = ::onAmenityFeedback,
+                    onOpenFixGuide = ::onOpenFixGuide,
                 )
-                if (feedback != null) {
-                    FeedbackScreen(
-                        amenityId = fountain.id,
-                        state = feedback,
-                        onClose = { setFeedback(null) }
-                    )
-                }
+            }
+            if (feedback != null && amenityId != null) {
+                FeedbackScreen(
+                    amenityId = amenityId,
+                    state = feedback,
+                    onClose = { setFeedback(null) }
+                )
             }
         }
     }
@@ -148,6 +158,7 @@ private fun NoFountain() {
 private fun AmenityDetail(
     amenity: Amenity,
     onAmenityFeedback: (state: FeedbackState) -> Unit,
+    onOpenFixGuide: () -> Unit,
 ) {
     val imageAlpha = 0.6f
 
@@ -159,7 +170,10 @@ private fun AmenityDetail(
     ) {
         if (amenity.properties.mapillaryId != null) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                AmenityImageRow(mapillaryId = amenity.properties.mapillaryId)
+                AmenityImageRow(
+                    amenity = amenity,
+                    mapillaryId = amenity.properties.mapillaryId,
+                )
             }
         }
 
@@ -341,13 +355,17 @@ private fun AmenityDetail(
                         onClick = onAmenityFeedback,
                     )
                 }
+
+                TextButton(onOpenFixGuide) {
+                    Text(stringResource(R.string.amenity_detail_how_to_fix_button))
+                }
             }
         }
     }
 }
 
 @Composable
-private fun AmenityImageRow(mapillaryId: String?) {
+private fun AmenityImageRow(amenity: Amenity, mapillaryId: String?) {
     if (mapillaryId == null) return
 
     val imageUrl by produceMapillaryImageUrl(mapillaryId = mapillaryId)
@@ -356,7 +374,12 @@ private fun AmenityImageRow(mapillaryId: String?) {
     Box(contentAlignment = Alignment.Center) {
         AsyncImage(
             model = imageUrl,
-            contentDescription = stringResource(R.string.fountain_detail_photo_description),
+            contentDescription = stringResource(
+                when (amenity) {
+                    is Amenity.Fountain -> R.string.amenity_detail_fountain_photo_description
+                    is Amenity.Restroom -> R.string.amenity_detail_restroom_photo_description
+                }
+            ),
             onState = { isLoadingImage = it is AsyncImagePainter.State.Loading },
             contentScale = ContentScale.Crop,
             modifier = Modifier

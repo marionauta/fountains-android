@@ -8,14 +8,14 @@
     <string name="app_info_app_version_title">Versión de la app</string>
     <string name="fountain_detail_not_found_title">Sin fuente</string>
     <string name="fountain_detail_not_found_description">Fuente desconocida. Vuelve.</string>
-    <string name="fountain_detail_photo_description">Una foto de la fuente.</string>
+    <string name="amenity_detail_fountain_photo_description">Una foto de la fuente.</string>
+    <string name="amenity_detail_restroom_photo_description">Una foto del baño.</string>
     <string name="fountain_detail_bottle_title">Rellenado de botellas</string>
     <string name="fountain_detail_bottle_description">Una botella de agua se puede llenar fácilmente.</string>
     <string name="fountain_detail_wheelchair_title">Accesible</string>
     <string name="fountain_detail_wheelchair_description">La fuente se puede acceder con silla de ruedas.</string>
     <string name="fountain_detail_check_date_title">Comprobado</string>
     <string name="fountain_detail_check_date_description">La  última vez que alguien comprobó esta fuente.</string>
-    <string name="fountain_detail_something_wrong_button">¿Algún error?</string>
     <string name="map_too_far_away">Demasiado lejos. Haz zoom o edita el zoom en los ajustes, por favor.</string>
     <string name="map_location_disabled">Los servicios de ubicación están deshabilitados. Habilitalos para centrarte en el mapa.</string>
     <string name="property_value_no">No</string>
@@ -47,4 +47,5 @@
     <string name="feedback_screen_title">Enviar comentario</string>
     <string name="feedback_screen_send">Enviar</string>
     <string name="feedback_screen_comment_placeholder">Deja un comentario explicativo.</string>
+    <string name="amenity_detail_how_to_fix_button">¿Quieres arreglar esto?</string>
 </resources>

@@ -10,7 +10,7 @@ class KnownUris {
         const val overpass = "https://overpass-api.de/api"
         const val googleMaps = "https://www.google.com/maps/search/"
 
-        fun help(slug: String): String = "$website/help/${slug}?ref=AguApp"
+        fun help(slug: String): String = "$website/help/${slug}/?ref=AguApp"
         fun website(): String = "$website?ref=AguApp"
     }
 }

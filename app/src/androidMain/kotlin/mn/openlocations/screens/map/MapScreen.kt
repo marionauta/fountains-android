@@ -75,8 +75,6 @@ import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.ColorMarkerFountain
 import mn.openlocations.ui.theme.ColorMarkerRestroom
-import mn.openlocations.ui.theme.ColorPrimary
-import mn.openlocations.ui.theme.ColorSecondary
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
@@ -96,9 +94,9 @@ fun MapScreen() {
     val isLoadingFountains = fountainsResult.isLoading
     val fountains = fountainsResult.response
 
-    var selectedFountainId by rememberSaveable { mutableStateOf<String?>(null) }
-    fun deselectFountain() {
-        selectedFountainId = null
+    var selectedAmenityId by rememberSaveable { mutableStateOf<String?>(null) }
+    fun deselectAmenity() {
+        selectedAmenityId = null
     }
     val (needsLocation, setNeedsLocation) = rememberSaveable { mutableStateOf(true) }
 
@@ -144,7 +142,7 @@ fun MapScreen() {
                     amenities = fountains?.amenities ?: emptyList(),
                     setBounds = setBounds,
                     setNeedsLocation = setNeedsLocation,
-                    onMarkerClick = { amenity -> selectedFountainId = amenity.id },
+                    onMarkerClick = { amenity -> selectedAmenityId = amenity.id },
                 )
             }
             if (fountainsResult.tooFarAway) {
@@ -165,12 +163,12 @@ fun MapScreen() {
                 }
             }
             Modal(
-                isOpen = selectedFountainId != null,
-                onClose = ::deselectFountain,
+                isOpen = selectedAmenityId != null,
+                onClose = ::deselectAmenity,
             ) {
                 AmenityDetailScreen(
-                    fountainId = selectedFountainId,
-                    onClose = ::deselectFountain,
+                    amenityId = selectedAmenityId,
+                    onClose = ::deselectAmenity,
                 )
             }
             AppInfoModal(
