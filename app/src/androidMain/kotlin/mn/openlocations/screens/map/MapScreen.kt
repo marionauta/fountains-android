@@ -1,6 +1,8 @@
 package mn.openlocations.screens.map
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.location.LocationManager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentColor
@@ -74,8 +77,8 @@ import mn.openlocations.ui.theme.ColorMarkerRestroom
 import mn.openlocations.ui.theme.Typography
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
+import mn.openlocations.ui.views.LocationProblemBannerView
 import mn.openlocations.ui.views.Modal
-import mn.openlocations.ui.views.NeedsLocationBannerView
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -94,7 +97,8 @@ fun MapScreen() {
     fun deselectAmenity() {
         selectedAmenityId = null
     }
-    val (needsLocation, setNeedsLocation) = rememberSaveable { mutableStateOf(true) }
+
+    var locationProblem by rememberSaveable { mutableStateOf(LocationProblem.None) }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -133,11 +137,11 @@ fun MapScreen() {
         Box(modifier = Modifier.padding(it)) {
             Column {
                 BannerView(unitId = BuildConfig.ADMOB_MAP_AD_UNIT_ID)
-                NeedsLocationBannerView(isLocationEnabled = needsLocation)
+                LocationProblemBannerView(locationProblem = locationProblem)
                 Map(
                     amenities = fountains?.amenities ?: emptyList(),
                     setBounds = setBounds,
-                    setNeedsLocation = setNeedsLocation,
+                    setLocationProblem = { locationProblem = it },
                     onMarkerClick = { amenity -> selectedAmenityId = amenity.id },
                 )
             }
@@ -153,6 +157,7 @@ fun MapScreen() {
                         color = MaterialTheme.colors.onPrimary,
                         modifier = Modifier
                             .offset(y = 100.dp)
+                            .clip(RoundedCornerShape(8.dp))
                             .background(Color.Black.copy(alpha = .75f))
                             .padding(12.dp),
                     )
@@ -184,11 +189,15 @@ fun MapScreen() {
 private fun Map(
     amenities: List<Amenity>,
     setBounds: (LatLngBounds) -> Unit,
-    setNeedsLocation: (Boolean) -> Unit,
+    setLocationProblem: (LocationProblem) -> Unit,
     onMarkerClick: (Amenity) -> Unit,
 ) {
-    val fineLocationPermission =
-        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    val context = LocalContext.current
+    val isLocationEnabled = context.isLocationEnabled()
+
+    val fineLocationPermission = rememberPermissionState(
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    )
     val locationPermissions = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -196,9 +205,13 @@ private fun Map(
         )
     )
     val isMyLocationEnabled = locationPermissions.permissions.any { it.status.isGranted }
-    LaunchedEffect(isMyLocationEnabled, locationPermissions) {
+    LaunchedEffect(isLocationEnabled, isMyLocationEnabled, locationPermissions) {
+        if (!isLocationEnabled) {
+            setLocationProblem(LocationProblem.LocationIsOff)
+            return@LaunchedEffect
+        }
         val fine = isMyLocationEnabled && !locationPermissions.shouldShowRationale
-        setNeedsLocation(fine)
+        setLocationProblem(if (fine) LocationProblem.None else LocationProblem.PermissionNeeded)
     }
 
     val zoomLevel = 15f
@@ -206,7 +219,6 @@ private fun Map(
         position = CameraPosition.fromLatLngZoom(LatLng(.0, .0), 2f)
     }
 
-    val context = LocalContext.current
     LaunchedEffect(isMyLocationEnabled) {
         if (isMyLocationEnabled) {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
@@ -398,3 +410,8 @@ val Instant.readableDate: String
         val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
         return dateTime.format(formatter)
     }
+
+fun Context.isLocationEnabled(): Boolean {
+    val manager = this.getSystemService(LocationManager::class.java)
+    return manager.isLocationEnabled
+}

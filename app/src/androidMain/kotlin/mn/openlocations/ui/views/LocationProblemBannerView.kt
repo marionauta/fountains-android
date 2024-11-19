@@ -10,10 +10,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import mn.openlocations.R
+import mn.openlocations.screens.map.LocationProblem
 
 @Composable
-fun NeedsLocationBannerView(isLocationEnabled: Boolean) {
-    if (isLocationEnabled) {
+fun LocationProblemBannerView(locationProblem: LocationProblem) {
+    if (locationProblem == LocationProblem.None) {
         return
     }
     Text(
@@ -21,7 +22,13 @@ fun NeedsLocationBannerView(isLocationEnabled: Boolean) {
             .background(Color.Black)
             .fillMaxWidth()
             .padding(all = 16.dp),
-        text = stringResource(R.string.map_location_disabled),
+        text = stringResource(
+            when (locationProblem) {
+                LocationProblem.LocationIsOff -> R.string.map_location_disabled
+                LocationProblem.PermissionNeeded -> R.string.map_location_permission_denied
+                LocationProblem.None -> TODO() // unreachable
+            }
+        ),
         color = Color.White,
     )
 }

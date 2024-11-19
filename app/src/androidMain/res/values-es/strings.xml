@@ -17,7 +17,7 @@
     <string name="fountain_detail_check_date_title">Comprobado</string>
     <string name="fountain_detail_check_date_description">La  última vez que alguien comprobó esta fuente.</string>
     <string name="map_too_far_away">Demasiado lejos. Haz zoom o edita el zoom en los ajustes, por favor.</string>
-    <string name="map_location_disabled">Los servicios de ubicación están deshabilitados. Habilitalos para centrarte en el mapa.</string>
+    <string name="map_location_disabled">Los servicios de ubicación están deshabilitados. Habilítalos para centrarte en el mapa.</string>
     <string name="property_value_no">No</string>
     <string name="property_value_limited">Limitado</string>
     <string name="property_value_yes">Sí</string>
@@ -28,6 +28,7 @@
     <string name="app_info_easteregg_title">Tonto</string>
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>
+    <string name="map_location_permission_denied">El permiso de ubicación fue rechazado. Acéptalo para centrarte en el mapa.</string>
     <string name="fountain_detail_open_maps_button">Abrir en Maps</string>
     <string name="amenity_detail_fountain_title">Fuente</string>
     <string name="amenity_detail_restroom_title">Baño</string>
