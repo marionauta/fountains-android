@@ -10,8 +10,8 @@ class PreferencesRepository(context: Context) {
     companion object {
         private const val preferencesKey = "${BuildConfig.APPLICATION_ID}.PREFERENCES"
         private const val adsKey = "${BuildConfig.APPLICATION_ID}.ADS.${BuildConfig.VERSION_CODE}"
-        private const val mapClusterKey = "${BuildConfig.APPLICATION_ID}.CONFIG.CLUSTER"
-        private const val mapMaxDistanceKey = "${BuildConfig.APPLICATION_ID}.CONFIG.MAP_MAX_DISTANCE"
+        private const val mapMaxDistanceKey =
+            "${BuildConfig.APPLICATION_ID}.CONFIG.MAP_MAX_DISTANCE"
     }
 
     private val preferences = context.getSharedPreferences(preferencesKey, Context.MODE_PRIVATE)
@@ -28,18 +28,6 @@ class PreferencesRepository(context: Context) {
         val current = preferences.getBoolean(adsKey, true)
         with(preferences.edit()) {
             putBoolean(adsKey, !current)
-            apply()
-        }
-    }
-
-    fun getMapClusteringEnabled(): Flow<Boolean> {
-        return flowing.getBoolean(mapClusterKey, false).asFlow()
-    }
-
-    fun toggleMapClustering() {
-        val current = preferences.getBoolean(mapClusterKey, false)
-        with(preferences.edit()) {
-            putBoolean(mapClusterKey, !current)
             apply()
         }
     }

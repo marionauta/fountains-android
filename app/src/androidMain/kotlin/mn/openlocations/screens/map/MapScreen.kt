@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -54,8 +53,6 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapEffect
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
-import com.google.maps.android.compose.MarkerComposable
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.datetime.Instant
@@ -67,7 +64,6 @@ import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.Location
-import mn.openlocations.domain.producers.mapClusteringEnabledProducer
 import mn.openlocations.domain.producers.produceFountains
 import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.amenity.AmenityDetailScreen
@@ -228,16 +224,9 @@ private fun Map(
         }
     }
 
-    val clusteringEnabled by mapClusteringEnabledProducer()
-
     var clusterFountains by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     var clusterRestrooms by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     LaunchedEffect(amenities) {
-        if (!clusteringEnabled) {
-            clusterFountains = emptyList()
-            clusterRestrooms = emptyList()
-            return@LaunchedEffect
-        }
         clusterFountains =
             amenities.filter { it is Amenity.Fountain }.map { AmenityClusterItem(it) }
         clusterRestrooms =
@@ -260,37 +249,21 @@ private fun Map(
                 setBounds(map.projection.visibleRegion.latLngBounds)
             }
         }
-        if (clusteringEnabled) {
-            for (cluster in listOf(clusterFountains, clusterRestrooms)) {
-                Clustering(
-                    items = cluster,
-                    onClusterClick = { true }, // Do nothing
-                    onClusterItemClick = {
-                        onMarkerClick(it.amenity)
-                        return@Clustering true
-                    },
-                    clusterContent = { cluster ->
-                        ClusterContent(cluster = cluster)
-                    },
-                    clusterItemContent = {
-                        MarkerContent(amenity = it.amenity)
-                    },
-                )
-            }
-        } else {
-            for (amenity in amenities) {
-                MarkerComposable(
-                    state = remember { MarkerState(position = amenity.location.position) },
-                    title = amenity.name,
-                    anchor = Offset(.5f, .5f),
-                    onClick = {
-                        onMarkerClick(amenity)
-                        return@MarkerComposable true
-                    },
-                ) {
-                    MarkerContent(amenity = amenity)
-                }
-            }
+        for (cluster in listOf(clusterFountains, clusterRestrooms)) {
+            Clustering(
+                items = cluster,
+                onClusterClick = { true }, // Do nothing
+                onClusterItemClick = {
+                    onMarkerClick(it.amenity)
+                    return@Clustering true
+                },
+                clusterContent = { cluster ->
+                    ClusterContent(cluster = cluster)
+                },
+                clusterItemContent = {
+                    MarkerContent(amenity = it.amenity)
+                },
+            )
         }
     }
 }

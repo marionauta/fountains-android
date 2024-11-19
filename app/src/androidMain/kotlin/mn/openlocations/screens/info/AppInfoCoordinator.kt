@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
-import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -28,7 +27,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
-import mn.openlocations.domain.producers.mapClusteringEnabledProducer
 import mn.openlocations.domain.producers.mapMaxDistanceProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.networking.KnownUris
@@ -49,7 +47,6 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
 
     val context = LocalContext.current
     val repository = PreferencesRepository(context)
-    val isClusteringEnabled by mapClusteringEnabledProducer()
     val mapMaxDistance by mapMaxDistanceProducer()
     var localMapMaxDistance by rememberSaveable { mutableFloatStateOf(4f) }
     LaunchedEffect(mapMaxDistance) {
@@ -76,19 +73,6 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
                     onValueChange = { localMapMaxDistance = it },
                     onValueChangeFinished = { setMapMaxDistance(km = localMapMaxDistance) },
                 )
-            }
-        ),
-        AppInfo(
-            title = stringResource(R.string.app_info_map_clustering_title),
-            content = stringResource(R.string.app_info_map_clustering_content),
-            trailing = {
-                Checkbox(
-                    checked = isClusteringEnabled,
-                    onCheckedChange = { repository.toggleMapClustering() },
-                )
-            },
-            onClick = {
-                repository.toggleMapClustering()
             }
         ),
         AppInfo(
