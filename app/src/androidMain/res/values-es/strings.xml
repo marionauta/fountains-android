@@ -47,4 +47,7 @@
     <string name="feedback_screen_send">Enviar</string>
     <string name="feedback_screen_comment_placeholder">Deja un comentario explicativo.</string>
     <string name="amenity_detail_how_to_fix_button">¿Quieres arreglar esto?</string>
+    <string name="amenity_detail_access_title">Acceso</string>
+    <string name="access_value_customers_title">Sólo clientes</string>
+    <string name="access_value_permissive_title">Permisivo</string>
 </resources>

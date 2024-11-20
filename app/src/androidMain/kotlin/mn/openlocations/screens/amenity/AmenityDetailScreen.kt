@@ -44,13 +44,14 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
+import mn.openlocations.domain.models.AccessValue
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
-import mn.openlocations.domain.repositories.FountainRepository
+import mn.openlocations.domain.repositories.AmenityRepository
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.screens.feedback.FeedbackButton
 import mn.openlocations.screens.feedback.FeedbackScreen
@@ -68,8 +69,8 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
         if (amenityId == null) {
             return@LaunchedEffect
         }
-        val repository = FountainRepository()
-        setAmenity(repository.get(fountainId = amenityId))
+        val repository = AmenityRepository()
+        setAmenity(repository.get(amenityId = amenityId))
     }
 
     fun onAmenityFeedback(state: FeedbackState) {
@@ -209,6 +210,33 @@ private fun AmenityDetail(
                     }
                 }
             )
+        }
+
+        if (amenity.properties.access != AccessValue.Yes) {
+            item {
+                AmenityPropertyCell(
+                    title = stringResource(R.string.amenity_detail_access_title),
+                    subtitle = stringResource(
+                        when (amenity.properties.access) {
+                            AccessValue.Customers -> R.string.access_value_customers_title
+                            AccessValue.Permissive -> R.string.access_value_permissive_title
+                            AccessValue.Unknown -> R.string.property_value_unknown
+                            else -> 0 // unreachable
+                        }
+                    ),
+                    image = {},
+                    badge = {
+                        AmenityPropertyBadge(
+                            when (amenity.properties.access) {
+                                AccessValue.No, AccessValue.Private -> Variant.Negative
+                                AccessValue.Permissive, AccessValue.Customers -> Variant.Limited
+                                AccessValue.Yes -> Variant.Positive
+                                AccessValue.Unknown -> Variant.Unknown
+                            }
+                        )
+                    }
+                )
+            }
         }
 
         when (amenity) {

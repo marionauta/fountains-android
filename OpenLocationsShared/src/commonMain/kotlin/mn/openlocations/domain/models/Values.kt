@@ -8,6 +8,15 @@ enum class WheelchairValue {
     UNKNOWN, NO, LIMITED, YES
 }
 
+enum class AccessValue {
+    Unknown,
+    No,
+    Private,
+    Customers,
+    Permissive,
+    Yes,
+}
+
 sealed interface FeeValue {
     data object Unknown : FeeValue
     data object No : FeeValue

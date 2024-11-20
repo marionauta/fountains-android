@@ -4,9 +4,9 @@ import mn.openlocations.data.models.AmenitiesResponseDto
 import mn.openlocations.data.models.OverpassNode
 
 // TODO: Improve this "in memory" cache
-private var fountainsResponse: AmenitiesResponseDto? = null
+private var amenitiesResponse: AmenitiesResponseDto? = null
 
-internal class FountainDataSource {
+internal class AmenityDataSource {
     private val overpassDataSource = OverpassDataSource()
 
     suspend fun inside(
@@ -17,14 +17,14 @@ internal class FountainDataSource {
     ): AmenitiesResponseDto? {
         val response =
             overpassDataSource.getNodes(north = north, east = east, south = south, west = west)
-                ?: return fountainsResponse
-        fountainsResponse = AmenitiesResponseDto(
+                ?: return amenitiesResponse
+        amenitiesResponse = AmenitiesResponseDto(
             lastUpdated = response.lastUpdated(),
-            fountains = response.elements,
+            amenities = response.elements,
         )
-        return fountainsResponse
+        return amenitiesResponse
     }
 
-    fun get(fountainId: String): OverpassNode? =
-        fountainsResponse?.fountains?.firstOrNull { it.id.toString() == fountainId }
+    fun get(amenityId: String): OverpassNode? =
+        amenitiesResponse?.amenities?.firstOrNull { it.id.toString() == amenityId }
 }

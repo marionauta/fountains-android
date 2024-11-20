@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class AmenitiesResponseDto(
     val lastUpdated: Instant,
-    val fountains: List<OverpassNode>,
+    val amenities: List<OverpassNode>,
 )

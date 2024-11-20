@@ -5,6 +5,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import mn.openlocations.domain.models.AccessValue
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.PortableDate
@@ -21,6 +22,11 @@ internal fun String?.parseWheelchair(): WheelchairValue = try {
     WheelchairValue.valueOf(this?.uppercase() ?: "unknown")
 } catch (_: IllegalArgumentException) {
     WheelchairValue.UNKNOWN
+}
+
+internal fun String?.parseAccess(): AccessValue {
+    return AccessValue.entries.firstOrNull { it.toString().lowercase() == this }
+        ?: AccessValue.Unknown
 }
 
 internal fun String?.parseFee(amount: String?): FeeValue = when (this) {

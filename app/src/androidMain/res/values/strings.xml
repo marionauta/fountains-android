@@ -53,4 +53,7 @@
     <string name="feedback_screen_send">Send</string>
     <string name="feedback_screen_comment_placeholder">Leave a comment explaining your feedback.</string>
     <string name="amenity_detail_how_to_fix_button">Want to fix this?</string>
+    <string name="amenity_detail_access_title">Access</string>
+    <string name="access_value_customers_title">Customers only</string>
+    <string name="access_value_permissive_title">Permissive</string>
 </resources>
