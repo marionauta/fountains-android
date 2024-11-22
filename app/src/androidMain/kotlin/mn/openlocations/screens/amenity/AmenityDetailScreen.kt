@@ -216,15 +216,21 @@ private fun AmenityDetail(
             item {
                 AmenityPropertyCell(
                     title = stringResource(R.string.amenity_detail_access_title),
-                    subtitle = stringResource(
-                        when (amenity.properties.access) {
-                            AccessValue.Customers -> R.string.access_value_customers_title
-                            AccessValue.Permissive -> R.string.access_value_permissive_title
-                            AccessValue.Unknown -> R.string.property_value_unknown
-                            else -> 0 // unreachable
-                        }
-                    ),
-                    image = {},
+                    subtitle = when (amenity.properties.access) {
+                        AccessValue.Customers -> stringResource(R.string.access_value_customers_title)
+                        AccessValue.Permissive -> stringResource(R.string.access_value_permissive_title)
+                        AccessValue.Unknown -> stringResource(R.string.property_value_unknown)
+                        else -> null // unreachable
+                    },
+                    image = {
+                        Image(
+                            painter = painterResource(R.drawable.property_access),
+                            contentDescription = stringResource(R.string.amenity_detail_access_title),
+                            alpha = imageAlpha,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                            modifier = it,
+                        )
+                    },
                     badge = {
                         AmenityPropertyBadge(
                             when (amenity.properties.access) {
