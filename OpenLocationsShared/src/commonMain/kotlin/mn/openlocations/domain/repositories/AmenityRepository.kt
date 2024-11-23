@@ -23,11 +23,11 @@ class AmenityRepository {
                 lastUpdated = it.lastUpdated.toPortableDate(),
                 amenities = it.amenities
                     .mapNotNull(OverpassNode::intoDomain)
-                    .filter {
+                    .filter { amenity ->
                         !listOf(
                             AccessValue.No,
                             AccessValue.Private
-                        ).contains(it.properties.access)
+                        ).contains(amenity.properties.access)
                     },
             )
         }

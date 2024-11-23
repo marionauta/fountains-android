@@ -7,6 +7,7 @@ import androidx.compose.runtime.produceState
 import mn.openlocations.domain.models.AmenitiesResponse
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.AmenityRepository
+import mn.openlocations.domain.usecases.GetAmenitiesUseCase
 import mn.openlocations.library.debounce
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -22,7 +23,7 @@ data class ProduceFountainsResult(
 @Composable
 fun produceFountains(bounds: Pair<Location, Location>?): State<ProduceFountainsResult> {
     val tooFarDistance by mapMaxDistanceProducer()
-    val repository = AmenityRepository()
+    val getAmenitiesUseCase = GetAmenitiesUseCase()
     return produceState(initialValue = ProduceFountainsResult(isLoading = true), bounds) {
         if (bounds == null) {
             return@produceState
@@ -42,7 +43,7 @@ fun produceFountains(bounds: Pair<Location, Location>?): State<ProduceFountainsR
             coroutineScope = this,
         ) {
             value = value.copy(isLoading = true)
-            val response = repository.inside(it.first, bounds.second)
+            val response = getAmenitiesUseCase(it.first, bounds.second)
             return@debounce ProduceFountainsResult(response = response)
         }(bounds)
         value = debounced?.await() ?: ProduceFountainsResult()
