@@ -6,11 +6,7 @@ import mn.openlocations.networking.ApiClient
 import mn.openlocations.networking.KnownUris
 
 class OverpassDataSource {
-    companion object {
-        private const val baseUrl = KnownUris.overpass
-    }
-
-    private val apiClient = ApiClient(baseUrl = baseUrl)
+    private val apiClient = ApiClient(baseUrl = KnownUris.overpass)
 
     suspend fun getNodes(
         north: Double,

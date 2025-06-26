@@ -7,16 +7,15 @@ import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.AmenityRepository
 import mn.openlocations.domain.repositories.FilterSettingsRepository
 import mn.openlocations.domain.repositories.FilterSettingsRepositoryImpl
+import kotlin.native.ObjCName
 
 class GetAmenitiesUseCase(
     private val amenityRepository: AmenityRepository = AmenityRepository(),
     private val settingsRepository: FilterSettingsRepository = FilterSettingsRepositoryImpl(),
 ) {
-    suspend operator fun invoke(northEast: Location, southWest: Location): AmenitiesResponse? {
-        return callAsFunction(northEast = northEast, southWest = southWest)
-    }
 
-    suspend fun callAsFunction(northEast: Location, southWest: Location): AmenitiesResponse? {
+    @ObjCName("callAsFunction")
+    suspend operator fun invoke(northEast: Location, southWest: Location): AmenitiesResponse? {
         val settings = settingsRepository.getFilterSettings()
         val response = amenityRepository.inside(northEast = northEast, southWest = southWest)
         return response?.let {
