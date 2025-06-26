@@ -27,7 +27,7 @@ kotlin {
             xcf.add(this)
         }
     }
-    
+
     sourceSets {
         all {
             languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
@@ -51,7 +51,7 @@ kotlin {
 
 android {
     namespace = "mn.openlocations.shared"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = libs.versions.android.targetSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
