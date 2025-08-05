@@ -6,16 +6,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,8 +35,10 @@ import mn.openlocations.R
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.repositories.StringStorageRepository
 import mn.openlocations.domain.usecases.SendFeedbackUseCase
+import mn.openlocations.ui.theme.customColors
 import mn.openlocations.ui.views.Modal
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedbackScreen(
     amenityId: String,
@@ -52,6 +56,7 @@ fun FeedbackScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
+                    colors = TopAppBarDefaults.customColors,
                     title = { Text(stringResource(R.string.feedback_screen_title)) },
                     navigationIcon = {
                         IconButton(onClick = onClose) {
@@ -78,7 +83,7 @@ fun FeedbackScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.feedback_screen_send),
-                                color = MaterialTheme.colors.onPrimary
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -131,7 +136,7 @@ private fun FeedbackView(
         TextField(
             value = comment,
             onValueChange = setComment,
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.bodySmall,
             placeholder = {
                 Text(text = stringResource(R.string.feedback_screen_comment_placeholder))
             },

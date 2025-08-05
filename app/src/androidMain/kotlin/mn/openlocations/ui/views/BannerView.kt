@@ -41,7 +41,6 @@ private class BannerViewAdListener(private val onStageChanged: (BannerViewStage)
 fun BannerView(unitId: String) {
     var stage by remember { mutableStateOf(BannerViewStage.Loading) }
     val showAds by showAdsProducer()
-    val width = LocalConfiguration.current.screenWidthDp - 16
     val height = 80
 
     val listener = BannerViewAdListener { stage = it }
@@ -61,7 +60,7 @@ fun BannerView(unitId: String) {
             modifier = Modifier.fillMaxWidth(),
             factory = { context ->
                 AdView(context).apply {
-                    setAdSize(AdSize(width, height))
+                    setAdSize(AdSize(AdSize.FULL_WIDTH, height))
                     adUnitId = unitId
                     adListener = listener
                     loadAd(AdRequest.Builder().build())

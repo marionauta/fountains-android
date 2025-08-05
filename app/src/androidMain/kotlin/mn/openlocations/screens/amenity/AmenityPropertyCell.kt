@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +33,7 @@ fun AmenityPropertyCell(
             .heightIn(min = 120.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colors.surface)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,15 +51,15 @@ fun AmenityPropertyCell(
 
             Text(
                 text = title,
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.titleSmall,
                 textAlign = TextAlign.Center,
             )
 
-            if (subtitle != null) {
+            subtitle?.let {
                 Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.onSurface,
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                 )
             }

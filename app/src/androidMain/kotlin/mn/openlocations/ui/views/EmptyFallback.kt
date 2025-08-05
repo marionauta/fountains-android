@@ -3,12 +3,12 @@ package mn.openlocations.ui.views
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import mn.openlocations.ui.theme.Typography
 
 @Composable
 fun EmptyFallback(title: String, description: String, modifier: Modifier) {
@@ -20,11 +20,11 @@ fun EmptyFallback(title: String, description: String, modifier: Modifier) {
     ) {
         Text(
             text = title,
-            style = Typography.h5,
+            style = MaterialTheme.typography.titleMedium,
         )
         Text(
             text = description,
-            style = Typography.body1,
+            style = MaterialTheme.typography.bodySmall,
         )
     }
 }

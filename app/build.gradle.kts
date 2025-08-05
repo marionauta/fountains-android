@@ -27,7 +27,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -49,6 +49,7 @@ kotlin {
 
             // Images
             implementation(libs.coil.compose)
+            implementation(libs.coil.ktor)
 
             // Network
             implementation(libs.ktor.client.core)

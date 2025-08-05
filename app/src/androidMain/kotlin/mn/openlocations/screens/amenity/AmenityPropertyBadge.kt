@@ -5,8 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +38,7 @@ fun AmenityPropertyBadge(variant: Variant) {
                 Variant.Unknown -> R.color.property_unknown
             }
         ),
-        contentColor = MaterialTheme.colors.onPrimary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         border = BorderStroke(2.dp, Color.White),
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -59,7 +59,7 @@ fun AmenityPropertyBadge(variant: Variant) {
                         Variant.Unknown -> R.string.property_value_unknown
                     }
                 ),
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.onPrimary),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                 modifier = Modifier.size(14.dp),
             )
         }

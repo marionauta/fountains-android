@@ -14,16 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -75,6 +77,7 @@ import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.ColorMarkerFountain
 import mn.openlocations.ui.theme.ColorMarkerRestroom
 import mn.openlocations.ui.theme.Typography
+import mn.openlocations.ui.theme.customColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.LocationProblemBannerView
@@ -82,6 +85,7 @@ import mn.openlocations.ui.views.Modal
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen() {
     var isMenuShown by rememberSaveable { mutableStateOf(false) }
@@ -102,6 +106,7 @@ fun MapScreen() {
 
     Scaffold(topBar = {
         TopAppBar(
+            colors = TopAppBarDefaults.customColors,
             title = {
                 Column {
                     Text(
@@ -112,7 +117,7 @@ fun MapScreen() {
                     fountains?.lastUpdated?.readableDateTime?.let {
                         Text(
                             text = it,
-                            style = Typography.caption,
+                            style = MaterialTheme.typography.labelSmall,
                             color = LocalContentColor.current.copy(alpha = .8f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -154,7 +159,7 @@ fun MapScreen() {
                 ) {
                     Text(
                         text = stringResource(R.string.map_too_far_away),
-                        color = MaterialTheme.colors.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .offset(y = 100.dp)
                             .clip(RoundedCornerShape(8.dp))
@@ -296,8 +301,8 @@ private fun MarkerContent(amenity: Amenity) {
                     .size(15.dp)
                     .offset(x = 4.dp, y = (-2).dp),
                 shape = CircleShape,
-                color = MaterialTheme.colors.secondary,
-                contentColor = MaterialTheme.colors.onSecondary,
+                color = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
                 border = BorderStroke(1.dp, Color.White),
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -355,7 +360,7 @@ private fun ClusterContent(cluster: Cluster<AmenityClusterItem>) {
         color = when (cluster.items.firstOrNull()?.amenity) {
             is Amenity.Fountain -> ColorMarkerFountain
             is Amenity.Restroom -> ColorMarkerRestroom
-            else -> MaterialTheme.colors.primary
+            else -> MaterialTheme.colorScheme.primary
         },
         contentColor = Color.White,
         border = BorderStroke(1.dp, Color.White)

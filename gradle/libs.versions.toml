@@ -1,23 +1,24 @@
 [versions]
 agp = "8.7.2"
 android-minSdk = "26"
-android-targetSdk = "34"
+android-targetSdk = "35"
 androidx-activityCompose = "1.9.3"
 androidx-lifecycle = "2.8.3"
-coil = "2.5.0"
+coil = "3.3.0"
 compose-multiplatform = "1.7.0"
 kotlin = "2.2.0"
 kotlinx-datetime = "0.6.1"
 kotlinx-coroutines-core = "1.10.2"
-ktor = "3.0.1"
-maps-compose = "6.1.1"
-playServicesAds = "23.5.0"
+ktor = "3.2.3"
+maps-compose = "6.7.0"
+playServicesAds = "24.5.0"
 playServicesLocation = "21.3.0"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version = "0.32.0" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version = "1.0.0" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 flow-preferences = { module = "com.fredporciuncula:flow-preferences", version = "1.9.1" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }

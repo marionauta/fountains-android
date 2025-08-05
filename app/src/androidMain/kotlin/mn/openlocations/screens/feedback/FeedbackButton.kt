@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,10 +27,10 @@ fun FeedbackButton(
         modifier = modifier
             .size(100.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colors.surface)
+            .background(MaterialTheme.colorScheme.surface)
             .border(
                 4.dp,
-                if (selected) MaterialTheme.colors.secondary else Color.Transparent,
+                if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent,
                 RoundedCornerShape(8.dp)
             )
     ) {

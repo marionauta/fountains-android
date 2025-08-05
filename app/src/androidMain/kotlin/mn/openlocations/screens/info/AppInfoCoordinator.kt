@@ -4,16 +4,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,6 +32,7 @@ import mn.openlocations.R
 import mn.openlocations.domain.producers.mapMaxDistanceProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.networking.KnownUris
+import mn.openlocations.ui.theme.customColors
 import mn.openlocations.ui.views.Modal
 import mn.openlocations.ui.views.RowItem
 
@@ -40,6 +43,7 @@ fun AppInfoModal(isOpen: Boolean, onClose: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppInfoCoordinator(onClose: () -> Unit) {
     val uriHandler = LocalUriHandler.current
@@ -101,6 +105,7 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.customColors,
                 title = {
                     Text(text = stringResource(R.string.app_info_title))
                 },

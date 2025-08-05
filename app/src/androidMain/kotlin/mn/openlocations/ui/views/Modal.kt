@@ -1,7 +1,9 @@
 package mn.openlocations.ui.views
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.graphics.Color
@@ -11,7 +13,7 @@ import androidx.compose.ui.window.DialogProperties
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Modal(isOpen: Boolean, onClose: () -> Unit, content: @Composable () -> Unit) {
+fun Modal(isOpen: Boolean, onClose: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     if (!isOpen) {
         return
     }
@@ -23,7 +25,7 @@ fun Modal(isOpen: Boolean, onClose: () -> Unit, content: @Composable () -> Unit)
     ) {
         Card(
             shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-            backgroundColor = Color.Transparent,
+            colors = CardDefaults.cardColors().copy(containerColor = Color.Transparent),
             content = content,
         )
     }

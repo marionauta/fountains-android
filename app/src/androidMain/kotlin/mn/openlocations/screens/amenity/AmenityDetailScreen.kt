@@ -14,15 +14,17 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,8 +42,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
+import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.AccessValue
@@ -56,10 +58,12 @@ import mn.openlocations.networking.KnownUris
 import mn.openlocations.screens.feedback.FeedbackButton
 import mn.openlocations.screens.feedback.FeedbackScreen
 import mn.openlocations.screens.map.readableDate
+import mn.openlocations.ui.theme.customColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
     val (amenity, setAmenity) = remember { mutableStateOf<Amenity?>(null) }
@@ -97,6 +101,7 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
 
     Scaffold(topBar = {
         TopAppBar(
+            colors = TopAppBarDefaults.customColors,
             title = {
                 amenity?.name
                     ?.ifBlank {
@@ -119,7 +124,7 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
                 TextButton(onClick = ::onOpenInMaps) {
                     Text(
                         text = stringResource(R.string.fountain_detail_open_maps_button),
-                        color = MaterialTheme.colors.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
             }
@@ -198,7 +203,7 @@ private fun AmenityDetail(
                         painter = painterResource(R.drawable.property_fee),
                         contentDescription = stringResource(R.string.amenity_detail_fee_description),
                         alpha = imageAlpha,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                         modifier = it,
                     )
                 },
@@ -227,7 +232,7 @@ private fun AmenityDetail(
                             painter = painterResource(R.drawable.property_access),
                             contentDescription = stringResource(R.string.amenity_detail_access_title),
                             alpha = imageAlpha,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             modifier = it,
                         )
                     },
@@ -255,7 +260,7 @@ private fun AmenityDetail(
                                 painter = painterResource(R.drawable.property_bottle),
                                 contentDescription = stringResource(R.string.fountain_detail_bottle_description),
                                 alpha = imageAlpha,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                                 modifier = it,
                             )
                         },
@@ -279,7 +284,7 @@ private fun AmenityDetail(
                                 painter = painterResource(R.drawable.property_handwashing),
                                 contentDescription = stringResource(R.string.amenity_detail_handwashing_description),
                                 alpha = imageAlpha,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                                 modifier = it,
                             )
                         },
@@ -301,7 +306,7 @@ private fun AmenityDetail(
                                 painter = painterResource(R.drawable.property_changing_table),
                                 contentDescription = stringResource(R.string.amenity_detail_changing_table_description),
                                 alpha = imageAlpha,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                                 modifier = it,
                             )
                         },
@@ -325,7 +330,7 @@ private fun AmenityDetail(
                         painter = painterResource(R.drawable.property_wheelchair),
                         contentDescription = stringResource(R.string.fountain_detail_wheelchair_description),
                         alpha = imageAlpha,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                         modifier = it,
                     )
                 },
@@ -350,7 +355,7 @@ private fun AmenityDetail(
                             painter = painterResource(R.drawable.property_check_date),
                             contentDescription = stringResource(R.string.fountain_detail_check_date_description),
                             alpha = imageAlpha,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             modifier = it,
                         )
                     },
@@ -366,7 +371,7 @@ private fun AmenityDetail(
             ) {
                 Text(
                     text = stringResource(R.string.amenity_detail_feedback_title),
-                    style = MaterialTheme.typography.subtitle2,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
 
                 Row(
