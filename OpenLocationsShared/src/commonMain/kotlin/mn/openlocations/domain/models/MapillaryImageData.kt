@@ -3,7 +3,7 @@ package mn.openlocations.domain.models
 import mn.openlocations.data.models.MapillaryResponseDto
 
 data class MapillaryImageData(
-    val imageUrl: PortableUrl,
+    val imageUrl: Url,
     val creatorUsername: String?,
 )
 

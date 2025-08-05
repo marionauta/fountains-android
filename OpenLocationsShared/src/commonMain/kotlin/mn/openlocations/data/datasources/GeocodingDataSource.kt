@@ -8,11 +8,7 @@ import mn.openlocations.networking.KnownUris
 import kotlin.math.abs
 
 class GeocodingDataSource(private val apiKey: String) {
-    companion object {
-        private const val baseUrl = KnownUris.geocoding
-    }
-
-    private val apiClient = ApiClient(baseUrl = baseUrl)
+    private val apiClient = ApiClient(baseUrl = KnownUris.geocoding.toString())
 
     suspend fun reverse(coordinate: LocationDto): String? {
         if (abs(coordinate.latitude) < 1 && abs(coordinate.longitude) < 1) {
