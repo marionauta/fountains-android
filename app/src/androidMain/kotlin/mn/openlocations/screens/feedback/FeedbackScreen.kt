@@ -6,17 +6,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,7 +37,6 @@ import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.repositories.StringStorageRepository
 import mn.openlocations.domain.usecases.SendFeedbackUseCase
 import mn.openlocations.ui.theme.customColors
-import mn.openlocations.ui.views.Modal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +52,7 @@ fun FeedbackScreen(
     val coroutineScope = rememberCoroutineScope()
     val sendFeedbackUseCase = SendFeedbackUseCase(StringStorageRepository(LocalContext.current))
 
-    Modal(isOpen = true, onClose = onClose) {
+    ModalBottomSheet(onDismissRequest = onClose, dragHandle = {}) {
         Scaffold(
             topBar = {
                 TopAppBar(
