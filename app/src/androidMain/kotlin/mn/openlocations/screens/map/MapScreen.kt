@@ -308,6 +308,7 @@ private fun MarkerContent(amenity: Amenity) {
                     Text(
                         text = "$",
                         fontSize = 11.sp,
+                        lineHeight = 11.sp,
                         textAlign = TextAlign.Center,
                     )
                 }
