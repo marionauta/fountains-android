@@ -57,4 +57,5 @@
     <string name="amenity_detail_access_description">Allowed access</string>
     <string name="access_value_customers_title">Customers only</string>
     <string name="access_value_permissive_title">Permissive</string>
+    <string name="amenity_detail_user_commented_title">A user commented</string>
 </resources>

@@ -9,6 +9,6 @@ interface FilterSettingsRepository {
 
 class FilterSettingsRepositoryImpl: FilterSettingsRepository {
     override fun getFilterSettings(): FilterSettings {
-        return FilterSettings(amenties = setOf(AmenityType.DrinkingFountain, AmenityType.Restroom))
+        return FilterSettings(amenities = setOf(AmenityType.DrinkingFountain, AmenityType.Restroom))
     }
 }

@@ -23,8 +23,8 @@ class GetAmenitiesUseCase(
                 lastUpdated = it.lastUpdated,
                 amenities = it.amenities.filter { amenity ->
                     when (amenity) {
-                        is Amenity.Fountain -> settings.amenties.contains(AmenityType.DrinkingFountain)
-                        is Amenity.Restroom -> settings.amenties.contains(AmenityType.Restroom)
+                        is Amenity.Fountain -> settings.amenities.contains(AmenityType.DrinkingFountain)
+                        is Amenity.Restroom -> settings.amenities.contains(AmenityType.Restroom)
                     }
                 }
             )

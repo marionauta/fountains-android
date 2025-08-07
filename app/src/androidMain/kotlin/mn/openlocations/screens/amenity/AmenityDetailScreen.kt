@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,14 +52,17 @@ import mn.openlocations.domain.models.AccessValue
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
+import mn.openlocations.domain.models.FeedbackComment
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.AmenityRepository
+import mn.openlocations.domain.usecases.GetFeedbackCommentsUseCase
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.screens.feedback.FeedbackButton
 import mn.openlocations.screens.feedback.FeedbackScreen
 import mn.openlocations.screens.map.readableDate
+import mn.openlocations.screens.map.readableDateTime
 import mn.openlocations.ui.theme.customColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
@@ -68,6 +73,7 @@ import mn.openlocations.ui.views.EmptyFallback
 fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
     val (amenity, setAmenity) = remember { mutableStateOf<Amenity?>(null) }
     val (feedback, setFeedback) = remember { mutableStateOf<FeedbackState?>(null) }
+    var comments by remember { mutableStateOf<List<FeedbackComment>>(emptyList()) }
 
     LaunchedEffect(amenityId) {
         if (amenityId == null) {
@@ -75,6 +81,8 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
         }
         val repository = AmenityRepository()
         setAmenity(repository.get(amenityId = amenityId))
+        val getComments = GetFeedbackCommentsUseCase()
+        comments = getComments(amenityId)
     }
 
     fun onAmenityFeedback(state: FeedbackState) {
@@ -136,6 +144,7 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
             } else {
                 AmenityDetail(
                     amenity = amenity,
+                    comments = comments,
                     onAmenityFeedback = ::onAmenityFeedback,
                     onOpenFixGuide = ::onOpenFixGuide,
                 )
@@ -163,6 +172,7 @@ private fun NoFountain() {
 @Composable
 private fun AmenityDetail(
     amenity: Amenity,
+    comments: List<FeedbackComment>,
     onAmenityFeedback: (state: FeedbackState) -> Unit,
     onOpenFixGuide: () -> Unit,
 ) {
@@ -399,6 +409,30 @@ private fun AmenityDetail(
                     Text(stringResource(R.string.amenity_detail_how_to_fix_button))
                 }
             }
+        }
+
+        items(comments, key = { it.hashCode() }, span = { GridItemSpan(maxLineSpan) }) {
+            ListItem(
+                overlineContent = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = when (it.state) {
+                                FeedbackState.Good -> "👍"
+                                FeedbackState.Bad -> "👎"
+                            }
+                        )
+                        Text(stringResource(R.string.amenity_detail_user_commented_title))
+                    }
+                },
+                headlineContent = {
+                    Text(it.comment)
+                },
+                supportingContent = {
+                    Text(it.createdAt.readableDateTime)
+                }
+            )
         }
     }
 }
