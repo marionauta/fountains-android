@@ -37,6 +37,7 @@ import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.repositories.StringStorageRepository
 import mn.openlocations.domain.usecases.SendFeedbackUseCase
 import mn.openlocations.ui.theme.customColors
+import mn.openlocations.ui.views.AppBarLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,7 @@ fun FeedbackScreen(
     var isSending by rememberSaveable { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
-    val sendFeedbackUseCase = SendFeedbackUseCase(StringStorageRepository(LocalContext.current))
+    val sendFeedback = SendFeedbackUseCase(StringStorageRepository(LocalContext.current))
 
     ModalBottomSheet(onDismissRequest = onClose, dragHandle = {}) {
         Scaffold(
@@ -67,24 +68,27 @@ fun FeedbackScreen(
                         }
                     },
                     actions = {
-                        TextButton(
-                            enabled = !isSending,
-                            onClick = {
-                                isSending = true
-                                coroutineScope.launch {
-                                    sendFeedbackUseCase(
-                                        osmId = amenityId,
-                                        state = state,
-                                        comment = comment
-                                    )
-                                    onClose()
+                        if (isSending) {
+                            AppBarLoader(isLoading = true, modifier = Modifier.padding(end = 16.dp))
+                        } else {
+                            TextButton(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        isSending = true
+                                        sendFeedback(
+                                            osmId = amenityId,
+                                            state = state,
+                                            comment = comment
+                                        )
+                                        onClose()
+                                    }
                                 }
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.feedback_screen_send),
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
                             }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.feedback_screen_send),
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
                         }
                     }
                 )

@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,7 +22,6 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -197,34 +198,40 @@ private fun AmenityDetail(
             BannerView(unitId = BuildConfig.ADMOB_DETAIL_AD_UNIT_ID)
         }
 
-        item {
-            AmenityPropertyCell(
-                title = stringResource(
-                    when (amenity.properties.fee) {
-                        is FeeValue.No -> R.string.fee_value_no_title
-                        is FeeValue.Yes -> R.string.fee_value_yes_title
-                        is FeeValue.Unknown -> R.string.fee_value_unknown_title
-                        is FeeValue.Donation -> R.string.fee_value_donation_title
+        // Hide fee if it's free but only for customers
+        val hideFee = amenity.properties.let {
+            it.fee == FeeValue.No && it.access == AccessValue.Customers
+        }
+        if (!hideFee) {
+            item {
+                AmenityPropertyCell(
+                    title = stringResource(
+                        when (amenity.properties.fee) {
+                            is FeeValue.No -> R.string.fee_value_no_title
+                            is FeeValue.Yes -> R.string.fee_value_yes_title
+                            is FeeValue.Unknown -> R.string.fee_value_unknown_title
+                            is FeeValue.Donation -> R.string.fee_value_donation_title
+                        }
+                    ),
+                    subtitle = (amenity.properties.fee as? FeeValue.Yes)?.amount,
+                    image = {
+                        Image(
+                            painter = painterResource(R.drawable.property_fee),
+                            contentDescription = stringResource(R.string.amenity_detail_fee_description),
+                            alpha = imageAlpha,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                            modifier = it,
+                        )
+                    },
+                    badge = {
+                        when (amenity.properties.fee) {
+                            is FeeValue.Yes, is FeeValue.Donation -> AmenityPropertyBadge(Variant.Limited)
+                            is FeeValue.Unknown -> AmenityPropertyBadge(Variant.Unknown)
+                            else -> {}
+                        }
                     }
-                ),
-                subtitle = (amenity.properties.fee as? FeeValue.Yes)?.amount,
-                image = {
-                    Image(
-                        painter = painterResource(R.drawable.property_fee),
-                        contentDescription = stringResource(R.string.amenity_detail_fee_description),
-                        alpha = imageAlpha,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                        modifier = it,
-                    )
-                },
-                badge = {
-                    when (amenity.properties.fee) {
-                        is FeeValue.Yes, is FeeValue.Donation -> AmenityPropertyBadge(Variant.Limited)
-                        is FeeValue.Unknown -> AmenityPropertyBadge(Variant.Unknown)
-                        else -> {}
-                    }
-                }
-            )
+                )
+            }
         }
 
         if (amenity.properties.access != AccessValue.Yes) {
@@ -404,35 +411,41 @@ private fun AmenityDetail(
                         onClick = onAmenityFeedback,
                     )
                 }
-
-                TextButton(onOpenFixGuide) {
-                    Text(stringResource(R.string.amenity_detail_how_to_fix_button))
-                }
             }
         }
 
         items(comments, key = { it.hashCode() }, span = { GridItemSpan(maxLineSpan) }) {
-            ListItem(
-                overlineContent = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = when (it.state) {
-                                FeedbackState.Good -> "👍"
-                                FeedbackState.Bad -> "👎"
-                            }
-                        )
-                        Text(stringResource(R.string.amenity_detail_user_commented_title))
-                    }
-                },
-                headlineContent = {
-                    Text(it.comment)
-                },
-                supportingContent = {
-                    Text(it.createdAt.readableDateTime)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 8.dp),
+            ) {
+                Text(
+                    text = when (it.state) {
+                        FeedbackState.Good -> "👍"
+                        FeedbackState.Bad -> "👎"
+                    },
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Column {
+                    Text(
+                        text = it.createdAt.readableDateTime,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = it.comment,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                 }
-            )
+            }
+        }
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            TextButton(onOpenFixGuide) {
+                Text(stringResource(R.string.amenity_detail_how_to_fix_button))
+            }
         }
     }
 }
