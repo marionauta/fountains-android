@@ -5,7 +5,7 @@ import mn.openlocations.data.routes.OverpassRoute
 import mn.openlocations.networking.ApiClient
 import mn.openlocations.networking.KnownUris
 
-class OverpassDataSource {
+internal object OverpassDataSource {
     private val apiClient = ApiClient(baseUrl = KnownUris.overpass.toString())
 
     suspend fun getNodes(

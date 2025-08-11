@@ -22,8 +22,6 @@
 
     <string name="fountain_detail_not_found_title">No fountain</string>
     <string name="fountain_detail_not_found_description">Unknown fountain. Go back.</string>
-    <string name="amenity_detail_fountain_photo_description">A photo of the fountain.</string>
-    <string name="amenity_detail_restroom_photo_description">A photo of the restroom.</string>
     <string name="fountain_detail_bottle_title">Bottle filling</string>
     <string name="fountain_detail_bottle_description">A water bottle can easily be filled.</string>
     <string name="fountain_detail_wheelchair_title">Wheelchair accessible</string>

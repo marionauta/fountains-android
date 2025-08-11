@@ -1,13 +1,13 @@
 package mn.openlocations.domain.repositories
 
 import mn.openlocations.data.datasources.MapillaryDataSource
-import mn.openlocations.domain.models.MapillaryImageData
+import mn.openlocations.domain.models.ImageMetadata
 import mn.openlocations.domain.models.intoDomain
 
-class MapillaryRepository(mapillaryToken: String) {
+internal class MapillaryRepository(mapillaryToken: String) {
     private val dataSource = MapillaryDataSource(token = mapillaryToken)
 
-    suspend fun getImageUrl(mapillaryId: String): MapillaryImageData? {
+    suspend fun getImageMetadata(mapillaryId: String): ImageMetadata? {
         return dataSource.getImageData(mapillaryId)?.intoDomain()
     }
 }

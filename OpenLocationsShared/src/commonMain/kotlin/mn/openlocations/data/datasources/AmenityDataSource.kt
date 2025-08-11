@@ -7,7 +7,7 @@ import mn.openlocations.data.models.OverpassNode
 private var amenitiesResponse: AmenitiesResponseDto? = null
 
 internal class AmenityDataSource {
-    private val overpassDataSource = OverpassDataSource()
+    private val overpassDataSource = OverpassDataSource
 
     suspend fun inside(
         north: Double,

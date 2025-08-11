@@ -9,7 +9,7 @@ import ulid.ULID
 import kotlin.native.ObjCName
 
 class GetFeedbackCommentsUseCase(private val storage: SecureStringStorage) {
-    private val dataSource = FeedbackDataSource()
+    private val dataSource = FeedbackDataSource
 
     @ObjCName("callAsFunction")
     suspend operator fun invoke(osmId: String): List<FeedbackComment> {

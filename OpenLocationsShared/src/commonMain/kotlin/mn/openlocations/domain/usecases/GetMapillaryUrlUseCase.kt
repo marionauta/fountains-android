@@ -1,14 +1,43 @@
 package mn.openlocations.domain.usecases
 
-import mn.openlocations.domain.models.Url
+import mn.openlocations.domain.models.ImageMetadata
+import mn.openlocations.domain.models.ImageSource
+import mn.openlocations.domain.models.toPortableUrl
 import mn.openlocations.domain.repositories.MapillaryRepository
+import mn.openlocations.domain.repositories.PanoramaxRepository
 import kotlin.native.ObjCName
 
-class GetMapillaryUrlUseCase(mapillaryToken: String) {
-    private val repository = MapillaryRepository(mapillaryToken = mapillaryToken)
+class GetImagesUseCase(mapillaryToken: String) {
+    private val mapillaryRepository = MapillaryRepository(mapillaryToken = mapillaryToken)
+    private val panoramaxRepository = PanoramaxRepository
 
     @ObjCName("callAsFunction")
-    suspend operator fun invoke(mapillaryId: String): Url? {
-        return repository.getImageUrl(mapillaryId = mapillaryId)?.imageUrl
+    suspend operator fun invoke(images: List<Pair<ImageSource, String>>): List<ImageMetadata> {
+        val results = mutableListOf<ImageMetadata>()
+        for ((source, id) in images) {
+            when (source) {
+                ImageSource.Mapillary -> {
+                    val result = mapillaryRepository.getImageMetadata(mapillaryId = id) ?: continue
+                    results.add(result)
+                }
+
+                ImageSource.Panoramax -> {
+                    val result = panoramaxRepository.getImageMetadata(panoramaxId = id) ?: continue
+                    results.add(result)
+                }
+
+                ImageSource.Url -> {
+                    val url = id.toPortableUrl() ?: continue
+                    val result = ImageMetadata(
+                        imageUrl = url,
+                        creatorUsername = null,
+                        licenseName = null,
+                        licenseUrl = null
+                    )
+                    results.add(result)
+                }
+            }
+        }
+        return results
     }
 }

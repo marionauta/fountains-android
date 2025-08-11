@@ -7,7 +7,7 @@ import ulid.ULID
 import kotlin.native.ObjCName
 
 class SendFeedbackUseCase(private val storage: SecureStringStorage) {
-    private val dataSource = FeedbackDataSource()
+    private val dataSource = FeedbackDataSource
 
     @ObjCName("callAsFunction")
     suspend operator fun invoke(osmId: String, state: FeedbackState, comment: String) {

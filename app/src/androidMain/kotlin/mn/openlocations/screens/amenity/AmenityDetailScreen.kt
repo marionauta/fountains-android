@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
@@ -60,8 +62,10 @@ import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.FeedbackComment
 import mn.openlocations.domain.models.FeedbackState
+import mn.openlocations.domain.models.ImageMetadata
+import mn.openlocations.domain.models.ImageSource
 import mn.openlocations.domain.models.WheelchairValue
-import mn.openlocations.domain.producers.produceMapillaryImageUrl
+import mn.openlocations.domain.producers.produceImageMetadatas
 import mn.openlocations.domain.repositories.AmenityRepository
 import mn.openlocations.domain.repositories.StringStorageRepository
 import mn.openlocations.domain.usecases.GetFeedbackCommentsUseCase
@@ -203,11 +207,10 @@ private fun AmenityDetail(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(8.dp),
     ) {
-        if (amenity.properties.mapillaryId != null) {
+        if (amenity.properties.imageIds.isNotEmpty()) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 AmenityImageRow(
-                    amenity = amenity,
-                    mapillaryId = amenity.properties.mapillaryId,
+                    imageIds = amenity.properties.imageIds,
                 )
             }
         }
@@ -484,26 +487,30 @@ private fun AmenityDetail(
 }
 
 @Composable
-private fun AmenityImageRow(amenity: Amenity, mapillaryId: String?) {
-    if (mapillaryId == null) return
+private fun AmenityImageRow(imageIds: List<Pair<ImageSource, String>>) {
+    val images by produceImageMetadatas(imageIds)
 
-    val imageUrl by produceMapillaryImageUrl(mapillaryId = mapillaryId)
+    HorizontalPager(
+        state = rememberPagerState { images.size },
+        pageSpacing = 8.dp,
+        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+    ) { index ->
+        SingleImage(images[index])
+    }
+}
+
+@Composable
+private fun SingleImage(image: ImageMetadata) {
     var isLoadingImage by rememberSaveable { mutableStateOf(false) }
 
     Box(contentAlignment = Alignment.Center) {
         AsyncImage(
-            model = imageUrl,
-            contentDescription = stringResource(
-                when (amenity) {
-                    is Amenity.Fountain -> R.string.amenity_detail_fountain_photo_description
-                    is Amenity.Restroom -> R.string.amenity_detail_restroom_photo_description
-                }
-            ),
+            model = image.imageUrl,
+            contentDescription = null,
             onState = { isLoadingImage = it is AsyncImagePainter.State.Loading },
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
                 .height(250.dp),
         )
         AppBarLoader(isLoading = isLoadingImage)
