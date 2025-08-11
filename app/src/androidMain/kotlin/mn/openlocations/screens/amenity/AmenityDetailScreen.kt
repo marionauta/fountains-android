@@ -1,6 +1,7 @@
 package mn.openlocations.screens.amenity
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -78,6 +80,7 @@ import mn.openlocations.ui.theme.customColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
+import mn.openlocations.ui.views.ImageCarouselIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -489,13 +492,24 @@ private fun AmenityDetail(
 @Composable
 private fun AmenityImageRow(imageIds: List<Pair<ImageSource, String>>) {
     val images by produceImageMetadatas(imageIds)
+    val pagerState = rememberPagerState { images.size }
+    if (imageIds.isEmpty()) return
 
-    HorizontalPager(
-        state = rememberPagerState { images.size },
-        pageSpacing = 8.dp,
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-    ) { index ->
-        SingleImage(images[index])
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        HorizontalPager(
+            state = pagerState,
+            pageSpacing = 8.dp,
+            modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+        ) { index ->
+            SingleImage(images[index])
+        }
+        ImageCarouselIndicator(
+            pagerState = pagerState,
+            backgroundColor = Color.LightGray,
+            modifier = Modifier.padding(8.dp)
+        )
     }
 }
 
@@ -511,7 +525,8 @@ private fun SingleImage(image: ImageMetadata) {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp),
+                .height(250.dp)
+                .background(Color.LightGray),
         )
         AppBarLoader(isLoading = isLoadingImage)
     }
