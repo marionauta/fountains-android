@@ -6,4 +6,5 @@ sealed interface AmenityProperties {
     val wheelchair: WheelchairValue
     val mapillaryId: String?
     val checkDate: PortableDate?
+    val closed: Boolean
 }

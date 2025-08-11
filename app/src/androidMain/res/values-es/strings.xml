@@ -52,4 +52,5 @@
     <string name="access_value_customers_title">Sólo clientes</string>
     <string name="access_value_permissive_title">Permisivo</string>
     <string name="amenity_detail_user_commented_title">Un usuario comentó</string>
+    <string name="amenity_detail_not_working_notice">Puede estar estropeado o fuera de servicio.</string>
 </resources>

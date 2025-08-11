@@ -15,6 +15,7 @@ data class RestroomProperties(
     override val wheelchair: WheelchairValue,
     override val mapillaryId: String?,
     override val checkDate: PortableDate?,
+    override val closed: Boolean,
 ) : AmenityProperties
 
 fun Map<String, String>.toRestroomProperties(): RestroomProperties {
@@ -31,5 +32,6 @@ fun Map<String, String>.toRestroomProperties(): RestroomProperties {
         wheelchair = get("wheelchair").parseWheelchair(),
         mapillaryId = get("mapillary"),
         checkDate = get("check_date").parsePortableDate(),
+        closed = get("opening_hours") == "closed" || any { it.key.startsWith("disused") },
     )
 }

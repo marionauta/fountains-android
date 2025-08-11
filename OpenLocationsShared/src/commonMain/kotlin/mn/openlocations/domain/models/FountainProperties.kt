@@ -13,6 +13,7 @@ data class FountainProperties(
     override val wheelchair: WheelchairValue,
     override val mapillaryId: String?,
     override val checkDate: PortableDate?,
+    override val closed: Boolean,
 ) : AmenityProperties
 
 fun Map<String, String>.toFountainProperties(): FountainProperties = FountainProperties(
@@ -22,4 +23,5 @@ fun Map<String, String>.toFountainProperties(): FountainProperties = FountainPro
     wheelchair = get("wheelchair").parseWheelchair(),
     mapillaryId = get("mapillary"),
     checkDate = get("check_date").parsePortableDate(),
+    closed = get("opening_hours") == "closed" || any { it.key.startsWith("disused") },
 )

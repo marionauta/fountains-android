@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastFilteredMap
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -244,9 +246,9 @@ private fun Map(
     var clusterRestrooms by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     LaunchedEffect(amenities) {
         clusterFountains =
-            amenities.filter { it is Amenity.Fountain }.map { AmenityClusterItem(it) }
+            amenities.fastFilteredMap({ it is Amenity.Fountain }, ::AmenityClusterItem)
         clusterRestrooms =
-            amenities.filter { it is Amenity.Restroom }.map { AmenityClusterItem(it) }
+            amenities.fastFilteredMap({ it is Amenity.Restroom }, ::AmenityClusterItem)
     }
 
     GoogleMap(
@@ -292,7 +294,7 @@ private fun MarkerContent(amenity: Amenity) {
     ) {
         when (amenity) {
             is Amenity.Fountain -> FountainContent(fountain = amenity)
-            is Amenity.Restroom -> RestroomContent()
+            is Amenity.Restroom -> RestroomContent(restroom = amenity)
         }
         if (amenity.properties.fee is FeeValue.Yes) {
             Surface(
@@ -328,17 +330,18 @@ private fun FountainContent(fountain: Amenity.Fountain) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.marker_fountain),
-            contentDescription = fountain.name
+            contentDescription = fountain.name,
+            colorFilter = if (fountain.properties.closed) ColorFilter.tint(Color.Gray) else null,
         )
     }
 }
 
 @Composable
-private fun RestroomContent() {
+private fun RestroomContent(restroom: Amenity.Restroom) {
     Surface(
         Modifier.size(28.dp),
         shape = CircleShape,
-        color = ColorMarkerRestroom,
+        color = if (restroom.properties.closed) Color.Gray else ColorMarkerRestroom,
         contentColor = Color.White,
         border = BorderStroke(1.5.dp, Color.White),
     ) {
@@ -360,7 +363,7 @@ private fun ClusterContent(cluster: Cluster<AmenityClusterItem>) {
         color = when (cluster.items.firstOrNull()?.amenity) {
             is Amenity.Fountain -> ColorMarkerFountain
             is Amenity.Restroom -> ColorMarkerRestroom
-            else -> MaterialTheme.colorScheme.primary
+            null -> Color.Gray
         },
         contentColor = Color.White,
         border = BorderStroke(1.dp, Color.White)
@@ -375,7 +378,7 @@ private fun ClusterContent(cluster: Cluster<AmenityClusterItem>) {
     }
 }
 
-private data class AmenityClusterItem(val amenity: Amenity) : ClusterItem {
+private class AmenityClusterItem(val amenity: Amenity) : ClusterItem {
     override fun getPosition(): LatLng {
         return amenity.location.position
     }

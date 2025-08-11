@@ -13,21 +13,18 @@ class GetAmenitiesUseCase(
     private val amenityRepository: AmenityRepository = AmenityRepository(),
     private val settingsRepository: FilterSettingsRepository = FilterSettingsRepositoryImpl(),
 ) {
-
     @ObjCName("callAsFunction")
     suspend operator fun invoke(northEast: Location, southWest: Location): AmenitiesResponse? {
         val settings = settingsRepository.getFilterSettings()
-        val response = amenityRepository.inside(northEast = northEast, southWest = southWest)
-        return response?.let {
-            AmenitiesResponse(
-                lastUpdated = it.lastUpdated,
-                amenities = it.amenities.filter { amenity ->
-                    when (amenity) {
-                        is Amenity.Fountain -> settings.amenities.contains(AmenityType.DrinkingFountain)
-                        is Amenity.Restroom -> settings.amenities.contains(AmenityType.Restroom)
-                    }
+        val response =
+            amenityRepository.inside(northEast = northEast, southWest = southWest) ?: return null
+        return response.copy(
+            amenities = response.amenities.filter { amenity ->
+                when (amenity) {
+                    is Amenity.Fountain -> settings.amenities.contains(AmenityType.DrinkingFountain)
+                    is Amenity.Restroom -> settings.amenities.contains(AmenityType.Restroom)
                 }
-            )
-        }
+            },
+        )
     }
 }

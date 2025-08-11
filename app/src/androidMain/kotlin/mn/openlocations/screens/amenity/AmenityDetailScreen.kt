@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -196,6 +198,21 @@ private fun AmenityDetail(
 
         item(span = { GridItemSpan(maxLineSpan) }) {
             BannerView(unitId = BuildConfig.ADMOB_DETAIL_AD_UNIT_ID)
+        }
+
+        if (amenity.properties.closed) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.amenity_detail_not_working_notice),
+                        modifier = Modifier.padding(8.dp),
+                    )
+                }
+            }
         }
 
         // Hide fee if it's free but only for customers
