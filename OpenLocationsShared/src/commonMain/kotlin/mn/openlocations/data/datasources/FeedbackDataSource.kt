@@ -22,8 +22,13 @@ internal class FeedbackDataSource {
         )
     }
 
-    suspend fun getComments(osmId: String): List<FeedbackCommentDto> {
-        val response = client.get<FeedbackCommentsResponseDto>(FeedbackCommentsRoute(osmId))
+    suspend fun getComments(osmId: String, authorId: String): List<FeedbackCommentDto> {
+        val response = client.get<FeedbackCommentsResponseDto>(
+            route = FeedbackCommentsRoute(
+                osmId = osmId,
+                authorId = authorId
+            ),
+        )
         return response?.data ?: emptyList()
     }
 }

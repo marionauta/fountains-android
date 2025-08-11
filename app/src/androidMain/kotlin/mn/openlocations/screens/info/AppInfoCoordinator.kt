@@ -52,7 +52,7 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
     val context = LocalContext.current
     val repository = PreferencesRepository(context)
     val mapMaxDistance by mapMaxDistanceProducer()
-    var localMapMaxDistance by rememberSaveable { mutableFloatStateOf(4f) }
+    var localMapMaxDistance by rememberSaveable { mutableFloatStateOf(10f) }
     LaunchedEffect(mapMaxDistance) {
         localMapMaxDistance = mapMaxDistance / 1000
     }

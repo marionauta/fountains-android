@@ -35,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
+import kotlinx.coroutines.launch
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.AccessValue
@@ -60,6 +63,7 @@ import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceMapillaryImageUrl
 import mn.openlocations.domain.repositories.AmenityRepository
+import mn.openlocations.domain.repositories.StringStorageRepository
 import mn.openlocations.domain.usecases.GetFeedbackCommentsUseCase
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.screens.feedback.FeedbackButton
@@ -78,14 +82,23 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
     val (feedback, setFeedback) = remember { mutableStateOf<FeedbackState?>(null) }
     var comments by remember { mutableStateOf<List<FeedbackComment>>(emptyList()) }
 
+    val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+    fun loadComments(amenityId: String) {
+        val getComments = GetFeedbackCommentsUseCase(StringStorageRepository(context))
+        coroutineScope.launch {
+            comments = getComments(amenityId)
+        }
+    }
+
     LaunchedEffect(amenityId) {
         if (amenityId == null) {
             return@LaunchedEffect
         }
         val repository = AmenityRepository()
         setAmenity(repository.get(amenityId = amenityId))
-        val getComments = GetFeedbackCommentsUseCase()
-        comments = getComments(amenityId)
+        loadComments(amenityId)
     }
 
     fun onAmenityFeedback(state: FeedbackState) {
@@ -156,7 +169,10 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
                 FeedbackScreen(
                     amenityId = amenityId,
                     state = feedback,
-                    onClose = { setFeedback(null) }
+                    onClose = {
+                        setFeedback(null)
+                        loadComments(amenityId)
+                    }
                 )
             }
         }
