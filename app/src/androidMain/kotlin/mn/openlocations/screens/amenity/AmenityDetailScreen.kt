@@ -2,6 +2,7 @@ package mn.openlocations.screens.amenity
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -528,6 +531,56 @@ private fun SingleImage(image: ImageMetadata) {
                 .height(250.dp)
                 .background(Color.LightGray),
         )
+        CreatorName(image, Modifier.align(Alignment.BottomEnd))
         AppBarLoader(isLoading = isLoadingImage)
+    }
+}
+
+@Composable
+private fun CreatorName(image: ImageMetadata, modifier: Modifier) {
+    var showLicense by rememberSaveable { mutableStateOf(false) }
+    val creator = image.creatorUsername ?: return
+    if (creator.isBlank()) return
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .padding(4.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.75f))
+    ) {
+        Text(
+            text = creator,
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier
+                .padding(horizontal = 4.dp, vertical = 2.dp)
+                .clickable(enabled = image.licenseName != null) { showLicense = true }
+        )
+    }
+
+    if (showLicense) {
+        AlertDialog(
+            onDismissRequest = { showLicense = false },
+            text = {
+                Text(listOf(image.creatorUsername, image.licenseName).joinToString(", "))
+            },
+            confirmButton = {
+                val uriHandler = LocalUriHandler.current
+                image.licenseUrl?.let {
+                    Button({
+                        showLicense = false
+                        uriHandler.openUri(it)
+                    }) {
+                        Text(stringResource(R.string.amenity_detail_photo_license_learn))
+                    }
+                }
+            },
+            dismissButton = {
+                Button({ showLicense = false }) {
+                    Text(stringResource(R.string.general_close))
+                }
+            },
+        )
     }
 }

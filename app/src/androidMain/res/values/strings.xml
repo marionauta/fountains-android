@@ -57,4 +57,5 @@
     <string name="access_value_permissive_title">Permissive</string>
     <string name="amenity_detail_user_commented_title">A user commented</string>
     <string name="amenity_detail_not_working_notice">May be out of service or not working.</string>
+    <string name="amenity_detail_photo_license_learn">Learn more</string>
 </resources>

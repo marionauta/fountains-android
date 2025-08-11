@@ -51,4 +51,5 @@
     <string name="access_value_permissive_title">Permisivo</string>
     <string name="amenity_detail_user_commented_title">Un usuario comentó</string>
     <string name="amenity_detail_not_working_notice">Puede estar estropeado o fuera de servicio.</string>
+    <string name="amenity_detail_photo_license_learn">Saber más</string>
 </resources>
