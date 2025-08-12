@@ -17,9 +17,9 @@ fun Url.build(route: ApiRoute): Url {
         .build()
 }
 
-fun Builder.appendQueryParameters(parameters: Map<String, String>): Builder {
+fun Builder.appendQueryParameters(parameters: Map<String, Any>): Builder {
     for ((key, value) in parameters) {
-        appendQueryParameter(key, value)
+        appendQueryParameter(key, value.toString())
     }
     return this
 }

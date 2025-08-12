@@ -7,5 +7,6 @@ internal class MapillaryRoute(id: String, token: String) : ApiRoute {
     override val headers: Map<String, String> = mapOf(
         "Authorization" to "OAuth $token"
     )
-    override val parameters: Map<String, String> = emptyMap()
+    override val parameters: Map<String, String>
+        get() = emptyMap()
 }

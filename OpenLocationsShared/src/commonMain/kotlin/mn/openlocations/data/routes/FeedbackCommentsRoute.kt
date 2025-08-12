@@ -1,11 +1,13 @@
 package mn.openlocations.data.routes
 
-import mn.openlocations.networking.ApiRoute
+import mn.openlocations.networking.BaseRoute
 
-internal class FeedbackCommentsRoute(osmId: String, authorId: String): ApiRoute {
-    override val route: String = "/v1/feedback/$osmId"
-    override val headers: Map<String, String> = mapOf(
-        "Authorization" to "Id $authorId"
-    )
-    override val parameters: Map<String, String> = emptyMap()
-}
+internal class FeedbackCommentsRoute(
+    osmId: String,
+    authorId: String,
+) : BaseRoute(
+    route = "/v1/feedback/$osmId",
+    headers = mapOf(
+        "Authorization" to "Id $authorId",
+    ),
+)

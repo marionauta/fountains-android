@@ -2,6 +2,7 @@ package mn.openlocations.networking
 
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.Url
+import mn.openlocations.domain.models.build
 import mn.openlocations.domain.models.toPortableUrl
 
 object KnownUris {
@@ -12,22 +13,24 @@ object KnownUris {
     val panoramax = "https://api.panoramax.xyz".toPortableUrl()!!
     val geocoding = "https://geocode.maps.co/".toPortableUrl()!!
     val overpass = "https://overpass-api.de/api".toPortableUrl()!!
-    private val googleMaps = "https://www.google.com/maps/search/?api=1".toPortableUrl()!!
+    private val googleMaps = "https://www.google.com/maps".toPortableUrl()!!
 
-    fun help(slug: String): Url = website
-        .buildUpon()
-        .appendPath("help")
-        .appendPath(slug)
-        .build()
-
-    fun fix(location: Location): Url = help("fix")
-        .buildUpon()
-        .appendQueryParameter("lat", location.latitude.toString())
-        .appendQueryParameter("lng", location.longitude.toString())
-        .build()
-
-    fun googleMaps(location: Location): Url = googleMaps
-        .buildUpon()
-        .appendQueryParameter("query", "${location.latitude},${location.longitude}")
-        .build()
+    fun fix(location: Location): Url = website.build(FixRoute(location))
+    fun googleMaps(location: Location): Url = googleMaps.build(GoogleMapsRoute(location))
 }
+
+private class FixRoute(location: Location) : BaseRoute(
+    route = "help/fix/",
+    parameters = mapOf(
+        "lat" to location.latitude,
+        "lng" to location.longitude,
+    )
+)
+
+private class GoogleMapsRoute(location: Location) : BaseRoute(
+    route = "search/", // trailing '/' is important
+    parameters = mapOf(
+        "api" to 1,
+        "query" to "${location.latitude},${location.longitude}",
+    )
+)

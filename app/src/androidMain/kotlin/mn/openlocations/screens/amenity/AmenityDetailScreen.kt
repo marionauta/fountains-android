@@ -518,7 +518,7 @@ private fun SingleImage(image: ImageMetadata) {
 
     Box(contentAlignment = Alignment.Center) {
         AsyncImage(
-            model = image.imageUrl,
+            model = image.imageUrl.toString(),
             contentDescription = null,
             onState = { isLoadingImage = it is AsyncImagePainter.State.Loading },
             contentScale = ContentScale.Crop,

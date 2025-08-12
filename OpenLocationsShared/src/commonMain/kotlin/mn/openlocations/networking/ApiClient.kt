@@ -50,7 +50,7 @@ class ApiClient(val baseUrl: Url, logLevel: LogLevel = LogLevel.NONE) {
         try {
             client.submitForm(
                 url = baseUrl.toString(),
-                formParameters = parametersOf(route.parameters.mapValues { listOf(it.value) })
+                formParameters = parametersOf(route.parameters.mapValues { listOf(it.value.toString()) })
             ) {
                 url {
                     appendPathSegments(route.route)

@@ -13,9 +13,9 @@ internal class FeedbackRoute(
     override val headers: Map<String, String> = mapOf(
         "Authorization" to "Id $authorId"
     )
-    override val parameters: Map<String, String> = mapOf(
+    override val parameters = mapOf(
         "osm_id" to osmId,
-        "state" to state.toString(),
+        "state" to state,
         "comment" to comment,
     )
 }
