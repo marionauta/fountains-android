@@ -3,7 +3,6 @@
     <string name="app_name">AguApp</string>
     <string name="general_close">Cerrar</string>
     <string name="app_info_website_title">Sitio web</string>
-    <string name="app_info_website_content">Saber más</string>
     <string name="app_info_developer_title">Desarrollador</string>
     <string name="app_info_app_version_title">Versión de la app</string>
     <string name="fountain_detail_not_found_title">Sin fuente</string>

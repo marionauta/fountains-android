@@ -37,6 +37,7 @@ maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", ve
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 ulid = { module = "com.aallam.ulid:ulid-kotlin", version = "1.3.0" }
+uri = { module = "com.eygraber:uri-kmp", version = "0.0.20" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

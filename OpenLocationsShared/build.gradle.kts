@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ulid)
+            implementation(libs.uri)
         }
         appleMain.dependencies {
             implementation(libs.ktor.client.darwin)

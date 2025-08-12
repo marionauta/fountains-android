@@ -33,6 +33,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.uri)
             implementation(projects.openLocationsShared)
 
             // Maps

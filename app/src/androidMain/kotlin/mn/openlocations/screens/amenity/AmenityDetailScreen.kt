@@ -118,19 +118,15 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
     val uriHandler = LocalUriHandler.current
 
     fun onOpenInMaps() {
-        var uri = KnownUris.googleMaps
-        amenity?.let {
-            uri += "?api=1&query=${it.location.latitude},${it.location.longitude}"
-        }
-        uriHandler.openUri(uri)
+        val location = amenity?.location ?: return
+        val uri = KnownUris.googleMaps(location)
+        uriHandler.openUri(uri.toString())
     }
 
     fun onOpenFixGuide() {
-        var uri = KnownUris.help("fix")
-        amenity?.let {
-            uri += "&lat=${it.location.latitude}&lng=${it.location.longitude}"
-        }
-        uriHandler.openUri(uri)
+        val location = amenity?.location ?: return
+        var uri = KnownUris.fix(location)
+        uriHandler.openUri(uri.toString())
     }
 
     Scaffold(topBar = {

@@ -6,7 +6,7 @@ import mn.openlocations.networking.ApiClient
 import mn.openlocations.networking.KnownUris
 
 internal object PanoramaxDataSource {
-    private val apiClient = ApiClient(baseUrl = KnownUris.panoramax.toString())
+    private val apiClient = ApiClient(baseUrl = KnownUris.panoramax)
 
     internal suspend fun getImageData(id: String): PanoramaxResponseDto? {
         val route = PanoramaxRoute(id = id)

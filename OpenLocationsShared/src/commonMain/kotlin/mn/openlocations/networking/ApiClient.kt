@@ -12,8 +12,11 @@ import io.ktor.http.appendPathSegments
 import io.ktor.http.parametersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import mn.openlocations.domain.models.Url
+import mn.openlocations.domain.models.appendQueryParameters
+import mn.openlocations.domain.models.build
 
-class ApiClient(val baseUrl: String, logLevel: LogLevel = LogLevel.NONE) {
+class ApiClient(val baseUrl: Url, logLevel: LogLevel = LogLevel.NONE) {
     val client = HttpClient {
         install(Logging) {
             logger = ApiClientLogger()
@@ -29,13 +32,7 @@ class ApiClient(val baseUrl: String, logLevel: LogLevel = LogLevel.NONE) {
 
     suspend inline fun <reified T> get(route: ApiRoute): T? {
         return try {
-            val response = client.get(baseUrl) {
-                url {
-                    appendEncodedPathSegments(route.route)
-                    for (parameter in route.parameters) {
-                        this.parameters.append(parameter.key, parameter.value)
-                    }
-                }
+            val response = client.get(baseUrl.build(route).toString()) {
                 headers {
                     for (header in route.headers) {
                         append(header.key, header.value)
@@ -52,7 +49,7 @@ class ApiClient(val baseUrl: String, logLevel: LogLevel = LogLevel.NONE) {
     suspend inline fun form(route: ApiRoute) {
         try {
             client.submitForm(
-                url = baseUrl,
+                url = baseUrl.toString(),
                 formParameters = parametersOf(route.parameters.mapValues { listOf(it.value) })
             ) {
                 url {

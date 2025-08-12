@@ -81,16 +81,16 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
         ),
         AppInfo(
             title = stringResource(R.string.app_info_website_title),
-            content = stringResource(R.string.app_info_website_content),
+            content = KnownUris.website.host!!,
             onClick = {
-                uriHandler.openUri(KnownUris.website())
+                uriHandler.openUri(KnownUris.website.toString())
             },
         ),
         AppInfo(
             title = stringResource(R.string.app_info_developer_title),
             content = stringResource(R.string.app_info_developer_content),
             onClick = {
-                uriHandler.openUri(KnownUris.developer)
+                uriHandler.openUri(KnownUris.developer.toString())
             },
         ),
         AppInfo(

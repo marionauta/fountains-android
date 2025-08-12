@@ -1,5 +1,25 @@
 package mn.openlocations.domain.models
 
-expect class Url
+import com.eygraber.uri.Builder
+import com.eygraber.uri.Uri
+import mn.openlocations.networking.ApiRoute
 
-expect fun String.toPortableUrl(): Url?
+typealias Url = Uri
+
+fun String.toPortableUrl(): Uri? {
+    return Uri.parseOrNull(this)
+}
+
+fun Url.build(route: ApiRoute): Url {
+    return buildUpon()
+        .appendEncodedPath(route.route)
+        .appendQueryParameters(route.parameters)
+        .build()
+}
+
+fun Builder.appendQueryParameters(parameters: Map<String, String>): Builder {
+    for ((key, value) in parameters) {
+        appendQueryParameter(key, value)
+    }
+    return this
+}

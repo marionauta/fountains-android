@@ -12,7 +12,6 @@
     <string name="app_info_max_distance_title">Min zoom: %.0fkm</string>
     <string name="app_info_max_distance_content">Might impact performance on older devices</string>
     <string name="app_info_website_title">Website</string>
-    <string name="app_info_website_content">Learn more</string>
     <string name="app_info_developer_title">Developer</string>
     <string name="app_info_developer_content" translatable="false">Mario Nachbaur</string>
     <string name="app_info_app_version_title">App version</string>
