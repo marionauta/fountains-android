@@ -12,7 +12,12 @@ object KnownUris {
     val reporting = "https://api.waterfinder.org".toPortableUrl()!!
     val panoramax = "https://api.panoramax.xyz".toPortableUrl()!!
     val geocoding = "https://geocode.maps.co/".toPortableUrl()!!
-    val overpass = "https://overpass-api.de/api".toPortableUrl()!!
+    val overpass = listOf<Url>(
+        "https://overpass.private.coffee/api".toPortableUrl()!!,
+        "https://overpass-api.de/api".toPortableUrl()!!,
+        "https://maps.mail.ru/osm/tools/overpass/api".toPortableUrl()!!,
+        "https://overpass.osm.jp/api".toPortableUrl()!!,
+    )
     private val googleMaps = "https://www.google.com/maps".toPortableUrl()!!
 
     fun fix(location: Location): Url = website.build(FixRoute(location))
