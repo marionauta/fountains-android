@@ -10,7 +10,7 @@ import mn.openlocations.domain.repositories.FilterSettingsRepositoryImpl
 import kotlin.native.ObjCName
 
 class GetAmenitiesUseCase(
-    private val amenityRepository: AmenityRepository = AmenityRepository(),
+    private val amenityRepository: AmenityRepository = AmenityRepository,
     private val settingsRepository: FilterSettingsRepository = FilterSettingsRepositoryImpl(),
 ) {
     @ObjCName("callAsFunction")

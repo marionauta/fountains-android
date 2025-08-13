@@ -6,7 +6,7 @@ import mn.openlocations.data.models.OverpassNode
 // TODO: Improve this "in memory" cache
 private var amenitiesResponse: AmenitiesResponseDto? = null
 
-internal class AmenityDataSource {
+internal object AmenityDataSource {
     private val overpassDataSource = OverpassDataSource
 
     suspend fun inside(

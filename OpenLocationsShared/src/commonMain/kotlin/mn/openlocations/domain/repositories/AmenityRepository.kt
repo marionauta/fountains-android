@@ -9,8 +9,8 @@ import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.intoDomain
 import mn.openlocations.domain.models.toPortableDate
 
-class AmenityRepository {
-    private val dataSource = AmenityDataSource()
+object AmenityRepository {
+    private val dataSource = AmenityDataSource
 
     suspend fun inside(northEast: Location, southWest: Location): AmenitiesResponse? {
         return dataSource.inside(

@@ -1,5 +1,6 @@
 package mn.openlocations.screens.amenity
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -71,9 +72,10 @@ import mn.openlocations.domain.models.ImageMetadata
 import mn.openlocations.domain.models.ImageSource
 import mn.openlocations.domain.models.WheelchairValue
 import mn.openlocations.domain.producers.produceImageMetadatas
-import mn.openlocations.domain.repositories.AmenityRepository
 import mn.openlocations.domain.repositories.StringStorageRepository
+import mn.openlocations.domain.usecases.GetAmenityUseCase
 import mn.openlocations.domain.usecases.GetFeedbackCommentsUseCase
+import mn.openlocations.domain.utils.SecureStringStorage
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.screens.feedback.FeedbackButton
 import mn.openlocations.screens.feedback.FeedbackScreen
@@ -87,16 +89,21 @@ import mn.openlocations.ui.views.ImageCarouselIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
+fun AmenityDetailScreen(
+    amenityId: String?,
+    onClose: () -> Unit,
+    context: Context = LocalContext.current,
+    storage: SecureStringStorage = StringStorageRepository(context),
+    getAmenity: GetAmenityUseCase = GetAmenityUseCase(),
+) {
     val (amenity, setAmenity) = remember { mutableStateOf<Amenity?>(null) }
     val (feedback, setFeedback) = remember { mutableStateOf<FeedbackState?>(null) }
     var comments by remember { mutableStateOf<List<FeedbackComment>>(emptyList()) }
 
     val coroutineScope = rememberCoroutineScope()
 
-    val context = LocalContext.current
     fun loadComments(amenityId: String) {
-        val getComments = GetFeedbackCommentsUseCase(StringStorageRepository(context))
+        val getComments = GetFeedbackCommentsUseCase(storage)
         coroutineScope.launch {
             comments = getComments(amenityId)
         }
@@ -106,8 +113,7 @@ fun AmenityDetailScreen(amenityId: String?, onClose: () -> Unit) {
         if (amenityId == null) {
             return@LaunchedEffect
         }
-        val repository = AmenityRepository()
-        setAmenity(repository.get(amenityId = amenityId))
+        setAmenity(getAmenity(amenityId = amenityId))
         loadComments(amenityId)
     }
 
