@@ -4,17 +4,18 @@ import com.eygraber.uri.Builder
 import com.eygraber.uri.Uri
 import mn.openlocations.networking.ApiRoute
 
-typealias Url = Uri
+expect class Url
 
-fun String.toPortableUrl(): Uri? {
-    return Uri.parseOrNull(this)
-}
+expect fun Url.builder(): Builder
+expect fun String.toPortableUrl(): Url?
+expect fun Uri.toPortableUrl(): Url
 
 fun Url.build(route: ApiRoute): Url {
-    return buildUpon()
+    return builder()
         .appendEncodedPath(route.route)
         .appendQueryParameters(route.parameters)
         .build()
+        .toPortableUrl()
 }
 
 fun Builder.appendQueryParameters(parameters: Map<String, Any>): Builder {

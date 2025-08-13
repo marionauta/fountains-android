@@ -6,8 +6,8 @@ import mn.openlocations.domain.models.build
 import mn.openlocations.domain.models.toPortableUrl
 
 object KnownUris {
-    val website = "https://waterfinder.org?ref=AguApp".toPortableUrl()!!
-    val developer = "https://mario.nachbaur.dev?ref=AguApp".toPortableUrl()!!
+    val website = "https://waterfinder.org?ref=WaterFinder".toPortableUrl()!!
+    val developer = "https://mario.nachbaur.dev?ref=WaterFinder".toPortableUrl()!!
     val mapillary = "https://graph.mapillary.com".toPortableUrl()!!
     val reporting = "https://api.waterfinder.org".toPortableUrl()!!
     val panoramax = "https://api.panoramax.xyz".toPortableUrl()!!

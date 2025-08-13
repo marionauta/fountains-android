@@ -1,11 +1,10 @@
 package mn.openlocations.domain.models
 
-import com.eygraber.uri.Uri
 import mn.openlocations.data.models.MapillaryResponseDto
 import mn.openlocations.data.models.PanoramaxResponseDto
 
 data class ImageMetadata(
-    val imageUrl: Uri,
+    val imageUrl: Url,
     val creatorUsername: String?,
     val licenseName: String?,
     val licenseUrl: String?,

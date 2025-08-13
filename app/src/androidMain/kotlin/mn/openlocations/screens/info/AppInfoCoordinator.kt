@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import com.eygraber.uri.Uri
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.producers.mapMaxDistanceProducer
@@ -81,16 +82,16 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
         ),
         AppInfo(
             title = stringResource(R.string.app_info_website_title),
-            content = KnownUris.website.host!!,
+            content = Uri.parse(KnownUris.website).host!!,
             onClick = {
-                uriHandler.openUri(KnownUris.website.toString())
+                uriHandler.openUri(KnownUris.website)
             },
         ),
         AppInfo(
             title = stringResource(R.string.app_info_developer_title),
             content = stringResource(R.string.app_info_developer_content),
             onClick = {
-                uriHandler.openUri(KnownUris.developer.toString())
+                uriHandler.openUri(KnownUris.developer)
             },
         ),
         AppInfo(

@@ -126,13 +126,13 @@ fun AmenityDetailScreen(
     fun onOpenInMaps() {
         val location = amenity?.location ?: return
         val uri = KnownUris.googleMaps(location)
-        uriHandler.openUri(uri.toString())
+        uriHandler.openUri(uri)
     }
 
     fun onOpenFixGuide() {
         val location = amenity?.location ?: return
         var uri = KnownUris.fix(location)
-        uriHandler.openUri(uri.toString())
+        uriHandler.openUri(uri)
     }
 
     Scaffold(topBar = {

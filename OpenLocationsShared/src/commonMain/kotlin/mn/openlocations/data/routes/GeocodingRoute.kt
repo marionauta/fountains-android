@@ -8,9 +8,9 @@ internal sealed interface GeocodingRoute : ApiRoute {
         override val route: String = "reverse"
         override val headers: Map<String, String>
             get() = emptyMap()
-        override val parameters: Map<String, String> = mapOf(
-            "lat" to coordinate.latitude.toString(),
-            "lon" to coordinate.longitude.toString(),
+        override val parameters = mapOf(
+            "lat" to coordinate.latitude,
+            "lon" to coordinate.longitude,
             "api_key" to apiKey,
         )
     }
