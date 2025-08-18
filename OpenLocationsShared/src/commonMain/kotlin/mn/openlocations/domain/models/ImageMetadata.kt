@@ -5,18 +5,22 @@ import mn.openlocations.data.models.PanoramaxResponseDto
 
 data class ImageMetadata(
     val imageUrl: Url,
-    val creatorUsername: String?,
-    val licenseName: String?,
-    val licenseUrl: String?,
-)
+    val creator: Creator?,
+    val license: License?,
+) {
+    data class Creator(val username: String)
+    data class License(val name: String, val url: Url)
+}
 
 internal fun MapillaryResponseDto.intoDomain(): ImageMetadata? {
     val imageUrl = thumb_1024_url.toPortableUrl() ?: return null
     return ImageMetadata(
         imageUrl = imageUrl,
-        creatorUsername = creator?.username,
-        licenseName = "CC-BY-SA",
-        licenseUrl = "https://creativecommons.org/licenses/by-sa/4.0/",
+        creator = creator?.username?.let { ImageMetadata.Creator(it) },
+        license = ImageMetadata.License(
+            name = "CC-BY-SA",
+            url = "https://creativecommons.org/licenses/by-sa/4.0/".toPortableUrl()!!,
+        ),
     )
 }
 
@@ -25,8 +29,14 @@ internal fun PanoramaxResponseDto.intoDomain(): ImageMetadata? {
     val imageUrl = feature.assets.thumb.href.toPortableUrl() ?: return null
     return ImageMetadata(
         imageUrl = imageUrl,
-        creatorUsername = feature.providers.firstOrNull { it.roles.contains("producer") }?.name,
-        licenseName = feature.properties.license,
-        licenseUrl = feature.links.firstOrNull { it.rel == "license" }?.href,
+        creator = feature.providers.firstOrNull { it.roles.contains("producer") }?.name?.let {
+            ImageMetadata.Creator(it)
+        },
+        license = feature.links.firstOrNull { it.rel == "license" }?.href?.toPortableUrl()?.let {
+            ImageMetadata.License(
+                name = feature.properties.license,
+                url = it,
+            )
+        },
     )
 }

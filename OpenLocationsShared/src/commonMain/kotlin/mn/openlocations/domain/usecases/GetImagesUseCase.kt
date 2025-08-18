@@ -30,9 +30,8 @@ class GetImagesUseCase(mapillaryToken: String) {
                     val url = id.toPortableUrl() ?: continue
                     val result = ImageMetadata(
                         imageUrl = url,
-                        creatorUsername = null,
-                        licenseName = null,
-                        licenseUrl = null
+                        creator = null,
+                        license = null,
                     )
                     results.add(result)
                 }

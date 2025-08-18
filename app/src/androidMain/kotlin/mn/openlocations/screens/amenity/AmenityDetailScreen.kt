@@ -541,7 +541,7 @@ private fun SingleImage(image: ImageMetadata) {
 @Composable
 private fun CreatorName(image: ImageMetadata, modifier: Modifier) {
     var showLicense by rememberSaveable { mutableStateOf(false) }
-    val creator = image.creatorUsername ?: return
+    val creator = image.creator?.username ?: return
     if (creator.isBlank()) return
 
     Row(
@@ -557,7 +557,7 @@ private fun CreatorName(image: ImageMetadata, modifier: Modifier) {
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
                 .padding(horizontal = 4.dp, vertical = 2.dp)
-                .clickable(enabled = image.licenseName != null) { showLicense = true }
+                .clickable(enabled = image.license != null) { showLicense = true }
         )
     }
 
@@ -565,11 +565,11 @@ private fun CreatorName(image: ImageMetadata, modifier: Modifier) {
         AlertDialog(
             onDismissRequest = { showLicense = false },
             text = {
-                Text(listOf(image.creatorUsername, image.licenseName).joinToString(", "))
+                Text(listOf(image.creator?.username, image.license?.name).joinToString(", "))
             },
             confirmButton = {
                 val uriHandler = LocalUriHandler.current
-                image.licenseUrl?.let {
+                image.license?.url?.let {
                     Button({
                         showLicense = false
                         uriHandler.openUri(it)
