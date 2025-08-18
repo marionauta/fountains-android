@@ -7,9 +7,10 @@ import mn.openlocations.data.routes.FeedbackRoute
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.networking.ApiClient
 import mn.openlocations.networking.KnownUris
+import mn.openlocations.networking.UserAgent
 
 internal object FeedbackDataSource {
-    private val client = ApiClient(baseUrl = KnownUris.reporting)
+    private val client = ApiClient(baseUrl = KnownUris.reporting, userAgent = UserAgent.Mobile)
 
     suspend fun report(osmId: String, state: FeedbackState, comment: String, authorId: String) {
         client.form(

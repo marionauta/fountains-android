@@ -2,7 +2,6 @@ package mn.openlocations.networking
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.BrowserUserAgent
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
@@ -18,9 +17,15 @@ import kotlinx.serialization.json.Json
 import mn.openlocations.domain.models.Url
 import mn.openlocations.domain.models.build
 
-class ApiClient(val baseUrl: Url, logLevel: LogLevel = LogLevel.NONE) {
+class ApiClient(
+    val baseUrl: Url,
+    userAgent: UserAgent = UserAgent.Browser,
+    logLevel: LogLevel = LogLevel.NONE,
+) {
     val client = HttpClient {
-        BrowserUserAgent()
+        install(io.ktor.client.plugins.UserAgent) {
+            agent = userAgent.agent
+        }
         install(Logging) {
             logger = ApiClientLogger()
             level = logLevel
