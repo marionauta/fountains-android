@@ -16,7 +16,7 @@ internal fun MapillaryResponseDto.intoDomain(): ImageMetadata? {
         imageUrl = imageUrl,
         creatorUsername = creator?.username,
         licenseName = "CC-BY-SA",
-        licenseUrl = "https://spdx.org/licenses/CC-BY-SA-4.0.html",
+        licenseUrl = "https://creativecommons.org/licenses/by-sa/4.0/",
     )
 }
 
