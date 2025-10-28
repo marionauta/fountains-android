@@ -2,6 +2,7 @@ package mn.openlocations.domain.models
 
 import mn.openlocations.data.models.MapillaryResponseDto
 import mn.openlocations.data.models.PanoramaxResponseDto
+import mn.openlocations.data.models.WikimediaCommonsResponseDto
 
 data class ImageMetadata(
     val imageUrl: Url,
@@ -35,6 +36,25 @@ internal fun PanoramaxResponseDto.intoDomain(): ImageMetadata? {
         license = feature.links.firstOrNull { it.rel == "license" }?.href?.toPortableUrl()?.let {
             ImageMetadata.License(
                 name = feature.properties.license,
+                url = it,
+            )
+        },
+    )
+}
+
+internal fun WikimediaCommonsResponseDto.intoDomain(): ImageMetadata? {
+    val info = query.pages.values.firstOrNull()?.imageInfo?.firstOrNull() ?: return null
+    val thumbUrl = info.thumbUrl.toPortableUrl() ?: return null
+    var username = info.metadata.Artist.value
+    if (username.contains(">")) {
+        username = username.substringAfter('>').substringBefore('<')
+    }
+    return ImageMetadata(
+        imageUrl = thumbUrl,
+        creator = ImageMetadata.Creator(username = username),
+        license = info.metadata.LicenseUrl.value.toPortableUrl()?.let {
+            ImageMetadata.License(
+                name = info.metadata.LicenseShortName.value,
                 url = it,
             )
         },

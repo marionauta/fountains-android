@@ -5,7 +5,7 @@ import mn.openlocations.data.routes.MapillaryRoute
 import mn.openlocations.networking.ApiClient
 import mn.openlocations.networking.KnownUris
 
-class MapillaryDataSource(private val token: String) {
+internal class MapillaryDataSource(private val token: String) {
     private val apiClient = ApiClient(baseUrl = KnownUris.mapillary)
 
     internal suspend fun getImageData(id: String): MapillaryResponseDto? {

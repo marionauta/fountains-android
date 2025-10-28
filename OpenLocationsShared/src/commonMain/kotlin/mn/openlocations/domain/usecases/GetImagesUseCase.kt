@@ -5,11 +5,14 @@ import mn.openlocations.domain.models.ImageSource
 import mn.openlocations.domain.models.toPortableUrl
 import mn.openlocations.domain.repositories.MapillaryRepository
 import mn.openlocations.domain.repositories.PanoramaxRepository
+import mn.openlocations.domain.repositories.WikimediaCommonsRepository
 import kotlin.native.ObjCName
 
 class GetImagesUseCase(mapillaryToken: String) {
     private val mapillaryRepository = MapillaryRepository(mapillaryToken = mapillaryToken)
     private val panoramaxRepository = PanoramaxRepository
+
+    private var wikimediaRepository = WikimediaCommonsRepository
 
     @ObjCName("callAsFunction")
     suspend operator fun invoke(images: List<Pair<ImageSource, String>>): List<ImageMetadata> {
@@ -23,6 +26,11 @@ class GetImagesUseCase(mapillaryToken: String) {
 
                 ImageSource.Panoramax -> {
                     val result = panoramaxRepository.getImageMetadata(panoramaxId = id) ?: continue
+                    results.add(result)
+                }
+
+                ImageSource.WikimediaCommons -> {
+                    val result = wikimediaRepository.getImageMetadata(name = id) ?: continue
                     results.add(result)
                 }
 
