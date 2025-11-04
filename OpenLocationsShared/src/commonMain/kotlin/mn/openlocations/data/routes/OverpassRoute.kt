@@ -22,8 +22,8 @@ internal class OverpassRoute(
             "data",
             """
             [out:json];
-            node[amenity~"${amenities.joinToString("|")}"](${south},${west},${north},${east});
-            out;
+            nw[amenity~"${amenities.joinToString("|")}"](${south},${west},${north},${east});
+            out geom;
             """.trimIndent(),
         ),
     )

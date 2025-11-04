@@ -1,7 +1,7 @@
 package mn.openlocations.domain.repositories
 
 import mn.openlocations.data.datasources.AmenityDataSource
-import mn.openlocations.data.models.OverpassNode
+import mn.openlocations.data.models.OverpassNw
 import mn.openlocations.domain.models.AccessValue
 import mn.openlocations.domain.models.AmenitiesResponse
 import mn.openlocations.domain.models.Amenity
@@ -22,7 +22,7 @@ object AmenityRepository {
             AmenitiesResponse(
                 lastUpdated = it.lastUpdated.toPortableDate(),
                 amenities = it.amenities
-                    .mapNotNull(OverpassNode::intoDomain)
+                    .mapNotNull(OverpassNw::intoDomain)
                     .filter { amenity ->
                         !listOf(
                             AccessValue.No,

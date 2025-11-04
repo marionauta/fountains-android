@@ -1,7 +1,7 @@
 package mn.openlocations.data.datasources
 
 import mn.openlocations.data.models.AmenitiesResponseDto
-import mn.openlocations.data.models.OverpassNode
+import mn.openlocations.data.models.OverpassNw
 
 // TODO: Improve this "in memory" cache
 private var amenitiesResponse: AmenitiesResponseDto? = null
@@ -25,6 +25,6 @@ internal object AmenityDataSource {
         return amenitiesResponse
     }
 
-    fun get(amenityId: String): OverpassNode? =
+    fun get(amenityId: String): OverpassNw? =
         amenitiesResponse?.amenities?.firstOrNull { it.id.toString() == amenityId }
 }

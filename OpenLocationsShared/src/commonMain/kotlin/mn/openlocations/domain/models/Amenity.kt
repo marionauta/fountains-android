@@ -1,7 +1,8 @@
 package mn.openlocations.domain.models
 
-import mn.openlocations.data.models.OverpassNode
+import mn.openlocations.data.models.OverpassNw
 
+// Needs to be a class for iOS interop
 sealed class Amenity {
     abstract val id: String
     abstract val name: String
@@ -23,19 +24,19 @@ sealed class Amenity {
     ) : Amenity()
 }
 
-fun OverpassNode.intoDomain(): Amenity? {
+fun OverpassNw.intoDomain(): Amenity? {
     return when (tags["amenity"]) {
         "drinking_water" -> Amenity.Fountain(
             id = id.toString(),
             name = tags["name"] ?: "",
-            location = Location(lat, lon),
+            location = location.intoDomain(),
             properties = tags.toFountainProperties()
         )
 
         "toilets" -> Amenity.Restroom(
             id = id.toString(),
             name = tags["name"] ?: "",
-            location = Location(lat, lon),
+            location = location.intoDomain(),
             properties = tags.toRestroomProperties()
         )
 

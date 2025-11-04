@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 @kotlinx.serialization.Serializable
 data class OverpassResponse(
     private val osm3s: OSM3s,
-    val elements: List<OverpassNode>,
+    val elements: List<OverpassNw>,
 ) {
     fun lastUpdated(): Instant = osm3s.timestampOsmBase
 }
