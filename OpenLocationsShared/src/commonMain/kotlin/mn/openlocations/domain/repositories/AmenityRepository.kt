@@ -21,14 +21,7 @@ object AmenityRepository {
         )?.let {
             AmenitiesResponse(
                 lastUpdated = it.lastUpdated.toPortableDate(),
-                amenities = it.amenities
-                    .mapNotNull(OverpassNw::intoDomain)
-                    .filter { amenity ->
-                        !listOf(
-                            AccessValue.No,
-                            AccessValue.Private
-                        ).contains(amenity.properties.access)
-                    },
+                amenities = it.amenities.mapNotNull(OverpassNw::intoDomain),
             )
         }
     }

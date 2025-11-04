@@ -21,8 +21,8 @@ internal class OverpassRoute(
         Pair(
             "data",
             """
-            [out:json];
-            nw[amenity~"${amenities.joinToString("|")}"](${south},${west},${north},${east});
+            [out:json][bbox:${south},${west},${north},${east}];
+            nw[amenity~"${amenities.joinToString("|")}"][access!=no][access!=private];
             out geom;
             """.trimIndent(),
         ),
