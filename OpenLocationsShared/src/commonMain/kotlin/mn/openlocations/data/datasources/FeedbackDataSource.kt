@@ -17,7 +17,7 @@ internal object FeedbackDataSource {
             route = FeedbackRoute(
                 osmId = osmId,
                 state = state,
-                comment = comment,
+                comment = comment.trim(),
                 authorId = authorId,
             )
         )
