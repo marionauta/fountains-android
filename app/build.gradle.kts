@@ -72,8 +72,8 @@ android {
         applicationId = "mn.openlocations"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 26
-        versionName = "2.3.0"
+        versionCode = 27
+        versionName = "2.3.1"
     }
     packaging {
         resources {
