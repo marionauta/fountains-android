@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Water Finder</string>
 
@@ -21,26 +22,20 @@
 
     <string name="fountain_detail_not_found_title">No fountain</string>
     <string name="fountain_detail_not_found_description">Unknown fountain. Go back.</string>
-    <string name="fountain_detail_bottle_title">Bottle filling</string>
-    <string name="fountain_detail_bottle_description">A water bottle can easily be filled.</string>
-    <string name="fountain_detail_wheelchair_title">Wheelchair accessible</string>
-    <string name="fountain_detail_wheelchair_description">The fountain can be used with wheelchairs.</string>
-    <string name="fountain_detail_check_date_title">Last checked</string>
-    <string name="fountain_detail_check_date_description">The last time someone checked this water fountain.</string>
+    <string name="amenity_detail_bottle_title">Bottle filling</string>
+    <string name="amenity_detail_wheelchair_title">Wheelchair accessible</string>
+    <string name="amenity_detail_check_date_title">Last checked</string>
 
     <string name="amenity_detail_fountain_title">Fountain</string>
     <string name="amenity_detail_restroom_title">Restroom</string>
     <string name="amenity_detail_handwashing_title">Hand washing</string>
-    <string name="amenity_detail_handwashing_description">If the toilets have a sink and soap for handwashing.</string>
     <string name="amenity_detail_changing_table_title">Diaper Changing Table</string>
-    <string name="amenity_detail_changing_table_description">Provides a surface for changing the nappy (diaper) of an infant or young child.</string>
     <string name="amenity_detail_fee_title">Fee</string>
-    <string name="amenity_detail_fee_description">Indicate if money is charged to use this facility.</string>
 
     <string name="map_too_far_away">Too far away. Please zoom in or edit zoom in settings.</string>
     <string name="map_location_disabled">Location services are disabled. Enable them to center you on the map.</string>
     <string name="map_location_permission_denied">Location permission was denied. Grant it to center you on the map.</string>
-    <string name="fountain_detail_open_maps_button">Open in Maps</string>
+    <string name="amenity_detail_open_in_maps">Open in Maps</string>
     <string name="fee_value_donation_title">Accepts donation</string>
     <string name="fee_value_no_title">Free</string>
     <string name="fee_value_unknown_title">Fee unknown</string>
@@ -57,4 +52,6 @@
     <string name="amenity_detail_user_commented_title">A user commented</string>
     <string name="amenity_detail_not_working_notice">May be out of service or not working.</string>
     <string name="amenity_detail_photo_license_learn">Learn more</string>
+    <string name="feedback_button_bad_title">Bad</string>
+    <string name="feedback_button_good_title">Good</string>
 </resources>

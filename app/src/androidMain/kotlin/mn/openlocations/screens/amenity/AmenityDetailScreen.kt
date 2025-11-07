@@ -131,7 +131,7 @@ fun AmenityDetailScreen(
 
     fun onOpenFixGuide() {
         val location = amenity?.location ?: return
-        var uri = KnownUris.fix(location)
+        val uri = KnownUris.fix(location)
         uriHandler.openUri(uri)
     }
 
@@ -159,7 +159,7 @@ fun AmenityDetailScreen(
             actions = {
                 TextButton(onClick = ::onOpenInMaps) {
                     Text(
-                        text = stringResource(R.string.fountain_detail_open_maps_button),
+                        text = stringResource(R.string.amenity_detail_open_in_maps),
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
@@ -261,7 +261,7 @@ private fun AmenityDetail(
                     image = {
                         Image(
                             painter = painterResource(R.drawable.property_fee),
-                            contentDescription = stringResource(R.string.amenity_detail_fee_description),
+                            contentDescription = null,
                             alpha = imageAlpha,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             modifier = it,
@@ -291,7 +291,7 @@ private fun AmenityDetail(
                     image = {
                         Image(
                             painter = painterResource(R.drawable.property_access),
-                            contentDescription = stringResource(R.string.amenity_detail_access_title),
+                            contentDescription = null,
                             alpha = imageAlpha,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             modifier = it,
@@ -315,11 +315,11 @@ private fun AmenityDetail(
             is Amenity.Fountain -> {
                 item {
                     AmenityPropertyCell(
-                        title = stringResource(R.string.fountain_detail_bottle_title),
+                        title = stringResource(R.string.amenity_detail_bottle_title),
                         image = {
                             Image(
                                 painter = painterResource(R.drawable.property_bottle),
-                                contentDescription = stringResource(R.string.fountain_detail_bottle_description),
+                                contentDescription = null,
                                 alpha = imageAlpha,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                                 modifier = it,
@@ -343,7 +343,7 @@ private fun AmenityDetail(
                         image = {
                             Image(
                                 painter = painterResource(R.drawable.property_handwashing),
-                                contentDescription = stringResource(R.string.amenity_detail_handwashing_description),
+                                contentDescription = null,
                                 alpha = imageAlpha,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                                 modifier = it,
@@ -365,7 +365,7 @@ private fun AmenityDetail(
                         image = {
                             Image(
                                 painter = painterResource(R.drawable.property_changing_table),
-                                contentDescription = stringResource(R.string.amenity_detail_changing_table_description),
+                                contentDescription = null,
                                 alpha = imageAlpha,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                                 modifier = it,
@@ -385,11 +385,11 @@ private fun AmenityDetail(
 
         item {
             AmenityPropertyCell(
-                title = stringResource(R.string.fountain_detail_wheelchair_title),
+                title = stringResource(R.string.amenity_detail_wheelchair_title),
                 image = {
                     Image(
                         painter = painterResource(R.drawable.property_wheelchair),
-                        contentDescription = stringResource(R.string.fountain_detail_wheelchair_description),
+                        contentDescription = null,
                         alpha = imageAlpha,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                         modifier = it,
@@ -409,12 +409,12 @@ private fun AmenityDetail(
         if (amenity.properties.checkDate != null) {
             item {
                 AmenityPropertyCell(
-                    title = stringResource(R.string.fountain_detail_check_date_title),
+                    title = stringResource(R.string.amenity_detail_check_date_title),
                     subtitle = amenity.properties.checkDate?.readableDate,
                     image = {
                         Image(
                             painter = painterResource(R.drawable.property_check_date),
-                            contentDescription = stringResource(R.string.fountain_detail_check_date_description),
+                            contentDescription = null,
                             alpha = imageAlpha,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                             modifier = it,

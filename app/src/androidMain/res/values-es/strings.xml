@@ -7,12 +7,9 @@
     <string name="app_info_app_version_title">Versión de la app</string>
     <string name="fountain_detail_not_found_title">Sin fuente</string>
     <string name="fountain_detail_not_found_description">Fuente desconocida. Vuelve.</string>
-    <string name="fountain_detail_bottle_title">Rellenado de botellas</string>
-    <string name="fountain_detail_bottle_description">Una botella de agua se puede llenar fácilmente.</string>
-    <string name="fountain_detail_wheelchair_title">Accesible</string>
-    <string name="fountain_detail_wheelchair_description">La fuente se puede acceder con silla de ruedas.</string>
-    <string name="fountain_detail_check_date_title">Comprobado</string>
-    <string name="fountain_detail_check_date_description">La  última vez que alguien comprobó esta fuente.</string>
+    <string name="amenity_detail_bottle_title">Rellenado de botellas</string>
+    <string name="amenity_detail_wheelchair_title">Accesible</string>
+    <string name="amenity_detail_check_date_title">Comprobado</string>
     <string name="map_too_far_away">Demasiado lejos. Haz zoom o edita el zoom en los ajustes, por favor.</string>
     <string name="map_location_disabled">Los servicios de ubicación están deshabilitados. Habilítalos para centrarte en el mapa.</string>
     <string name="property_value_no">No</string>
@@ -26,15 +23,12 @@
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>
     <string name="map_location_permission_denied">El permiso de ubicación fue rechazado. Acéptalo para centrarte en el mapa.</string>
-    <string name="fountain_detail_open_maps_button">Abrir en Maps</string>
+    <string name="amenity_detail_open_in_maps">Abrir en Maps</string>
     <string name="amenity_detail_fountain_title">Fuente</string>
     <string name="amenity_detail_restroom_title">Baño</string>
     <string name="amenity_detail_handwashing_title">Lavado de manos</string>
-    <string name="amenity_detail_handwashing_description">Si el baño incluye un lavabo y jabón.</string>
     <string name="amenity_detail_changing_table_title">Cambiar pañales</string>
-    <string name="amenity_detail_changing_table_description">Hay una superficie para cambiar pañales de bebés o niños.</string>
     <string name="amenity_detail_fee_title">Tarifa</string>
-    <string name="amenity_detail_fee_description">El uso de esta instalación cuesta dinero.</string>
     <string name="fee_value_donation_title">Acepta donativo</string>
     <string name="fee_value_no_title">Gratis</string>
     <string name="fee_value_unknown_title">Tarifa desconocida</string>
@@ -51,4 +45,6 @@
     <string name="amenity_detail_user_commented_title">Un usuario comentó</string>
     <string name="amenity_detail_not_working_notice">Puede estar estropeado o fuera de servicio.</string>
     <string name="amenity_detail_photo_license_learn">Saber más</string>
+    <string name="feedback_button_bad_title">Mal</string>
+    <string name="feedback_button_good_title">Bien</string>
 </resources>
