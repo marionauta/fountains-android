@@ -12,13 +12,23 @@ import mn.openlocations.networking.UserAgent
 internal object FeedbackDataSource {
     private val client = ApiClient(baseUrl = KnownUris.reporting, userAgent = UserAgent.Mobile)
 
-    suspend fun report(osmId: String, state: FeedbackState, comment: String, authorId: String) {
-        client.form(
-            route = FeedbackRoute(
-                osmId = osmId,
-                state = state,
-                comment = comment.trim(),
-                authorId = authorId,
+    suspend fun report(
+        osmId: String,
+        state: FeedbackState,
+        comment: String,
+        authorId: String,
+    ): Result<Unit> {
+        if (state == FeedbackState.Bad && comment.isBlank()) {
+            return Result.failure(Exception("bad feedback needs a comment"))
+        }
+        return Result.success(
+            client.form(
+                route = FeedbackRoute(
+                    osmId = osmId,
+                    state = state,
+                    comment = comment.trim(),
+                    authorId = authorId,
+                )
             )
         )
     }

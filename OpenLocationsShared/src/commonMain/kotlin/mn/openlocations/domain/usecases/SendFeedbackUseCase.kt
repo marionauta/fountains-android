@@ -10,12 +10,25 @@ class SendFeedbackUseCase(private val storage: SecureStringStorage) {
     private val dataSource = FeedbackDataSource
 
     @ObjCName("callAsFunction")
-    suspend operator fun invoke(osmId: String, state: FeedbackState, comment: String) {
+    suspend operator fun invoke(payload: Payload): Boolean {
         var token = storage["user_id"]
         if (token == null) {
             token = ULID.randomULID()
             storage["user_id"] = token
         }
-        return dataSource.report(osmId = osmId, state = state, comment = comment, authorId = token)
+        return dataSource.report(
+            osmId = payload.osmId,
+            state = payload.state,
+            comment = payload.comment,
+            authorId = token
+        ).isSuccess
+    }
+
+    data class Payload(
+        val osmId: String,
+        val state: FeedbackState,
+        val comment: String,
+    ) {
+        var isSendEnabled: Boolean = state != FeedbackState.Bad || comment.isNotBlank()
     }
 }

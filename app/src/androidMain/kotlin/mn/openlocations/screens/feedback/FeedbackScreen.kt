@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -71,22 +72,27 @@ fun FeedbackScreen(
                         if (isSending) {
                             AppBarLoader(isLoading = true, modifier = Modifier.padding(end = 16.dp))
                         } else {
+                            val payload = SendFeedbackUseCase.Payload(
+                                osmId = amenityId,
+                                state = state,
+                                comment = comment,
+                            )
                             TextButton(
+                                enabled = !isSending && payload.isSendEnabled,
                                 onClick = {
                                     coroutineScope.launch {
                                         isSending = true
-                                        sendFeedback(
-                                            osmId = amenityId,
-                                            state = state,
-                                            comment = comment
-                                        )
-                                        onClose()
+                                        if (sendFeedback(payload = payload)) {
+                                            onClose()
+                                        }
                                     }
                                 }
                             ) {
                                 Text(
                                     text = stringResource(R.string.feedback_screen_send),
-                                    color = MaterialTheme.colorScheme.onPrimary
+                                    color = MaterialTheme.colorScheme.onPrimary.copy(
+                                        alpha = LocalContentColor.current.alpha,
+                                    )
                                 )
                             }
                         }
