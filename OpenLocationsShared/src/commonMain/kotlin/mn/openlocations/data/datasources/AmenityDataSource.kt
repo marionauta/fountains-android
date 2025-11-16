@@ -1,10 +1,8 @@
 package mn.openlocations.data.datasources
 
-import mn.openlocations.data.models.AmenitiesResponseDto
 import mn.openlocations.data.models.OverpassNw
 
-// TODO: Improve this "in memory" cache
-private var amenitiesResponse: AmenitiesResponseDto? = null
+private var amenitiesResponse: AmenityInMemoryCache? = null
 
 internal object AmenityDataSource {
     private val overpassDataSource = OverpassDataSource
@@ -14,17 +12,17 @@ internal object AmenityDataSource {
         east: Double,
         south: Double,
         west: Double,
-    ): AmenitiesResponseDto? {
+    ): AmenityInMemoryCache? {
         val response =
             overpassDataSource.getNodes(north = north, east = east, south = south, west = west)
                 ?: return amenitiesResponse
-        amenitiesResponse = AmenitiesResponseDto(
+        amenitiesResponse = AmenityInMemoryCache(
             lastUpdated = response.lastUpdated(),
-            amenities = response.elements,
+            amenities = response.elements.associateBy { it.id.toString() },
         )
         return amenitiesResponse
     }
 
     fun get(amenityId: String): OverpassNw? =
-        amenitiesResponse?.amenities?.firstOrNull { it.id.toString() == amenityId }
+        amenitiesResponse?.amenities?.get(amenityId)
 }

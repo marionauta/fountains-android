@@ -242,6 +242,15 @@ private fun AmenityDetail(
             }
         }
 
+        if (amenity.description.isNotBlank()) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Text(
+                    text = amenity.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+
         // Hide fee if it's free but only for customers
         val hideFee = amenity.properties.let {
             it.fee == FeeValue.No && it.access == AccessValue.Customers

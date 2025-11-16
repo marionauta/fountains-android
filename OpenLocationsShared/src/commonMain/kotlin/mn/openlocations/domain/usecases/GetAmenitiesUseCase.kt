@@ -10,14 +10,18 @@ import mn.openlocations.domain.repositories.FilterSettingsRepositoryImpl
 import kotlin.native.ObjCName
 
 class GetAmenitiesUseCase(
+    private val languages: List<String> = GetLanguagesUseCase(),
     private val amenityRepository: AmenityRepository = AmenityRepository,
     private val settingsRepository: FilterSettingsRepository = FilterSettingsRepositoryImpl(),
 ) {
     @ObjCName("callAsFunction")
     suspend operator fun invoke(northEast: Location, southWest: Location): AmenitiesResponse? {
         val settings = settingsRepository.getFilterSettings()
-        val response =
-            amenityRepository.inside(northEast = northEast, southWest = southWest) ?: return null
+        val response = amenityRepository.inside(
+            northEast = northEast,
+            southWest = southWest,
+            languages = languages,
+        ) ?: return null
         return response.copy(
             amenities = response.amenities.filter { amenity ->
                 when (amenity) {
