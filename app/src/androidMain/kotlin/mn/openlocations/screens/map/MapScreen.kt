@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,17 +52,11 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterItem
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapEffect
-import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
-import com.google.maps.android.compose.clustering.Clustering
-import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -75,7 +70,6 @@ import mn.openlocations.domain.producers.produceFountains
 import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.amenity.AmenityDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
-import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.ColorMarkerFountain
 import mn.openlocations.ui.theme.ColorMarkerRestroom
 import mn.openlocations.ui.theme.customColors
@@ -83,6 +77,18 @@ import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.LocationProblemBannerView
 import mn.openlocations.ui.views.Modal
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.map.MapOptions
+import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.material3.DisappearingCompassButton
+import org.maplibre.compose.material3.DisappearingScaleBar
+import org.maplibre.compose.material3.ExpandingAttributionButton
+import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.style.rememberStyleState
+import org.maplibre.spatialk.geojson.BoundingBox
+import org.maplibre.spatialk.geojson.Position
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.time.Instant
@@ -92,8 +98,8 @@ import kotlin.time.Instant
 fun MapScreen() {
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
-    val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
-    val locationName by produceLocationName(coordinate = bounds?.center?.location)
+    val (bounds, setBounds) = remember { mutableStateOf<BoundingBox?>(null) }
+    val locationName by produceLocationName(coordinate = bounds?.center)
     val fountainsResult by produceFountains(bounds = bounds?.domain)
     val isLoadingFountains = fountainsResult.isLoading
     val fountains = fountainsResult.response
@@ -193,7 +199,7 @@ fun MapScreen() {
 @Composable
 private fun Map(
     amenities: List<Amenity>,
-    setBounds: (LatLngBounds) -> Unit,
+    setBounds: (BoundingBox) -> Unit,
     setLocationProblem: (LocationProblem) -> Unit,
     onMarkerClick: (Amenity) -> Unit,
 ) {
@@ -219,22 +225,44 @@ private fun Map(
         setLocationProblem(if (fine) LocationProblem.None else LocationProblem.PermissionNeeded)
     }
 
-    val zoomLevel = 15f
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(.0, .0), 2f)
+    val zoomLevel = 15.0
+    val cameraState = rememberCameraState(
+        firstPosition = CameraPosition(zoom = zoomLevel),
+    )
+    val styleState = rememberStyleState()
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(cameraState.isCameraMoving) {
+        if (cameraState.isCameraMoving) return@LaunchedEffect
+        val projection = cameraState.projection
+        if (projection == null) return@LaunchedEffect
+        val bounds = projection.queryVisibleBoundingBox()
+        setBounds(bounds)
     }
 
     LaunchedEffect(isMyLocationEnabled) {
         if (isMyLocationEnabled) {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+            fusedLocationClient.lastLocation.addOnFailureListener { exception ->
+                println("fusedLocationClient.lastLocation.addOnFailureListener")
+                println(exception)
+            }
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                println("fusedLocationClient.lastLocation.addOnSuccessListener")
                 if (location == null) {
                     return@addOnSuccessListener
                 }
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                    LatLng(location.latitude, location.longitude),
-                    zoomLevel,
-                )
+                scope.launch {
+                    cameraState.animateTo(
+                        finalPosition = CameraPosition(
+                            target = Position(
+                                latitude = location.latitude,
+                                longitude = location.longitude
+                            ),
+                            zoom = zoomLevel,
+                        )
+                    )
+                }
             }
         } else {
             fineLocationPermission.launchPermissionRequest()
@@ -250,36 +278,35 @@ private fun Map(
             amenities.fastFilteredMap({ it is Amenity.Restroom }, ::AmenityClusterItem)
     }
 
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState,
-        properties = MapProperties(
-            isBuildingEnabled = false,
-            isIndoorEnabled = false,
-            isTrafficEnabled = false,
-            isMyLocationEnabled = isMyLocationEnabled,
-            mapStyleOptions = mapStyleOptions(),
-        ),
-    ) {
-        MapEffect(Unit) { map ->
-            map.setOnCameraIdleListener {
-                setBounds(map.projection.visibleRegion.latLngBounds)
-            }
-        }
-        for (cluster in listOf(clusterFountains, clusterRestrooms)) {
-            Clustering(
-                items = cluster,
-                onClusterClick = { true }, // Do nothing
-                onClusterItemClick = {
-                    onMarkerClick(it.amenity)
-                    return@Clustering true
-                },
-                clusterContent = { cluster ->
-                    ClusterContent(cluster = cluster)
-                },
-                clusterItemContent = {
-                    MarkerContent(amenity = it.amenity)
-                },
+    Box(Modifier.fillMaxSize()) {
+        MaplibreMap(
+            baseStyle = BaseStyle.Uri("https://tiles.openfreemap.org/styles/bright"),
+            cameraState = cameraState,
+            styleState = styleState,
+            options = MapOptions(
+                ornamentOptions = OrnamentOptions.AllDisabled,
+            )
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            DisappearingScaleBar(
+                metersPerDp = cameraState.metersPerDpAtTarget,
+                zoom = cameraState.position.zoom,
+                modifier = Modifier.align(Alignment.TopStart),
+            )
+            DisappearingCompassButton(
+                cameraState = cameraState,
+                modifier = Modifier.align(Alignment.TopEnd),
+            )
+            ExpandingAttributionButton(
+                cameraState = cameraState,
+                styleState = styleState,
+                modifier = Modifier.align(Alignment.BottomEnd),
+                contentAlignment = Alignment.BottomEnd,
             )
         }
     }
@@ -401,8 +428,17 @@ private val Location.position: LatLng
 private val LatLng.location: Location
     get() = Location(latitude, longitude)
 
-private val LatLngBounds.domain: Pair<Location, Location>
+private val BoundingBox.center: Location
+    get() = Location(
+        latitude = (northeast.latitude + southwest.latitude) / 2,
+        longitude = (northeast.longitude + southwest.longitude) / 2,
+    )
+
+private val BoundingBox.domain: Pair<Location, Location>
     get() = northeast.location to southwest.location
+
+private val Position.location: Location
+    get() = Location(latitude = latitude, longitude = longitude)
 
 val Instant.readableDateTime: String
     get() {
