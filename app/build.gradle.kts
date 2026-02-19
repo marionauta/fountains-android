@@ -24,6 +24,9 @@ kotlin {
             implementation(libs.compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.security.crypto)
+            implementation(libs.maplibre.compose)
+            implementation(libs.maplibre.compose.material3)
+            implementation(libs.compose.material.icons)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
