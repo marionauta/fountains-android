@@ -4,12 +4,15 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.location.LocationManager
+import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -69,6 +74,7 @@ import mn.openlocations.ui.theme.ColorMarkerRestroom
 import mn.openlocations.ui.theme.customColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
+import mn.openlocations.ui.views.LocationButton
 import mn.openlocations.ui.views.LocationProblemBannerView
 import mn.openlocations.ui.views.Modal
 import org.maplibre.compose.camera.CameraPosition
@@ -207,6 +213,7 @@ private fun Map(
     setLocationProblem: (LocationProblem) -> Unit,
     onMarkerClick: (String) -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val isLocationEnabled = context.isLocationEnabled()
     val locationPermissions = rememberMultiplePermissionsState(
@@ -241,19 +248,27 @@ private fun Map(
             rememberNullLocationProvider()
         }
     }
-
     val userLocation = rememberUserLocationState(locationProvider)
 
+    fun centerOnUserPosition(position: Position) {
+        coroutineScope.launch {
+            cameraState.animateTo(
+                finalPosition = CameraPosition(
+                    target = position,
+                    zoom = defaultZoomLevel,
+                )
+            )
+        }
+    }
+
+    var centeredFirstTime by rememberSaveable { mutableStateOf(false) }
     LocationTrackingEffect(
         locationState = userLocation,
         enabled = isLocationEnabled && isLocationPermissionGranted,
     ) {
-        cameraState.animateTo(
-            finalPosition = CameraPosition(
-                target = currentLocation.position,
-                zoom = defaultZoomLevel,
-            )
-        )
+        if (centeredFirstTime) return@LocationTrackingEffect
+        centeredFirstTime = true
+        centerOnUserPosition(currentLocation.position)
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -291,7 +306,7 @@ private fun Map(
                     }
                 )
             }
-            if (isLocationEnabled && isLocationPermissionGranted) {
+            if (userLocation.location != null) {
                 LocationPuck(
                     idPrefix = "mn.openlocations.user",
                     locationState = userLocation,
@@ -311,10 +326,20 @@ private fun Map(
                 zoom = cameraState.position.zoom,
                 modifier = Modifier.align(Alignment.TopStart),
             )
-            DisappearingCompassButton(
-                cameraState = cameraState,
+            Column(
                 modifier = Modifier.align(Alignment.TopEnd),
-            )
+            ) {
+                LocationButton(
+                    permissionState = locationPermissions,
+                    onClick = {
+                        userLocation.location?.let { centerOnUserPosition(it.position) }
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                DisappearingCompassButton(
+                    cameraState = cameraState,
+                )
+            }
             ExpandingAttributionButton(
                 cameraState = cameraState,
                 styleState = styleState,
@@ -426,7 +451,12 @@ val Instant.readableDate: String
         return dateTime.format(formatter)
     }
 
-fun Context.isLocationEnabled(): Boolean {
+private fun Context.isLocationEnabled(): Boolean {
     val manager = this.getSystemService(LocationManager::class.java)
-    return manager.isLocationEnabled
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        manager.isLocationEnabled
+    } else {
+        // TODO: actually check on SDK < 28
+        return true
+    }
 }
