@@ -111,7 +111,7 @@ fun MapScreen() {
             title = {
                 Column {
                     Text(
-                        text = locationName ?: stringResource(R.string.app_name),
+                        text = locationName.orEmpty().ifBlank { stringResource(R.string.app_name) },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )

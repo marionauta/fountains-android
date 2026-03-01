@@ -10,7 +10,7 @@ import mn.openlocations.library.debounce
 @Composable
 fun produceLocationName(coordinate: Location?): State<String?> {
     val repository = GeocodingRepository()
-    return produceState<String?>(initialValue = null, coordinate) {
+    return produceState(initialValue = null, coordinate) {
         if (coordinate == null) {
             return@produceState
         }

@@ -45,7 +45,7 @@ class ApiClient(
         }
     }
 
-    suspend inline fun <reified T> get(route: ApiRoute): T? {
+    suspend inline fun <reified T> getOrError(route: ApiRoute): Result<T> {
         return try {
             val response = client.get(baseUrl.build(route).toString()) {
                 headers {
@@ -54,11 +54,15 @@ class ApiClient(
                     }
                 }
             }
-            response.body()
+            Result.success(response.body())
         } catch (exception: Exception) {
-            println(exception.message)
-            null
+            Result.failure(exception)
         }
+    }
+
+    suspend inline fun <reified T> get(route: ApiRoute): T? {
+        val result = getOrError<T>(route)
+        return result.getOrNull()
     }
 
     suspend inline fun form(route: ApiRoute) {

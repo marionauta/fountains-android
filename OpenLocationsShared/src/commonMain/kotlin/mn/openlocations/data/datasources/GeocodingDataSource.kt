@@ -15,6 +15,13 @@ class GeocodingDataSource(private val apiKey: String) {
             return null
         }
         val route = GeocodingRoute.Reverse(coordinate = coordinate, apiKey = apiKey)
-        return apiClient.get<ReverseGeocodingResponseDto>(route = route)?.name
+        val result = apiClient.getOrError<ReverseGeocodingResponseDto>(route = route)
+        try {
+            val response = result.getOrThrow()
+            return if (response.name.isNullOrBlank()) null else response.name
+        } catch (exception: Exception) {
+            println("[GeocodingDataSource] ${exception.message}")
+            return null
+        }
     }
 }
