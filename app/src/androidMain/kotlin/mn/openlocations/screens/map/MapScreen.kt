@@ -1,6 +1,7 @@
 package mn.openlocations.screens.map
 
-import android.annotation.SuppressLint
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.location.LocationManager
 import android.os.Build
@@ -29,9 +30,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -51,16 +52,11 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.clustering.Cluster
-import com.google.maps.android.clustering.ClusterItem
-import com.google.maps.android.compose.MapsComposeExperimentalApi
-import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonPrimitive
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.data.models.OsmId
@@ -71,7 +67,6 @@ import mn.openlocations.domain.producers.produceAmenities
 import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.amenity.AmenityDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
-import mn.openlocations.ui.theme.ColorMarkerFountain
 import mn.openlocations.ui.theme.ColorMarkerRestroom
 import mn.openlocations.ui.theme.customTopAppBarColors
 import mn.openlocations.ui.views.AppBarLoader
@@ -80,15 +75,27 @@ import mn.openlocations.ui.views.LocationProblemBannerView
 import mn.openlocations.ui.views.Modal
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.layers.CircleLayer
+import org.maplibre.compose.location.LocationPuck
+import org.maplibre.compose.location.LocationTrackingEffect
+import org.maplibre.compose.location.rememberDefaultLocationProvider
+import org.maplibre.compose.location.rememberNullLocationProvider
+import org.maplibre.compose.location.rememberUserLocationState
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.material3.DisappearingCompassButton
 import org.maplibre.compose.material3.DisappearingScaleBar
 import org.maplibre.compose.material3.ExpandingAttributionButton
+import org.maplibre.compose.material3.LocationPuckDefaults
+import org.maplibre.compose.sources.rememberComputedSource
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.style.rememberStyleState
+import org.maplibre.compose.util.ClickResult
 import org.maplibre.spatialk.geojson.BoundingBox
+import org.maplibre.spatialk.geojson.Feature
+import org.maplibre.spatialk.geojson.FeatureCollection
+import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -143,8 +150,8 @@ fun MapScreen() {
                 Map(
                     amenities = amenities ?: emptyList(),
                     setBounds = setBounds,
-                    setLocationProblem = { locationProblem = it },
-                    onMarkerClick = { amenity -> selectedOsmId = amenity.id },
+                    setLocationProblem = { problem -> locationProblem = problem },
+                    onMarkerClick = { amenityId -> selectedOsmId = amenityId },
                 )
             }
             if (amenitiesResult.tooFarAway) {
@@ -184,43 +191,32 @@ fun MapScreen() {
     }
 }
 
-@SuppressLint("MissingPermission")
-@OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun Map(
     amenities: Collection<Amenity>,
     setBounds: (BoundingBox) -> Unit,
     setLocationProblem: (LocationProblem) -> Unit,
-    onMarkerClick: (Amenity) -> Unit,
+    onMarkerClick: (OsmId) -> Unit,
 ) {
     val context = LocalContext.current
     val isLocationEnabled = context.isLocationEnabled()
-
-    val fineLocationPermission = rememberPermissionState(
-        android.Manifest.permission.ACCESS_FINE_LOCATION
-    )
     val locationPermissions = rememberMultiplePermissionsState(
-        listOf(
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-        )
+        listOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
     )
-    val isMyLocationEnabled = locationPermissions.permissions.any { it.status.isGranted }
-    LaunchedEffect(isLocationEnabled, isMyLocationEnabled, locationPermissions) {
+    val isLocationPermissionGranted = locationPermissions.permissions.any { it.status.isGranted }
+    LaunchedEffect(isLocationEnabled, isLocationPermissionGranted, locationPermissions) {
         if (!isLocationEnabled) {
             setLocationProblem(LocationProblem.LocationIsOff)
             return@LaunchedEffect
         }
-        val fine = isMyLocationEnabled && !locationPermissions.shouldShowRationale
+        val fine = isLocationPermissionGranted && !locationPermissions.shouldShowRationale
         setLocationProblem(if (fine) LocationProblem.None else LocationProblem.PermissionNeeded)
     }
 
-    val zoomLevel = 15.0
-    val cameraState = rememberCameraState(
-        firstPosition = CameraPosition(zoom = zoomLevel),
-    )
+    val defaultZoomLevel = 15.0
+    val cameraState = rememberCameraState()
     val styleState = rememberStyleState()
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(cameraState.isCameraMoving) {
         if (cameraState.isCameraMoving) return@LaunchedEffect
@@ -230,40 +226,26 @@ private fun Map(
         setBounds(bounds)
     }
 
-    LaunchedEffect(isMyLocationEnabled) {
-        if (isMyLocationEnabled) {
-            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-            fusedLocationClient.lastLocation.addOnFailureListener { exception ->
-                println("fusedLocationClient.lastLocation.addOnFailureListener")
-                println(exception)
-            }
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                println("fusedLocationClient.lastLocation.addOnSuccessListener")
-                if (location == null) {
-                    return@addOnSuccessListener
-                }
-                scope.launch {
-                    cameraState.animateTo(
-                        finalPosition = CameraPosition(
-                            target = Position(
-                                latitude = location.latitude,
-                                longitude = location.longitude
-                            ),
-                            zoom = zoomLevel,
-                        )
-                    )
-                }
-            }
+    val locationProvider = key(isLocationPermissionGranted) {
+        if (isLocationPermissionGranted) {
+            rememberDefaultLocationProvider()
         } else {
-            fineLocationPermission.launchPermissionRequest()
+            rememberNullLocationProvider()
         }
     }
 
-    var clusterFountains by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
-    var clusterRestrooms by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
-    LaunchedEffect(amenities) {
-        clusterFountains = amenities.filterIsInstance<Amenity.Fountain>().map(::AmenityClusterItem)
-        clusterRestrooms = amenities.filterIsInstance<Amenity.Restroom>().map(::AmenityClusterItem)
+    val userLocation = rememberUserLocationState(locationProvider)
+
+    LocationTrackingEffect(
+        locationState = userLocation,
+        enabled = isLocationEnabled && isLocationPermissionGranted,
+    ) {
+        cameraState.animateTo(
+            finalPosition = CameraPosition(
+                target = currentLocation.position,
+                zoom = defaultZoomLevel,
+            )
+        )
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -273,8 +255,42 @@ private fun Map(
             styleState = styleState,
             options = MapOptions(
                 ornamentOptions = OrnamentOptions.AllDisabled,
-            )
-        )
+            ),
+        ) {
+            if (amenities.isNotEmpty()) {
+                val amenitiesSource = rememberComputedSource { bbox, _ ->
+                    FeatureCollection(
+                        features = amenities.map { amenity ->
+                            Feature(
+                                geometry = Point(
+                                    coordinates = amenity.location.position,
+                                ),
+                                properties = AmenityProperties(id = amenity.id.toString()),
+                            )
+                        },
+                    )
+                }
+                CircleLayer(
+                    id = "mn.openlocations.amenities",
+                    source = amenitiesSource,
+                    onClick = { feature ->
+                        val id = feature.firstOrNull()?.properties?.get("id")
+                        if (id != null && id is JsonPrimitive && id.content.isNotBlank()) {
+                            OsmId.from(id.content)?.let { onMarkerClick(it) }
+                            return@CircleLayer ClickResult.Consume
+                        }
+                        return@CircleLayer ClickResult.Pass
+                    })
+            }
+            if (isLocationEnabled && isLocationPermissionGranted) {
+                LocationPuck(
+                    idPrefix = "mn.openlocations.user",
+                    locationState = userLocation,
+                    cameraState = cameraState,
+                    colors = LocationPuckDefaults.colors(),
+                )
+            }
+        }
 
         Box(
             modifier = Modifier
@@ -299,6 +315,9 @@ private fun Map(
         }
     }
 }
+
+@Serializable
+data class AmenityProperties(val id: String)
 
 @Composable
 private fun MarkerContent(amenity: Amenity) {
@@ -361,60 +380,11 @@ private fun RestroomContent(restroom: Amenity.Restroom) {
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
-                text = "WC",
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center
+                text = "WC", fontSize = 14.sp, textAlign = TextAlign.Center
             )
         }
     }
 }
-
-@Composable
-private fun ClusterContent(cluster: Cluster<AmenityClusterItem>) {
-    Surface(
-        Modifier.size(30.dp),
-        shape = CircleShape,
-        color = when (cluster.items.firstOrNull()?.amenity) {
-            is Amenity.Fountain -> ColorMarkerFountain
-            is Amenity.Restroom -> ColorMarkerRestroom
-            null -> Color.Gray
-        },
-        contentColor = Color.White,
-        border = BorderStroke(1.dp, Color.White)
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = "%,d".format(cluster.size),
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-private class AmenityClusterItem(val amenity: Amenity) : ClusterItem {
-    override fun getPosition(): LatLng {
-        return amenity.location.position
-    }
-
-    override fun getTitle(): String {
-        return amenity.name
-    }
-
-    override fun getSnippet(): String? {
-        return null
-    }
-
-    override fun getZIndex(): Float? {
-        return null
-    }
-}
-
-private val Location.position: LatLng
-    get() = LatLng(latitude, longitude)
-
-private val LatLng.location: Location
-    get() = Location(latitude, longitude)
 
 private val BoundingBox.center: Location
     get() = Location(
@@ -427,6 +397,9 @@ private val BoundingBox.domain: Pair<Location, Location>
 
 private val Position.location: Location
     get() = Location(latitude = latitude, longitude = longitude)
+
+private val Location.position: Position
+    get() = Position(latitude = latitude, longitude = longitude)
 
 val Instant.readableDateTime: String
     get() {
