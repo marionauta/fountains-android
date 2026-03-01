@@ -1,4 +1,5 @@
 [versions]
+accompanist = "0.37.3"
 agp = "8.13.0"
 android-minSdk = "26"
 android-targetSdk = "36"
@@ -16,8 +17,8 @@ playServicesAds = "24.5.0"
 playServicesLocation = "21.3.0"
 
 [libraries]
-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version = "0.32.0" }
-androidx-security-crypto = { module = "androidx.security:security-crypto", version = "1.0.0" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version = "1.1.0" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 flow-preferences = { module = "com.fredporciuncula:flow-preferences", version = "1.9.1" }
