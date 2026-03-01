@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
@@ -40,9 +41,6 @@ kotlin {
             implementation(projects.openLocationsShared)
 
             // Maps
-            implementation(libs.play.services.location)
-            implementation(libs.maps.compose)
-            implementation(libs.maps.compose.utils)
             implementation(libs.accompanist.permissions)
 
             // Ads
