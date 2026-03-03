@@ -13,5 +13,7 @@ internal data class ReverseGeocodingResponseDto(
         val village: String? = null,
     )
 
-    val name: String? = address?.let { it.city ?: it.town ?: it.village }
+    // getter so it doesn't serialize
+    val name: String?
+        get() = address?.let { it.city ?: it.town ?: it.village }
 }

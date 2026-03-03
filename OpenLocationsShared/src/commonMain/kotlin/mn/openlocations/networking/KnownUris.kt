@@ -9,6 +9,7 @@ object KnownUris {
     val website = "https://waterfinder.org?ref=WaterFinder".toPortableUrl()!!
     val developer = "https://mario.nachbaur.dev?ref=WaterFinder".toPortableUrl()!!
     val mapillary = "https://graph.mapillary.com".toPortableUrl()!!
+    val nominatim = "https://nominatim.openstreetmap.org".toPortableUrl()!!
     val reporting = "https://api.waterfinder.org".toPortableUrl()!!
     val panoramax = "https://api.panoramax.xyz".toPortableUrl()!!
     val wikimediaCommons = "https://commons.wikimedia.org/w".toPortableUrl()!!
