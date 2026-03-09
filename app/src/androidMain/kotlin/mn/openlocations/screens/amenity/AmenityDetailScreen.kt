@@ -60,11 +60,14 @@ import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.AccessValue
 import mn.openlocations.domain.models.Amenity
-import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.FeedbackComment
@@ -80,13 +83,14 @@ import mn.openlocations.domain.utils.SecureStringStorage
 import mn.openlocations.networking.KnownUris
 import mn.openlocations.screens.feedback.FeedbackButton
 import mn.openlocations.screens.feedback.FeedbackScreen
-import mn.openlocations.screens.map.readableDate
-import mn.openlocations.screens.map.readableDateTime
 import mn.openlocations.ui.theme.customTopAppBarColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
 import mn.openlocations.ui.views.ImageCarouselIndicator
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -596,3 +600,17 @@ private fun CreatorName(image: ImageMetadata, modifier: Modifier) {
         )
     }
 }
+
+val Instant.readableDateTime: String
+    get() {
+        val dateTime = toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+        return dateTime.format(formatter)
+    }
+
+val Instant.readableDate: String
+    get() {
+        val dateTime = toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+        return dateTime.format(formatter)
+    }

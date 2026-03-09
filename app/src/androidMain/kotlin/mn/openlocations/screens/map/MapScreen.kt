@@ -156,20 +156,6 @@ private val BoundingBox.domain: Pair<Location, Location>
 private val Position.location: Location
     get() = Location(latitude = latitude, longitude = longitude)
 
-val Instant.readableDateTime: String
-    get() {
-        val dateTime = toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
-        val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-        return dateTime.format(formatter)
-    }
-
-val Instant.readableDate: String
-    get() {
-        val dateTime = toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
-        val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-        return dateTime.format(formatter)
-    }
-
 private object OsmIdSaver : Saver<MutableState<OsmId?>, String> {
     override fun SaverScope.save(value: MutableState<OsmId?>): String? {
         return value.value?.toString()

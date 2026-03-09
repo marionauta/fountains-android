@@ -1,11 +1,13 @@
 package mn.openlocations.domain.models
 
+import androidx.compose.runtime.Immutable
 import mn.openlocations.domain.utils.parseAccess
 import mn.openlocations.domain.utils.parseBasic
 import mn.openlocations.domain.utils.parseFee
 import mn.openlocations.domain.utils.parsePortableDate
 import mn.openlocations.domain.utils.parseWheelchair
 
+@Immutable
 data class RestroomProperties(
     val changingTable: BasicValue,
     val handwashing: BasicValue,

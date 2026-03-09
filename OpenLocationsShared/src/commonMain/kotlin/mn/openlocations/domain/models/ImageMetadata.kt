@@ -1,15 +1,19 @@
 package mn.openlocations.domain.models
 
+import androidx.compose.runtime.Immutable
 import mn.openlocations.data.models.MapillaryResponseDto
 import mn.openlocations.data.models.PanoramaxResponseDto
 import mn.openlocations.data.models.WikimediaCommonsResponseDto
 
+@Immutable
 data class ImageMetadata(
     val imageUrl: Url,
     val creator: Creator?,
     val license: License?,
 ) {
+    @Immutable
     data class Creator(val username: String)
+    @Immutable
     data class License(val name: String, val url: Url)
 }
 
