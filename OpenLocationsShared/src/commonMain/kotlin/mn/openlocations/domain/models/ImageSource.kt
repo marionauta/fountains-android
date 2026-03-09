@@ -1,5 +1,8 @@
 package mn.openlocations.domain.models
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 enum class ImageSource {
     Panoramax,
     Mapillary,
