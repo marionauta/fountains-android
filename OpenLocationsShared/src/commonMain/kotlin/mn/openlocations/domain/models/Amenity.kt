@@ -1,10 +1,12 @@
 package mn.openlocations.domain.models
 
+import androidx.compose.runtime.Immutable
 import mn.openlocations.data.models.OsmId
 import mn.openlocations.data.models.OverpassNw
 import kotlin.native.ObjCName
 
 // Needs to be a class for iOS interop
+@Immutable
 sealed class Amenity {
     abstract val id: OsmId
     abstract val name: String
@@ -13,6 +15,7 @@ sealed class Amenity {
     abstract val location: Location
     abstract val properties: AmenityProperties
 
+    @Immutable
     data class Fountain(
         override val id: OsmId,
         override val name: String,
@@ -21,6 +24,7 @@ sealed class Amenity {
         override val properties: FountainProperties,
     ) : Amenity()
 
+    @Immutable
     data class Restroom(
         override val id: OsmId,
         override val name: String,
