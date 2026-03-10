@@ -1,6 +1,6 @@
 package mn.openlocations.domain.models
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 expect class PortableDate
 

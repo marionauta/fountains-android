@@ -1,7 +1,7 @@
 package mn.openlocations.data.datasources
 
-import kotlinx.datetime.Instant
 import mn.openlocations.data.models.OverpassNw
+import kotlin.time.Instant
 
 internal class AmenityInMemoryCache(
     val lastUpdated: Instant,

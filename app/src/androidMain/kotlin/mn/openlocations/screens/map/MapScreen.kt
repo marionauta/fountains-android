@@ -62,7 +62,6 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -85,6 +84,7 @@ import mn.openlocations.ui.views.LocationProblemBannerView
 import mn.openlocations.ui.views.Modal
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

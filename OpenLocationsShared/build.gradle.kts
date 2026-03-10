@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ulid)
             implementation(libs.uri)
+            implementation(libs.compose.runtime)
         }
         appleMain.dependencies {
             implementation(libs.ktor.client.darwin)

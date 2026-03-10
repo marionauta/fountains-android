@@ -1,9 +1,10 @@
 package mn.openlocations.data.models
 
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class OverpassResponse(
     private val osm3s: OSM3s,
     val elements: List<OverpassNw>,
@@ -11,7 +12,7 @@ data class OverpassResponse(
     fun lastUpdated(): Instant = osm3s.timestampOsmBase
 }
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class OSM3s(
     @SerialName("timestamp_osm_base")
     val timestampOsmBase: Instant,

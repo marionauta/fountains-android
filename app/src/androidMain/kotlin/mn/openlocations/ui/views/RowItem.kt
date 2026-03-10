@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +31,7 @@ fun RowItem(
 ) {
     Column {
         if (hasTopDivider) {
-            Divider()
+            HorizontalDivider()
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
