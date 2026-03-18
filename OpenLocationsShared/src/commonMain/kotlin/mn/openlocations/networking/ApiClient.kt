@@ -17,7 +17,7 @@ import kotlinx.serialization.json.Json
 import mn.openlocations.domain.models.Url
 import mn.openlocations.domain.models.build
 
-class ApiClient(
+internal class ApiClient(
     val baseUrl: Url,
     userAgent: UserAgent = UserAgent.Browser,
     logLevel: LogLevel = LogLevel.NONE,

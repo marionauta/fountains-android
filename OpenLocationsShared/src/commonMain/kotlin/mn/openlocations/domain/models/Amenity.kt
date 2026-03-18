@@ -2,11 +2,13 @@ package mn.openlocations.domain.models
 
 import mn.openlocations.data.models.OsmId
 import mn.openlocations.data.models.OverpassNw
+import kotlin.native.ObjCName
 
 // Needs to be a class for iOS interop
 sealed class Amenity {
     abstract val id: OsmId
     abstract val name: String
+    @ObjCName("description_")
     abstract val description: String
     abstract val location: Location
     abstract val properties: AmenityProperties
