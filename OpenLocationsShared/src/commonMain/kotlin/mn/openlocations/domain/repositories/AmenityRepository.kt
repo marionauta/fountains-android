@@ -1,6 +1,7 @@
 package mn.openlocations.domain.repositories
 
 import mn.openlocations.data.datasources.AmenityDataSource
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.AmenitiesResponse
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.Location
@@ -28,7 +29,7 @@ object AmenityRepository {
         }
     }
 
-    fun get(amenityId: String, languages: List<String>): Amenity? {
-        return dataSource.get(amenityId)?.intoDomain(languages)
+    fun get(osmId: OsmId, languages: List<String>): Amenity? {
+        return dataSource.get(osmId)?.intoDomain(languages)
     }
 }

@@ -1,6 +1,7 @@
 package mn.openlocations.domain.usecases
 
 import mn.openlocations.data.datasources.FeedbackDataSource
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.utils.SecureStringStorage
 import ulid.ULID
@@ -20,12 +21,12 @@ class SendFeedbackUseCase(private val storage: SecureStringStorage) {
             osmId = payload.osmId,
             state = payload.state,
             comment = payload.comment,
-            authorId = token
+            authorId = token,
         ).isSuccess
     }
 
     data class Payload(
-        val osmId: String,
+        val osmId: OsmId,
         val state: FeedbackState,
         val comment: String,
     ) {

@@ -68,6 +68,7 @@ import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.Amenity
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.producers.produceFountains
@@ -89,7 +90,6 @@ import kotlin.time.Instant
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen() {
-    var isMenuShown by rememberSaveable { mutableStateOf(false) }
     var isAppInfoOpen by rememberSaveable { mutableStateOf(false) }
 
     val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
@@ -98,9 +98,9 @@ fun MapScreen() {
     val isLoadingFountains = fountainsResult.isLoading
     val fountains = fountainsResult.response
 
-    var selectedAmenityId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedOsmId by rememberSaveable { mutableStateOf<OsmId?>(null) }
     fun deselectAmenity() {
-        selectedAmenityId = null
+        selectedOsmId = null
     }
 
     var locationProblem by rememberSaveable { mutableStateOf(LocationProblem.None) }
@@ -148,7 +148,7 @@ fun MapScreen() {
                     amenities = fountains?.amenities ?: emptyList(),
                     setBounds = setBounds,
                     setLocationProblem = { locationProblem = it },
-                    onMarkerClick = { amenity -> selectedAmenityId = amenity.id },
+                    onMarkerClick = { amenity -> selectedOsmId = amenity.id },
                 )
             }
             if (fountainsResult.tooFarAway) {
@@ -170,18 +170,17 @@ fun MapScreen() {
                 }
             }
             Modal(
-                isOpen = selectedAmenityId != null,
+                isOpen = selectedOsmId != null,
                 onClose = ::deselectAmenity,
             ) {
                 AmenityDetailScreen(
-                    amenityId = selectedAmenityId,
+                    osmId = selectedOsmId,
                     onClose = ::deselectAmenity,
                 )
             }
             AppInfoModal(
                 isOpen = isAppInfoOpen,
                 onClose = {
-                    isMenuShown = false
                     isAppInfoOpen = false
                 },
             )

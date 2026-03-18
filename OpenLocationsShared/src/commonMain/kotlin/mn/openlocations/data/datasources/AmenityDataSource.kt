@@ -1,6 +1,7 @@
 package mn.openlocations.data.datasources
 
 import mn.openlocations.data.models.OverpassNw
+import mn.openlocations.data.models.OsmId
 
 private var amenitiesResponse: AmenityInMemoryCache? = null
 
@@ -23,6 +24,11 @@ internal object AmenityDataSource {
         return amenitiesResponse
     }
 
-    fun get(amenityId: String): OverpassNw? =
-        amenitiesResponse?.amenities?.get(amenityId)
+    fun get(osmId: OsmId): OverpassNw? {
+        val res = amenitiesResponse?.amenities?.get(osmId.id) ?: return null
+        return when (osmId) {
+            is OsmId.Node -> res as? OverpassNw.Node
+            is OsmId.Way -> res as? OverpassNw.Way
+        }
+    }
 }

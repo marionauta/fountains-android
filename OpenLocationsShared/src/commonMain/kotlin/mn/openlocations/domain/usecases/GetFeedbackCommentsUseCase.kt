@@ -2,6 +2,7 @@ package mn.openlocations.domain.usecases
 
 import mn.openlocations.data.datasources.FeedbackDataSource
 import mn.openlocations.data.models.FeedbackCommentDto
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.FeedbackComment
 import mn.openlocations.domain.models.intoDomain
 import mn.openlocations.domain.utils.SecureStringStorage
@@ -12,7 +13,7 @@ class GetFeedbackCommentsUseCase(private val storage: SecureStringStorage) {
     private val dataSource = FeedbackDataSource
 
     @ObjCName("callAsFunction")
-    suspend operator fun invoke(osmId: String): List<FeedbackComment> {
+    suspend operator fun invoke(osmId: OsmId): List<FeedbackComment> {
         var token = storage["user_id"]
         if (token == null) {
             token = ULID.randomULID()

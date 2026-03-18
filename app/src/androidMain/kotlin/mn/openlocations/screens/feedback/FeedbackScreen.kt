@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mn.openlocations.R
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.repositories.StringStorageRepository
 import mn.openlocations.domain.usecases.SendFeedbackUseCase
@@ -43,7 +44,7 @@ import mn.openlocations.ui.views.AppBarLoader
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedbackScreen(
-    amenityId: String,
+    osmId: OsmId,
     state: FeedbackState,
     onClose: () -> Unit,
 ) {
@@ -73,7 +74,7 @@ fun FeedbackScreen(
                             AppBarLoader(isLoading = true, modifier = Modifier.padding(end = 16.dp))
                         } else {
                             val payload = SendFeedbackUseCase.Payload(
-                                osmId = amenityId,
+                                osmId = osmId,
                                 state = state,
                                 comment = comment,
                             )

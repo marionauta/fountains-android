@@ -1,17 +1,18 @@
 package mn.openlocations.domain.models
 
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.data.models.OverpassNw
 
 // Needs to be a class for iOS interop
 sealed class Amenity {
-    abstract val id: String
+    abstract val id: OsmId
     abstract val name: String
     abstract val description: String
     abstract val location: Location
     abstract val properties: AmenityProperties
 
     data class Fountain(
-        override val id: String,
+        override val id: OsmId,
         override val name: String,
         override val description: String,
         override val location: Location,
@@ -19,7 +20,7 @@ sealed class Amenity {
     ) : Amenity()
 
     data class Restroom(
-        override val id: String,
+        override val id: OsmId,
         override val name: String,
         override val description: String,
         override val location: Location,
@@ -30,9 +31,13 @@ sealed class Amenity {
 fun OverpassNw.intoDomain(languages: List<String>): Amenity? {
     val name = tags.getLocalized("name", languages) ?: ""
     val description = tags.getLocalized("description", languages) ?: ""
+    val id = when (this) {
+        is OverpassNw.Node -> OsmId.Node(this.id.toString())
+        is OverpassNw.Way -> OsmId.Way(this.id.toString())
+    }
     return when (tags["amenity"]) {
         "drinking_water" -> Amenity.Fountain(
-            id = id.toString(),
+            id = id,
             name = name,
             description = description,
             location = location.intoDomain(),
@@ -40,7 +45,7 @@ fun OverpassNw.intoDomain(languages: List<String>): Amenity? {
         )
 
         "toilets" -> Amenity.Restroom(
-            id = id.toString(),
+            id = id,
             name = name,
             description = description,
             location = location.intoDomain(),

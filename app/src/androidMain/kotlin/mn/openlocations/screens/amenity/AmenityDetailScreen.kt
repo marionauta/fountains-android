@@ -64,6 +64,7 @@ import mn.openlocations.BuildConfig
 import mn.openlocations.R
 import mn.openlocations.domain.models.AccessValue
 import mn.openlocations.domain.models.Amenity
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.BasicValue
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.FeedbackComment
@@ -90,7 +91,7 @@ import mn.openlocations.ui.views.ImageCarouselIndicator
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AmenityDetailScreen(
-    amenityId: String?,
+    osmId: OsmId?,
     onClose: () -> Unit,
     context: Context = LocalContext.current,
     storage: SecureStringStorage = StringStorageRepository(context),
@@ -102,19 +103,19 @@ fun AmenityDetailScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    fun loadComments(amenityId: String) {
+    fun loadComments(osmId: OsmId) {
         val getComments = GetFeedbackCommentsUseCase(storage)
         coroutineScope.launch {
-            comments = getComments(amenityId)
+            comments = getComments(osmId)
         }
     }
 
-    LaunchedEffect(amenityId) {
-        if (amenityId == null) {
+    LaunchedEffect(osmId) {
+        if (osmId == null) {
             return@LaunchedEffect
         }
-        setAmenity(getAmenity(amenityId = amenityId))
-        loadComments(amenityId)
+        setAmenity(getAmenity(osmId = osmId))
+        loadComments(osmId)
     }
 
     fun onAmenityFeedback(state: FeedbackState) {
@@ -177,13 +178,13 @@ fun AmenityDetailScreen(
                     onOpenFixGuide = ::onOpenFixGuide,
                 )
             }
-            if (feedback != null && amenityId != null) {
+            if (feedback != null && osmId != null) {
                 FeedbackScreen(
-                    amenityId = amenityId,
+                    osmId = osmId,
                     state = feedback,
                     onClose = {
                         setFeedback(null)
-                        loadComments(amenityId)
+                        loadComments(osmId)
                     }
                 )
             }
