@@ -15,10 +15,8 @@ object KnownUris {
     val wikimediaCommons = "https://commons.wikimedia.org/w".toPortableUrl()!!
     val geocoding = "https://geocode.maps.co/".toPortableUrl()!!
     val overpass = listOf<Url>(
-        "https://overpass.private.coffee/api".toPortableUrl()!!,
         "https://overpass-api.de/api".toPortableUrl()!!,
-        "https://maps.mail.ru/osm/tools/overpass/api".toPortableUrl()!!,
-        "https://overpass.osm.jp/api".toPortableUrl()!!,
+        "https://overpass.private.coffee/api".toPortableUrl()!!,
     )
     private val googleMaps = "https://www.google.com/maps".toPortableUrl()!!
 
