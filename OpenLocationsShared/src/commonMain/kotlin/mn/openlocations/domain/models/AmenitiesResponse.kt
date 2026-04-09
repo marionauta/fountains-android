@@ -1,6 +1,9 @@
 package mn.openlocations.domain.models
 
-data class AmenitiesResponse(
-    val lastUpdated: PortableDate,
-    val amenities: List<Amenity>,
-)
+import mn.openlocations.data.models.OverpassNw
+
+typealias AmenitiesResponse = Collection<Amenity>
+
+fun Collection<OverpassNw>.intoDomain(languages: List<String>): AmenitiesResponse {
+    return mapNotNull { it.intoDomain(languages) }
+}

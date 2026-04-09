@@ -3,6 +3,7 @@ package mn.openlocations.screens.map
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationManager
+import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +20,6 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -45,7 +45,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastFilteredMap
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -67,11 +66,11 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
-import mn.openlocations.domain.models.Amenity
 import mn.openlocations.data.models.OsmId
+import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.FeeValue
 import mn.openlocations.domain.models.Location
-import mn.openlocations.domain.producers.produceFountains
+import mn.openlocations.domain.producers.produceAmenities
 import mn.openlocations.domain.producers.produceLocationName
 import mn.openlocations.screens.amenity.AmenityDetailScreen
 import mn.openlocations.screens.info.AppInfoModal
@@ -94,9 +93,9 @@ fun MapScreen() {
 
     val (bounds, setBounds) = remember { mutableStateOf<LatLngBounds?>(null) }
     val locationName by produceLocationName(coordinate = bounds?.center?.location)
-    val fountainsResult by produceFountains(bounds = bounds?.domain)
-    val isLoadingFountains = fountainsResult.isLoading
-    val fountains = fountainsResult.response
+    val amenitiesResult by produceAmenities(bounds = bounds?.domain)
+    val isLoadingAmenities = amenitiesResult.isLoading
+    val amenities = amenitiesResult.amenities
 
     var selectedOsmId by rememberSaveable { mutableStateOf<OsmId?>(null) }
     fun deselectAmenity() {
@@ -109,26 +108,15 @@ fun MapScreen() {
         TopAppBar(
             colors = TopAppBarDefaults.customColors,
             title = {
-                Column {
-                    Text(
-                        text = locationName.orEmpty().ifBlank { stringResource(R.string.app_name) },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    fountains?.lastUpdated?.readableDateTime?.let {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = LocalContentColor.current.copy(alpha = .8f),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
+                Text(
+                    text = locationName.orEmpty().ifBlank { stringResource(R.string.app_name) },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             },
             actions = {
                 AppBarLoader(
-                    isLoading = isLoadingFountains,
+                    isLoading = isLoadingAmenities,
                     modifier = Modifier.padding(end = 16.dp),
                 )
                 IconButton(onClick = { isAppInfoOpen = true }) {
@@ -145,13 +133,13 @@ fun MapScreen() {
                 BannerView(unitId = BuildConfig.ADMOB_MAP_AD_UNIT_ID)
                 LocationProblemBannerView(locationProblem = locationProblem)
                 Map(
-                    amenities = fountains?.amenities ?: emptyList(),
+                    amenities = amenities ?: emptyList(),
                     setBounds = setBounds,
                     setLocationProblem = { locationProblem = it },
                     onMarkerClick = { amenity -> selectedOsmId = amenity.id },
                 )
             }
-            if (fountainsResult.tooFarAway) {
+            if (amenitiesResult.tooFarAway) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -192,7 +180,7 @@ fun MapScreen() {
 @OptIn(ExperimentalPermissionsApi::class, MapsComposeExperimentalApi::class)
 @Composable
 private fun Map(
-    amenities: List<Amenity>,
+    amenities: Collection<Amenity>,
     setBounds: (LatLngBounds) -> Unit,
     setLocationProblem: (LocationProblem) -> Unit,
     onMarkerClick: (Amenity) -> Unit,
@@ -244,10 +232,8 @@ private fun Map(
     var clusterFountains by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     var clusterRestrooms by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     LaunchedEffect(amenities) {
-        clusterFountains =
-            amenities.fastFilteredMap({ it is Amenity.Fountain }, ::AmenityClusterItem)
-        clusterRestrooms =
-            amenities.fastFilteredMap({ it is Amenity.Restroom }, ::AmenityClusterItem)
+        clusterFountains = amenities.filter { it is Amenity.Fountain }.map(::AmenityClusterItem)
+        clusterRestrooms = amenities.filter { it is Amenity.Restroom }.map(::AmenityClusterItem)
     }
 
     GoogleMap(
@@ -420,5 +406,9 @@ val Instant.readableDate: String
 
 fun Context.isLocationEnabled(): Boolean {
     val manager = this.getSystemService(LocationManager::class.java)
-    return manager.isLocationEnabled
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        manager.isLocationEnabled
+    } else {
+        true
+    }
 }

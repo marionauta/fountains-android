@@ -1,5 +1,7 @@
 package mn.openlocations.domain.usecases
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import mn.openlocations.domain.models.AmenitiesResponse
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.AmenityType
@@ -15,20 +17,20 @@ class GetAmenitiesUseCase(
     private val settingsRepository: FilterSettingsRepository = FilterSettingsRepositoryImpl(),
 ) {
     @ObjCName("callAsFunction")
-    suspend operator fun invoke(northEast: Location, southWest: Location): AmenitiesResponse? {
+    suspend operator fun invoke(northEast: Location, southWest: Location): Flow<AmenitiesResponse> {
         val settings = settingsRepository.getFilterSettings()
         val response = amenityRepository.inside(
             northEast = northEast,
             southWest = southWest,
             languages = languages,
-        ) ?: return null
-        return response.copy(
-            amenities = response.amenities.filter { amenity ->
+        )
+        return response.map { response ->
+            return@map response.filter { amenity ->
                 when (amenity) {
                     is Amenity.Fountain -> settings.amenities.contains(AmenityType.DrinkingFountain)
                     is Amenity.Restroom -> settings.amenities.contains(AmenityType.Restroom)
                 }
-            },
-        )
+            }
+        }
     }
 }

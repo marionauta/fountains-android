@@ -1,5 +1,6 @@
 package mn.openlocations.domain.usecases
 
+import kotlinx.coroutines.flow.Flow
 import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.repositories.AmenityRepository
@@ -10,7 +11,7 @@ class GetAmenityUseCase(
     private val amenityRepository: AmenityRepository = AmenityRepository,
 ) {
     @ObjCName("callAsFunction")
-    operator fun invoke(osmId: OsmId): Amenity? {
+    operator fun invoke(osmId: OsmId): Flow<Amenity> {
         return amenityRepository.get(osmId = osmId, languages = languages)
     }
 }

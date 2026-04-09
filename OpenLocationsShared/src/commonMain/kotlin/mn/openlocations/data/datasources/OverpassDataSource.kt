@@ -1,11 +1,13 @@
 package mn.openlocations.data.datasources
 
 import io.ktor.client.plugins.logging.LogLevel
+import mn.openlocations.data.models.OsmId
 import mn.openlocations.data.models.OverpassResponse
 import mn.openlocations.data.routes.OverpassRoute
 import mn.openlocations.domain.models.FeatureFlag
 import mn.openlocations.domain.models.toPortableUrl
 import mn.openlocations.domain.repositories.FeatureFlagsRepository
+import mn.openlocations.data.routes.SingleOverpassRoute
 import mn.openlocations.networking.ApiClient
 
 internal object OverpassDataSource {
@@ -33,6 +35,12 @@ internal object OverpassDataSource {
         if (response == null) {
             apiClient = cycleApiClient()
         }
+        return response
+    }
+
+    suspend fun getById(osmId: OsmId): OverpassResponse? {
+        val route = SingleOverpassRoute(osmId)
+        val response = apiClient?.get<OverpassResponse>(route = route)
         return response
     }
 }

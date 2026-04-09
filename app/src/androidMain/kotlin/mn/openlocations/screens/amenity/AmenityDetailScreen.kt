@@ -59,6 +59,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import mn.openlocations.BuildConfig
 import mn.openlocations.R
@@ -114,7 +115,7 @@ fun AmenityDetailScreen(
         if (osmId == null) {
             return@LaunchedEffect
         }
-        setAmenity(getAmenity(osmId = osmId))
+        getAmenity(osmId = osmId).collectLatest(setAmenity)
         loadComments(osmId)
     }
 

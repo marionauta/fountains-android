@@ -3,9 +3,10 @@ package mn.openlocations.domain.producers
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
+import kotlinx.coroutines.delay
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.GeocodingRepository
-import mn.openlocations.library.debounce
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun produceLocationName(coordinate: Location?): State<String?> {
@@ -14,12 +15,7 @@ fun produceLocationName(coordinate: Location?): State<String?> {
         if (coordinate == null) {
             return@produceState
         }
-        val debounced = debounce<Location, String?>(
-            waitMs = 5_000,
-            coroutineScope = this,
-        ) {
-            return@debounce repository.reverse(coordinate = it)
-        }(coordinate)
-        value = debounced?.await()
+        delay(5_000.milliseconds)
+        value = repository.reverse(coordinate)
     }
 }
