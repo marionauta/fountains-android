@@ -3,16 +3,21 @@ package mn.openlocations.data.datasources
 import io.ktor.client.plugins.logging.LogLevel
 import mn.openlocations.data.models.OverpassResponse
 import mn.openlocations.data.routes.OverpassRoute
+import mn.openlocations.domain.models.FeatureFlag
+import mn.openlocations.domain.models.toPortableUrl
+import mn.openlocations.domain.repositories.FeatureFlagsRepository
 import mn.openlocations.networking.ApiClient
-import mn.openlocations.networking.KnownUris
 
 internal object OverpassDataSource {
     private var urlIndex = -1
-    private var apiClient: ApiClient = cycleApiClient()
+    private var apiClient: ApiClient? = null
 
-    private fun cycleApiClient(): ApiClient {
-        urlIndex = (urlIndex + 1) % KnownUris.overpass.size
-        val url = KnownUris.overpass.getOrNull(urlIndex) ?: KnownUris.overpass.first()
+    private suspend fun cycleApiClient(): ApiClient {
+        val knownUris = FeatureFlagsRepository
+            .get(FeatureFlag.OverpassHosts)
+            .mapNotNull(String::toPortableUrl)
+        urlIndex = (urlIndex + 1) % knownUris.size
+        val url = knownUris.getOrNull(urlIndex) ?: knownUris.first()
         return ApiClient(url, logLevel = LogLevel.NONE)
     }
 
@@ -23,7 +28,8 @@ internal object OverpassDataSource {
         west: Double,
     ): OverpassResponse? {
         val route = OverpassRoute(north = north, east = east, south = south, west = west)
-        val response = apiClient.get<OverpassResponse>(route = route)
+        val client = apiClient ?: cycleApiClient().also { apiClient = it }
+        val response = client.get<OverpassResponse>(route = route)
         if (response == null) {
             apiClient = cycleApiClient()
         }

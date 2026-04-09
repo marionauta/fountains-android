@@ -1,6 +1,8 @@
 package mn.openlocations.data.routes
 
 import mn.openlocations.networking.ApiRoute
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 internal class OverpassRoute(
     amenities: List<String> = listOf(
@@ -27,4 +29,6 @@ internal class OverpassRoute(
             """.trimIndent(),
         ),
     )
+    override val timeout: Duration?
+        get() = 10.seconds
 }

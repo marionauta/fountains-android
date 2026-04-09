@@ -2,6 +2,7 @@ package mn.openlocations.data.routes
 
 import mn.openlocations.data.models.LocationDto
 import mn.openlocations.networking.ApiRoute
+import kotlin.time.Duration
 
 internal class ReverseGeocodingRoute(coordinate: LocationDto, apiKey: String? = null) : ApiRoute {
     override val route: String = "reverse"
@@ -14,4 +15,6 @@ internal class ReverseGeocodingRoute(coordinate: LocationDto, apiKey: String? = 
             put("api_key", apiKey)
         }
     }
+    override val timeout: Duration?
+        get() = null
 }

@@ -3,9 +3,11 @@ package mn.openlocations.networking
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -43,6 +45,7 @@ internal class ApiClient(
             }
             exponentialDelay()
         }
+        install(HttpTimeout)
     }
 
     suspend inline fun <reified T> getOrError(route: ApiRoute): Result<T> {
@@ -51,6 +54,11 @@ internal class ApiClient(
                 headers {
                     for (header in route.headers) {
                         append(header.key, header.value)
+                    }
+                }
+                timeout {
+                    route.timeout?.let {
+                        requestTimeoutMillis = it.inWholeMilliseconds
                     }
                 }
             }

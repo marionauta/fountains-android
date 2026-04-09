@@ -3,6 +3,7 @@ package mn.openlocations.data.routes
 import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.networking.ApiRoute
+import kotlin.time.Duration
 
 internal class FeedbackRoute(
     osmId: OsmId,
@@ -23,4 +24,6 @@ internal class FeedbackRoute(
         "state" to state,
         "comment" to comment,
     )
+    override val timeout: Duration?
+        get() = null
 }

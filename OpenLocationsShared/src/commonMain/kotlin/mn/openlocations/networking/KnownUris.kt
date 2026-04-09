@@ -11,6 +11,7 @@ object KnownUris {
     val mapillary = "https://graph.mapillary.com".toPortableUrl()!!
     val nominatim = "https://nominatim.openstreetmap.org".toPortableUrl()!!
     val reporting = "https://api.waterfinder.org".toPortableUrl()!!
+    val features: Url get() = reporting
     val panoramax = "https://api.panoramax.xyz".toPortableUrl()!!
     val wikimediaCommons = "https://commons.wikimedia.org/w".toPortableUrl()!!
     val geocoding = "https://geocode.maps.co/".toPortableUrl()!!
