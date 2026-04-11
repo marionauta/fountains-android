@@ -12,12 +12,14 @@ import com.google.android.gms.ads.MobileAds
 import kotlinx.coroutines.launch
 import mn.openlocations.domain.usecases.RefreshFeatureFlagsUseCase
 import mn.openlocations.navigation.MainNavigation
+import mn.openlocations.networking.UserAgentMobile
 import mn.openlocations.ui.theme.FountainsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MobileAds.initialize(this)
+        UserAgentMobile.initialize(this)
         lifecycleScope.launch {
             RefreshFeatureFlagsUseCase()
         }
