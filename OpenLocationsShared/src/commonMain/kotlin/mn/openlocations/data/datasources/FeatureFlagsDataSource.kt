@@ -20,16 +20,16 @@ internal object FeatureFlagsDataSource {
 
     suspend fun fetchFeatureFlags() {
         val result = apiClient.get<FlagsResult>(FeatureFlagRoute) ?: return
-        return features.withLock(this) { features ->
+        return features.withLock { features ->
             features.clear()
             features.putAll(result.data)
         }
     }
 
     suspend fun get(name: String): JsonElement? {
-        val needsFetch = features.withLock(this) { !it.contains(name) }
+        val needsFetch = features.withLock { !it.contains(name) }
         if (needsFetch) fetchFeatureFlags()
-        return features.withLock(this) { it[name] }
+        return features.withLock { it[name] }
     }
 
     @Serializable
