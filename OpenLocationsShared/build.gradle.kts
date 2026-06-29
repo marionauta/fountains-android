@@ -9,6 +9,8 @@ plugins {
 }
 
 kotlin {
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -19,7 +21,9 @@ kotlin {
     val xcf = XCFramework()
     listOf(
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
+        macosArm64(),
+        macosX64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "OpenLocationsShared"
@@ -31,7 +35,6 @@ kotlin {
     sourceSets {
         all {
             languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
-            languageSettings.enableLanguageFeature("ExpectActualClasses")
         }
 
         commonMain.dependencies {
