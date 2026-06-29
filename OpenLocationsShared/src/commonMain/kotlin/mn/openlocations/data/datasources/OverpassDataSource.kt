@@ -31,11 +31,11 @@ internal object OverpassDataSource {
     ): OverpassResponse? {
         val route = OverpassRoute(north = north, east = east, south = south, west = west)
         val client = apiClient ?: cycleApiClient().also { apiClient = it }
-        val response = client.get<OverpassResponse>(route = route)
-        if (response == null) {
+        val response = client.formOrError<OverpassResponse>(route = route)
+        if (response.isFailure) {
             apiClient = cycleApiClient()
         }
-        return response
+        return response.getOrNull()
     }
 
     suspend fun getById(osmId: OsmId): OverpassResponse? {

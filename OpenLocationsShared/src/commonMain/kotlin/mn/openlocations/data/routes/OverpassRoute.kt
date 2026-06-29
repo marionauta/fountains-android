@@ -17,7 +17,10 @@ internal class OverpassRoute(
     override val route: String = "interpreter"
 
     override val headers: Map<String, String>
-        get() = emptyMap()
+        get() = mapOf(
+            "Origin" to "https://overpass-turbo.eu",
+            "Referer" to "https://overpass-turbo.eu/",
+        )
 
     override val parameters: Map<String, String> = mapOf(
         Pair(

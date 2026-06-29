@@ -73,9 +73,9 @@ internal class ApiClient(
         return result.getOrNull()
     }
 
-    suspend inline fun form(route: ApiRoute) {
-        try {
-            client.submitForm(
+    suspend inline fun <reified T> formOrError(route: ApiRoute): Result<T> {
+        return try {
+            val response = client.submitForm(
                 url = baseUrl.toString(),
                 formParameters = parametersOf(route.parameters.mapValues { listOf(it.value.toString()) })
             ) {
@@ -88,8 +88,9 @@ internal class ApiClient(
                     }
                 }
             }
+            Result.success(response.body())
         } catch (exception: Exception) {
-            println(exception.message)
+            Result.failure(exception)
         }
     }
 }

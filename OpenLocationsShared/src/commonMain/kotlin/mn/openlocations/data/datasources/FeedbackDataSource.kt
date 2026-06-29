@@ -25,14 +25,12 @@ internal object FeedbackDataSource {
         if (state == FeedbackState.Bad && comment.isBlank()) {
             return Result.failure(Exception("bad feedback needs a comment"))
         }
-        return Result.success(
-            client.form(
-                route = FeedbackRoute(
-                    osmId = osmId,
-                    state = state,
-                    comment = comment.trim(),
-                    authorId = authorId,
-                )
+        return client.formOrError<Unit>(
+            route = FeedbackRoute(
+                osmId = osmId,
+                state = state,
+                comment = comment.trim(),
+                authorId = authorId,
             )
         )
     }
