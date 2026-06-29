@@ -8,9 +8,7 @@ import kotlin.time.Instant
 data class OverpassResponse(
     private val osm3s: OSM3s,
     val elements: List<OverpassNw>,
-) {
-    fun lastUpdated(): Instant = osm3s.timestampOsmBase
-}
+)
 
 @Serializable
 data class OSM3s(

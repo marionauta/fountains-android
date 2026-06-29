@@ -30,7 +30,6 @@
     <string name="amenity_detail_restroom_title">Restroom</string>
     <string name="amenity_detail_handwashing_title">Hand washing</string>
     <string name="amenity_detail_changing_table_title">Diaper Changing Table</string>
-    <string name="amenity_detail_fee_title">Fee</string>
 
     <string name="map_too_far_away">Too far away. Please zoom in or edit zoom in settings.</string>
     <string name="map_location_disabled">Location services are disabled. Enable them to center you on the map.</string>
@@ -46,10 +45,8 @@
     <string name="feedback_screen_comment_placeholder">Leave a comment explaining your feedback.</string>
     <string name="amenity_detail_how_to_fix_button">Want to fix this?</string>
     <string name="amenity_detail_access_title">Access</string>
-    <string name="amenity_detail_access_description">Allowed access</string>
     <string name="access_value_customers_title">Customers only</string>
     <string name="access_value_permissive_title">Permissive</string>
-    <string name="amenity_detail_user_commented_title">A user commented</string>
     <string name="amenity_detail_not_working_notice">May be out of service or not working.</string>
     <string name="amenity_detail_photo_license_learn">Learn more</string>
     <string name="feedback_button_bad_title">Bad</string>

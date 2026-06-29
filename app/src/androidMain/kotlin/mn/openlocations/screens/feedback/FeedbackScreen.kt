@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +37,7 @@ import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.FeedbackState
 import mn.openlocations.domain.repositories.StringStorageRepository
 import mn.openlocations.domain.usecases.SendFeedbackUseCase
-import mn.openlocations.ui.theme.customColors
+import mn.openlocations.ui.theme.customTopAppBarColors
 import mn.openlocations.ui.views.AppBarLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +58,7 @@ fun FeedbackScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    colors = TopAppBarDefaults.customColors,
+                    colors = customTopAppBarColors,
                     title = { Text(stringResource(R.string.feedback_screen_title)) },
                     navigationIcon = {
                         IconButton(onClick = onClose) {

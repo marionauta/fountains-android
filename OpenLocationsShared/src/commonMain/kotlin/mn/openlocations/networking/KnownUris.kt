@@ -15,7 +15,7 @@ object KnownUris {
     val panoramax = "https://api.panoramax.xyz".toPortableUrl()!!
     val wikimediaCommons = "https://commons.wikimedia.org/w".toPortableUrl()!!
     val geocoding = "https://geocode.maps.co/".toPortableUrl()!!
-    val overpass = listOf<Url>(
+    val overpass = listOf(
         "https://overpass-api.de/api".toPortableUrl()!!,
         "https://overpass.private.coffee/api".toPortableUrl()!!,
     )

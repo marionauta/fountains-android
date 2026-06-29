@@ -20,9 +20,12 @@ internal class ImageInfo(
 
 @Serializable
 internal class ExtMetadata(
-    val Artist: ExtMetadataValue,
-    val LicenseShortName: ExtMetadataValue,
-    val LicenseUrl: ExtMetadataValue,
+    @SerialName("Artist")
+    val artist: ExtMetadataValue,
+    @SerialName("LicenseShortName")
+    val licenseShortName: ExtMetadataValue,
+    @SerialName("LicenseUrl")
+    val licenseUrl: ExtMetadataValue,
 )
 
 @Serializable

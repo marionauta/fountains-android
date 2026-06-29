@@ -17,7 +17,7 @@ class GetAmenitiesUseCase(
     private val settingsRepository: FilterSettingsRepository = FilterSettingsRepositoryImpl(),
 ) {
     @ObjCName("callAsFunction")
-    suspend operator fun invoke(northEast: Location, southWest: Location): Flow<AmenitiesResponse> {
+    operator fun invoke(northEast: Location, southWest: Location): Flow<AmenitiesResponse> {
         val settings = settingsRepository.getFilterSettings()
         val response = amenityRepository.inside(
             northEast = northEast,

@@ -29,7 +29,6 @@
     <string name="amenity_detail_restroom_title">Toilette</string>
     <string name="amenity_detail_handwashing_title">Händewaschen</string>
     <string name="amenity_detail_changing_table_title">Wickeltisch</string>
-    <string name="amenity_detail_fee_title">Gebühr</string>
 
     <string name="map_too_far_away">Zu weit entfernt. Bitte zoome näher heran oder ändere die Zoom-Einstellungen.</string>
     <string name="map_location_disabled">Standortdienste sind deaktiviert. Aktiviere sie, um dich auf der Karte zu zentrieren.</string>
@@ -45,10 +44,8 @@
     <string name="feedback_screen_comment_placeholder">Hinterlasse einen Kommentar, um dein Feedback zu erklären.</string>
     <string name="amenity_detail_how_to_fix_button">Möchtest du das korrigieren?</string>
     <string name="amenity_detail_access_title">Zugang</string>
-    <string name="amenity_detail_access_description">Erlaubter Zugang</string>
     <string name="access_value_customers_title">Nur für Kunden</string>
     <string name="access_value_permissive_title">Erlaubt</string>
-    <string name="amenity_detail_user_commented_title">Ein Nutzer hat kommentiert</string>
     <string name="amenity_detail_not_working_notice">Möglicherweise außer Betrieb oder funktioniert nicht.</string>
     <string name="amenity_detail_photo_license_learn">Mehr erfahren</string>
     <string name="feedback_button_bad_title">Schlecht</string>

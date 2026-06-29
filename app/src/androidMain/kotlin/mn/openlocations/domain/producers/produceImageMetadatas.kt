@@ -11,7 +11,7 @@ import mn.openlocations.domain.usecases.GetImagesUseCase
 @Composable
 fun produceImageMetadatas(imageIds: List<Pair<ImageSource, String>>): State<List<ImageMetadata>> {
     val getImages = GetImagesUseCase(mapillaryToken = BuildConfig.MAPILLARY_TOKEN)
-    return produceState<List<ImageMetadata>>(initialValue = emptyList(), imageIds) {
+    return produceState(initialValue = emptyList(), imageIds) {
         value = getImages(imageIds)
     }
 }

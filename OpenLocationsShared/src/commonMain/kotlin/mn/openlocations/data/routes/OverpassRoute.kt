@@ -32,6 +32,6 @@ internal class OverpassRoute(
             """.trimIndent(),
         ),
     )
-    override val timeout: Duration?
+    override val timeout: Duration
         get() = 10.seconds
 }

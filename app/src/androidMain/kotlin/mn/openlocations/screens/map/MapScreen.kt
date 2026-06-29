@@ -25,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,7 +76,7 @@ import mn.openlocations.screens.info.AppInfoModal
 import mn.openlocations.ui.helpers.mapStyleOptions
 import mn.openlocations.ui.theme.ColorMarkerFountain
 import mn.openlocations.ui.theme.ColorMarkerRestroom
-import mn.openlocations.ui.theme.customColors
+import mn.openlocations.ui.theme.customTopAppBarColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.LocationProblemBannerView
@@ -106,7 +105,7 @@ fun MapScreen() {
 
     Scaffold(topBar = {
         TopAppBar(
-            colors = TopAppBarDefaults.customColors,
+            colors = customTopAppBarColors,
             title = {
                 Text(
                     text = locationName.orEmpty().ifBlank { stringResource(R.string.app_name) },
@@ -127,8 +126,8 @@ fun MapScreen() {
                 }
             },
         )
-    }) {
-        Box(modifier = Modifier.padding(it)) {
+    }) { paddingValues ->
+        Box(modifier = Modifier.padding(paddingValues)) {
             Column {
                 BannerView(unitId = BuildConfig.ADMOB_MAP_AD_UNIT_ID)
                 LocationProblemBannerView(locationProblem = locationProblem)
@@ -232,8 +231,8 @@ private fun Map(
     var clusterFountains by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     var clusterRestrooms by remember { mutableStateOf<List<AmenityClusterItem>>(emptyList()) }
     LaunchedEffect(amenities) {
-        clusterFountains = amenities.filter { it is Amenity.Fountain }.map(::AmenityClusterItem)
-        clusterRestrooms = amenities.filter { it is Amenity.Restroom }.map(::AmenityClusterItem)
+        clusterFountains = amenities.filterIsInstance<Amenity.Fountain>().map(::AmenityClusterItem)
+        clusterRestrooms = amenities.filterIsInstance<Amenity.Restroom>().map(::AmenityClusterItem)
     }
 
     GoogleMap(

@@ -36,7 +36,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -83,7 +82,7 @@ import mn.openlocations.screens.feedback.FeedbackButton
 import mn.openlocations.screens.feedback.FeedbackScreen
 import mn.openlocations.screens.map.readableDate
 import mn.openlocations.screens.map.readableDateTime
-import mn.openlocations.ui.theme.customColors
+import mn.openlocations.ui.theme.customTopAppBarColors
 import mn.openlocations.ui.views.AppBarLoader
 import mn.openlocations.ui.views.BannerView
 import mn.openlocations.ui.views.EmptyFallback
@@ -139,7 +138,7 @@ fun AmenityDetailScreen(
 
     Scaffold(topBar = {
         TopAppBar(
-            colors = TopAppBarDefaults.customColors,
+            colors = customTopAppBarColors,
             title = {
                 amenity?.name
                     ?.ifBlank {

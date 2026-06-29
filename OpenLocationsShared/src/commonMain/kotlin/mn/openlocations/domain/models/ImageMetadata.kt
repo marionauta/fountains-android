@@ -14,7 +14,7 @@ data class ImageMetadata(
 }
 
 internal fun MapillaryResponseDto.intoDomain(): ImageMetadata? {
-    val imageUrl = thumb_1024_url.toPortableUrl() ?: return null
+    val imageUrl = thumbUrl.toPortableUrl() ?: return null
     return ImageMetadata(
         imageUrl = imageUrl,
         creator = creator?.username?.let { ImageMetadata.Creator(it) },
@@ -45,16 +45,16 @@ internal fun PanoramaxResponseDto.intoDomain(): ImageMetadata? {
 internal fun WikimediaCommonsResponseDto.intoDomain(): ImageMetadata? {
     val info = query.pages.values.firstOrNull()?.imageInfo?.firstOrNull() ?: return null
     val thumbUrl = info.thumbUrl.toPortableUrl() ?: return null
-    var username = info.metadata.Artist.value
+    var username = info.metadata.artist.value
     if (username.contains(">")) {
         username = username.substringAfter('>').substringBefore('<')
     }
     return ImageMetadata(
         imageUrl = thumbUrl,
         creator = ImageMetadata.Creator(username = username),
-        license = info.metadata.LicenseUrl.value.toPortableUrl()?.let {
+        license = info.metadata.licenseUrl.value.toPortableUrl()?.let {
             ImageMetadata.License(
-                name = info.metadata.LicenseShortName.value,
+                name = info.metadata.licenseShortName.value,
                 url = it,
             )
         },

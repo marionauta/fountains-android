@@ -15,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +32,7 @@ import mn.openlocations.R
 import mn.openlocations.domain.producers.mapMaxDistanceProducer
 import mn.openlocations.domain.repositories.PreferencesRepository
 import mn.openlocations.networking.KnownUris
-import mn.openlocations.ui.theme.customColors
+import mn.openlocations.ui.theme.customTopAppBarColors
 import mn.openlocations.ui.views.Modal
 import mn.openlocations.ui.views.RowItem
 
@@ -106,7 +105,7 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.customColors,
+                colors = customTopAppBarColors,
                 title = {
                     Text(text = stringResource(R.string.app_info_title))
                 },

@@ -28,7 +28,6 @@
     <string name="amenity_detail_restroom_title">Baño</string>
     <string name="amenity_detail_handwashing_title">Lavado de manos</string>
     <string name="amenity_detail_changing_table_title">Cambiar pañales</string>
-    <string name="amenity_detail_fee_title">Tarifa</string>
     <string name="fee_value_donation_title">Acepta donativo</string>
     <string name="fee_value_no_title">Gratis</string>
     <string name="fee_value_unknown_title">Tarifa desconocida</string>
@@ -39,10 +38,8 @@
     <string name="feedback_screen_comment_placeholder">Deja un comentario explicativo.</string>
     <string name="amenity_detail_how_to_fix_button">¿Quieres arreglar esto?</string>
     <string name="amenity_detail_access_title">Acceso</string>
-    <string name="amenity_detail_access_description">Acceso permitido</string>
     <string name="access_value_customers_title">Sólo clientes</string>
     <string name="access_value_permissive_title">Permisivo</string>
-    <string name="amenity_detail_user_commented_title">Un usuario comentó</string>
     <string name="amenity_detail_not_working_notice">Puede estar estropeado o fuera de servicio.</string>
     <string name="amenity_detail_photo_license_learn">Saber más</string>
     <string name="feedback_button_bad_title">Mal</string>

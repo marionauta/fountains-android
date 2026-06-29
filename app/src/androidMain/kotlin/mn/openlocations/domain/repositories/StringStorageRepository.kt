@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import mn.openlocations.domain.utils.SecureStringStorage
+import androidx.core.content.edit
 
 internal class StringStorageRepository(context: Context) : SecureStringStorage {
     private val key = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
@@ -16,9 +17,8 @@ internal class StringStorageRepository(context: Context) : SecureStringStorage {
     )
 
     override fun set(key: String, value: String) {
-        with(secure.edit()) {
+        secure.edit {
             putString(key, value)
-            apply()
         }
     }
 
