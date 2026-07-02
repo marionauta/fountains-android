@@ -100,11 +100,12 @@ fun Map(
     }
     val userLocation = rememberUserLocationState(locationProvider)
 
-    fun centerOnUserPosition(position: Position) {
+    fun centerOnUserPosition(location: org.maplibre.compose.location.Location?) {
+        if (location == null) return
         coroutineScope.launch {
             cameraState.animateTo(
                 finalPosition = CameraPosition(
-                    target = position,
+                    target = location.position.value,
                     zoom = defaultZoomLevel,
                 )
             )
@@ -118,7 +119,7 @@ fun Map(
     ) {
         if (centeredFirstTime) return@LocationTrackingEffect
         centeredFirstTime = true
-        centerOnUserPosition(currentLocation.position)
+        centerOnUserPosition(currentLocation.location)
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -131,7 +132,7 @@ fun Map(
             ),
         ) {
             if (amenities.isNotEmpty()) {
-                val amenitiesSource = rememberComputedSource { bbox, _ ->
+                val amenitiesSource = rememberComputedSource { _, _ ->
                     FeatureCollection(
                         features = amenities.map { amenity ->
                             val id = amenity.id.toString()
@@ -158,7 +159,7 @@ fun Map(
             if (userLocation.location != null) {
                 LocationPuck(
                     idPrefix = "mn.openlocations.user",
-                    locationState = userLocation,
+                    location = userLocation.location,
                     cameraState = cameraState,
                     colors = LocationPuckDefaults.colors(),
                 )
@@ -174,9 +175,11 @@ fun Map(
                 modifier = Modifier.align(Alignment.TopEnd),
             ) {
                 LocationButton(
-                    permissionState = locationPermissions, onClick = {
-                        userLocation.location?.let { centerOnUserPosition(it.position) }
-                    })
+                    permissionState = locationPermissions,
+                    onClick = {
+                        centerOnUserPosition(userLocation.location)
+                    },
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 DisappearingCompassButton(
                     cameraState = cameraState,
