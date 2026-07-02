@@ -27,9 +27,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -96,7 +99,7 @@ fun MapScreen() {
     val isLoadingAmenities = amenitiesResult.isLoading
     val amenities = amenitiesResult.amenities
 
-    var selectedOsmId by rememberSaveable { mutableStateOf<OsmId?>(null) }
+    var selectedOsmId by rememberSaveable(saver = OsmIdSaver) { mutableStateOf<OsmId?>(null) }
     fun deselectAmenity() {
         selectedOsmId = null
     }
@@ -409,5 +412,15 @@ fun Context.isLocationEnabled(): Boolean {
         manager.isLocationEnabled
     } else {
         true
+    }
+}
+
+private object OsmIdSaver : Saver<MutableState<OsmId?>, String> {
+    override fun SaverScope.save(value: MutableState<OsmId?>): String? {
+        return value.value?.toString()
+    }
+
+    override fun restore(value: String): MutableState<OsmId?> {
+        return mutableStateOf(OsmId.from(value))
     }
 }
