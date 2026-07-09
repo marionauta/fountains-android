@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Water Finder</string>
+
+    <string name="general_close">Fechar</string>
+
+    <string name="property_value_no">Não</string>
+    <string name="property_value_limited">Limitado</string>
+    <string name="property_value_yes">Sim</string>
+    <string name="property_value_unknown">Desconhecido</string>
+
+    <string name="app_info_title">Configurações</string>
+    <string name="app_info_max_distance_title">Zoom mín.: %.0f km</string>
+    <string name="app_info_max_distance_content">Pode afetar o desempenho em dispositivos mais antigos</string>
+    <string name="app_info_website_title">Site</string>
+    <string name="app_info_developer_title">Desenvolvedor</string>
+    <string name="app_info_app_version_title">Versão do app</string>
+    <string name="app_info_easteregg_title">Deez</string>
+    <string name="app_info_easteregg_content">Deez nuts</string>
+    <string name="app_info_easteregg_ok">@android:string/ok</string>
+
+    <string name="fountain_detail_not_found_title">Nenhum bebedouro</string>
+    <string name="fountain_detail_not_found_description">Bebedouro desconhecido. Volte.</string>
+    <string name="amenity_detail_bottle_title">Enchimento de garrafas</string>
+    <string name="amenity_detail_wheelchair_title">Acessível para cadeirantes</string>
+    <string name="amenity_detail_check_date_title">Última verificação</string>
+
+    <string name="amenity_detail_fountain_title">Bebedouro</string>
+    <string name="amenity_detail_restroom_title">Banheiro</string>
+    <string name="amenity_detail_handwashing_title">Lavagem das mãos</string>
+    <string name="amenity_detail_changing_table_title">Trocador de fraldas</string>
+
+    <string name="map_too_far_away">Muito longe. Amplie o zoom ou ajuste o zoom nas configurações.</string>
+    <string name="map_location_disabled">Os serviços de localização estão desativados. Ative-os para te centralizar no mapa.</string>
+    <string name="map_location_permission_denied">A permissão de localização foi negada. Conceda-a para te centralizar no mapa.</string>
+    <string name="amenity_detail_open_in_maps">Abrir no Maps</string>
+    <string name="fee_value_donation_title">Aceita doações</string>
+    <string name="fee_value_no_title">Gratuito</string>
+    <string name="fee_value_unknown_title">Taxa desconhecida</string>
+    <string name="fee_value_yes_title">Pago</string>
+    <string name="amenity_detail_feedback_title">Essa descrição é precisa?</string>
+    <string name="feedback_screen_title">Enviar feedback</string>
+    <string name="feedback_screen_send">Enviar</string>
+    <string name="feedback_screen_comment_placeholder">Deixe um comentário explicando seu feedback.</string>
+    <string name="amenity_detail_how_to_fix_button">Quer corrigir isso?</string>
+    <string name="amenity_detail_access_title">Acesso</string>
+    <string name="access_value_customers_title">Somente clientes</string>
+    <string name="access_value_permissive_title">Permissivo</string>
+    <string name="amenity_detail_not_working_notice">Pode estar fora de serviço ou não estar funcionando.</string>
+    <string name="amenity_detail_photo_license_learn">Saiba mais</string>
+    <string name="feedback_button_bad_title">Ruim</string>
+    <string name="feedback_button_good_title">Bom</string>
+</resources>

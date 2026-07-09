@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Water Finder</string>
+
+    <string name="general_close">Chiudi</string>
+
+    <string name="property_value_no">No</string>
+    <string name="property_value_limited">Limitato</string>
+    <string name="property_value_yes">Sì</string>
+    <string name="property_value_unknown">Sconosciuto</string>
+
+    <string name="app_info_title">Impostazioni</string>
+    <string name="app_info_max_distance_title">Zoom minimo: %.0f km</string>
+    <string name="app_info_max_distance_content">Potrebbe influire sulle prestazioni sui dispositivi meno recenti</string>
+    <string name="app_info_website_title">Sito web</string>
+    <string name="app_info_developer_title">Sviluppatore</string>
+    <string name="app_info_developer_content" translatable="false">Mario Nachbaur</string>
+    <string name="app_info_app_version_title">Versione dell’app</string>
+    <string name="app_info_easteregg_title">Deez</string>
+    <string name="app_info_easteregg_content">Deez nuts</string>
+    <string name="app_info_easteregg_ok">@android:string/ok</string>
+
+    <string name="fountain_detail_not_found_title">Nessuna fontana</string>
+    <string name="fountain_detail_not_found_description">Fontana sconosciuta. Torna indietro.</string>
+    <string name="amenity_detail_bottle_title">Riempimento borracce</string>
+    <string name="amenity_detail_wheelchair_title">Accessibile in sedia a rotelle</string>
+    <string name="amenity_detail_check_date_title">Ultima verifica</string>
+
+    <string name="amenity_detail_fountain_title">Fontanella</string>
+    <string name="amenity_detail_restroom_title">Bagno</string>
+    <string name="amenity_detail_handwashing_title">Lavamani</string>
+    <string name="amenity_detail_changing_table_title">Fasciatoio</string>
+
+    <string name="map_too_far_away">Troppo lontano. Ingrandisci la mappa o modifica lo zoom nelle impostazioni.</string>
+    <string name="map_location_disabled">I servizi di localizzazione sono disattivati. Attivali per centrarti sulla mappa.</string>
+    <string name="map_location_permission_denied">L’autorizzazione alla posizione è stata negata. Concedila per centrarti sulla mappa.</string>
+    <string name="amenity_detail_open_in_maps">Apri in Maps</string>
+    <string name="fee_value_donation_title">Accetta donazioni</string>
+    <string name="fee_value_no_title">Gratis</string>
+    <string name="fee_value_unknown_title">Tariffa sconosciuta</string>
+    <string name="fee_value_yes_title">A pagamento</string>
+    <string name="amenity_detail_feedback_title">Questa descrizione è accurata?</string>
+    <string name="feedback_screen_title">Invia un commento</string>
+    <string name="feedback_screen_send">Invia</string>
+    <string name="feedback_screen_comment_placeholder">Lascia un commento per spiegare il tuo feedback.</string>
+    <string name="amenity_detail_how_to_fix_button">Vuoi correggerlo?</string>
+    <string name="amenity_detail_access_title">Accesso</string>
+    <string name="access_value_customers_title">Solo clienti</string>
+    <string name="access_value_permissive_title">Permissivo</string>
+    <string name="amenity_detail_not_working_notice">Potrebbe essere fuori servizio o non funzionante.</string>
+    <string name="amenity_detail_photo_license_learn">Scopri di più</string>
+    <string name="feedback_button_bad_title">Male</string>
+    <string name="feedback_button_good_title">Bene</string>
+</resources>

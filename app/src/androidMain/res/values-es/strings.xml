@@ -8,7 +8,7 @@
     <string name="fountain_detail_not_found_title">Sin fuente</string>
     <string name="fountain_detail_not_found_description">Fuente desconocida. Vuelve.</string>
     <string name="amenity_detail_bottle_title">Rellenado de botellas</string>
-    <string name="amenity_detail_wheelchair_title">Accesible</string>
+    <string name="amenity_detail_wheelchair_title">Accesible en silla de ruedas</string>
     <string name="amenity_detail_check_date_title">Comprobado</string>
     <string name="map_too_far_away">Demasiado lejos. Haz zoom o edita el zoom en los ajustes, por favor.</string>
     <string name="map_location_disabled">Los servicios de ubicación están deshabilitados. Habilítalos para centrarte en el mapa.</string>

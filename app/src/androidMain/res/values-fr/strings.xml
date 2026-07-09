@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Water Finder</string>
+
+    <string name="general_close">Fermer</string>
+
+    <string name="property_value_no">Non</string>
+    <string name="property_value_limited">Limité</string>
+    <string name="property_value_yes">Oui</string>
+    <string name="property_value_unknown">Inconnu</string>
+
+    <string name="app_info_title">Paramètres</string>
+    <string name="app_info_max_distance_title">Zoom min. : %.0f km</string>
+    <string name="app_info_max_distance_content">Peut affecter les performances sur les appareils anciens</string>
+    <string name="app_info_website_title">Site web</string>
+    <string name="app_info_developer_title">Développeur</string>
+    <string name="app_info_developer_content" translatable="false">Mario Nachbaur</string>
+    <string name="app_info_app_version_title">Version de l’application</string>
+    <string name="app_info_easteregg_title">Deez</string>
+    <string name="app_info_easteregg_content">Deez nuts</string>
+    <string name="app_info_easteregg_ok">@android:string/ok</string>
+
+    <string name="fountain_detail_not_found_title">Aucune fontaine</string>
+    <string name="fountain_detail_not_found_description">Fontaine inconnue. Retourne.</string>
+    <string name="amenity_detail_bottle_title">Remplissage de bouteilles</string>
+    <string name="amenity_detail_wheelchair_title">Accessible en fauteuil roulant</string>
+    <string name="amenity_detail_check_date_title">Dernière vérification</string>
+
+    <string name="amenity_detail_fountain_title">Fontaine</string>
+    <string name="amenity_detail_restroom_title">Toilettes</string>
+    <string name="amenity_detail_handwashing_title">Lavage des mains</string>
+    <string name="amenity_detail_changing_table_title">Table à langer</string>
+
+    <string name="map_too_far_away">Trop loin. Zoome ou modifie le réglage du zoom dans les paramètres.</string>
+    <string name="map_location_disabled">Les services de localisation sont désactivés. Active-les pour te centrer sur la carte.</string>
+    <string name="map_location_permission_denied">L’autorisation de localisation a été refusée. Accorde-la pour te centrer sur la carte.</string>
+    <string name="amenity_detail_open_in_maps">Ouvrir dans Maps</string>
+    <string name="fee_value_donation_title">Accepte les dons</string>
+    <string name="fee_value_no_title">Gratuit</string>
+    <string name="fee_value_unknown_title">Tarif inconnu</string>
+    <string name="fee_value_yes_title">Payant</string>
+    <string name="amenity_detail_feedback_title">Cette description est-elle exacte ?</string>
+    <string name="feedback_screen_title">Envoyer un commentaire</string>
+    <string name="feedback_screen_send">Envoyer</string>
+    <string name="feedback_screen_comment_placeholder">Laisse un commentaire pour expliquer ton avis.</string>
+    <string name="amenity_detail_how_to_fix_button">Tu veux corriger ça ?</string>
+    <string name="amenity_detail_access_title">Accès</string>
+    <string name="access_value_customers_title">Clients uniquement</string>
+    <string name="access_value_permissive_title">Permissif</string>
+    <string name="amenity_detail_not_working_notice">Peut être hors service ou ne pas fonctionner.</string>
+    <string name="amenity_detail_photo_license_learn">En savoir plus</string>
+    <string name="feedback_button_bad_title">Mauvais</string>
+    <string name="feedback_button_good_title">Bon</string>
+</resources>

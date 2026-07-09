@@ -21,11 +21,11 @@
 
     <string name="fountain_detail_not_found_title">Kein Brunnen</string>
     <string name="fountain_detail_not_found_description">Unbekannter Brunnen. Geh zurück.</string>
-    <string name="amenity_detail_bottle_title">Flaschen abfüllung</string>
+    <string name="amenity_detail_bottle_title">Flaschen auffüllen</string>
     <string name="amenity_detail_wheelchair_title">Rollstuhlgerecht</string>
     <string name="amenity_detail_check_date_title">Zuletzt überprüft</string>
 
-    <string name="amenity_detail_fountain_title">Brunnen</string>
+    <string name="amenity_detail_fountain_title">Trinkbrunnen</string>
     <string name="amenity_detail_restroom_title">Toilette</string>
     <string name="amenity_detail_handwashing_title">Händewaschen</string>
     <string name="amenity_detail_changing_table_title">Wickeltisch</string>
@@ -45,7 +45,7 @@
     <string name="amenity_detail_how_to_fix_button">Möchtest du das korrigieren?</string>
     <string name="amenity_detail_access_title">Zugang</string>
     <string name="access_value_customers_title">Nur für Kunden</string>
-    <string name="access_value_permissive_title">Erlaubt</string>
+    <string name="access_value_permissive_title">Geduldet</string>
     <string name="amenity_detail_not_working_notice">Möglicherweise außer Betrieb oder funktioniert nicht.</string>
     <string name="amenity_detail_photo_license_learn">Mehr erfahren</string>
     <string name="feedback_button_bad_title">Schlecht</string>
