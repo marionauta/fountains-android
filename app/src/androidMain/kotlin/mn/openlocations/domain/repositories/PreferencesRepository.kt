@@ -1,14 +1,16 @@
 package mn.openlocations.domain.repositories
 
 import android.content.Context
+import androidx.core.content.edit
 import com.fredporciuncula.flow.preferences.FlowSharedPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import mn.openlocations.BuildConfig
-import androidx.core.content.edit
 
 class PreferencesRepository(context: Context) {
     companion object {
+        internal const val DEFAULT_MAX_DISTANCE = 15_000f
+
         private const val PREFERENCES_KEY = "${BuildConfig.APPLICATION_ID}.PREFERENCES"
         private const val ADS_KEY = "${BuildConfig.APPLICATION_ID}.ADS.${BuildConfig.VERSION_CODE}"
         private const val MAP_MAX_DISTANCE_KEY =
@@ -33,7 +35,7 @@ class PreferencesRepository(context: Context) {
     }
 
     fun getMapMaxDistance(): Flow<Float> {
-        return flowing.getFloat(MAP_MAX_DISTANCE_KEY, 4_000f).asFlow()
+        return flowing.getFloat(MAP_MAX_DISTANCE_KEY, DEFAULT_MAX_DISTANCE).asFlow()
     }
 
     fun setMapMaxDistance(distance: Float) {
