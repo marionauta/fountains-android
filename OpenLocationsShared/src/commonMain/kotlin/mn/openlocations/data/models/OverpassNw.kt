@@ -29,10 +29,8 @@ sealed interface OverpassNw {
     @SerialName("way")
     data class Way(
         override val id: Long,
-        val bounds: OverpassBounds,
+        @SerialName("center")
+        override val location: LocationDto,
         override val tags: Map<String, String>,
-    ) : OverpassNw {
-        override val location: LocationDto
-            get() = bounds.center
-    }
+    ) : OverpassNw
 }

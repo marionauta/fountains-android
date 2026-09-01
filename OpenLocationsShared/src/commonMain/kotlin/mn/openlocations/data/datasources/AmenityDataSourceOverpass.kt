@@ -8,9 +8,8 @@ internal object AmenityDataSourceOverpass : AmenityDataSource {
     private val overpassDataSource = OverpassDataSource
 
     override suspend fun inside(bounds: LocationBounds): Result<Collection<OverpassNw>> {
-        val response = overpassDataSource.getNodes(
-            north = bounds.north, east = bounds.east, south = bounds.south, west = bounds.west,
-        ) ?: return Result.failure(Exception("failed to load nws"))
+        val response = overpassDataSource.getNodes(bounds = bounds)
+            ?: return Result.failure(Exception("failed to load nws"))
         return Result.success(response.elements)
     }
 

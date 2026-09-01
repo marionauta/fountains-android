@@ -14,6 +14,7 @@ actual open class UserAgentMobile actual constructor() {
             build = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 info.longVersionCode
             } else {
+                @Suppress("DEPRECATION")
                 info.versionCode.toLong()
             }
         }

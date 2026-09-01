@@ -1,16 +1,23 @@
 package mn.openlocations.data.datasources
 
-import io.ktor.client.plugins.logging.LogLevel
+import mn.openlocations.data.models.LocationBounds
 import mn.openlocations.data.models.OsmId
 import mn.openlocations.data.models.OverpassResponse
 import mn.openlocations.data.routes.OverpassRoute
+import mn.openlocations.data.routes.OverpassRoute.Filter
+import mn.openlocations.data.routes.SingleOverpassRoute
 import mn.openlocations.domain.models.FeatureFlag
 import mn.openlocations.domain.models.toPortableUrl
 import mn.openlocations.domain.repositories.FeatureFlagsRepository
-import mn.openlocations.data.routes.SingleOverpassRoute
 import mn.openlocations.networking.ApiClient
 
 internal object OverpassDataSource {
+    private val filters: List<Filter> = listOf(
+        Filter("amenity" to "drinking_water"),
+        Filter("amenity" to "toilets"),
+        Filter("amenity" to "fountain", "drinking_water" to "yes"),
+    )
+
     private var urlIndex = -1
     private var apiClient: ApiClient? = null
 
@@ -20,16 +27,11 @@ internal object OverpassDataSource {
             .mapNotNull(String::toPortableUrl)
         urlIndex = (urlIndex + 1) % knownUris.size
         val url = knownUris.getOrNull(urlIndex) ?: knownUris.first()
-        return ApiClient(url, logLevel = LogLevel.NONE)
+        return ApiClient(url)
     }
 
-    suspend fun getNodes(
-        north: Double,
-        east: Double,
-        south: Double,
-        west: Double,
-    ): OverpassResponse? {
-        val route = OverpassRoute(north = north, east = east, south = south, west = west)
+    suspend fun getNodes(bounds: LocationBounds): OverpassResponse? {
+        val route = OverpassRoute(filters = filters, bounds = bounds)
         val client = apiClient ?: cycleApiClient().also { apiClient = it }
         val response = client.formOrError<OverpassResponse>(route = route)
         if (response.isFailure) {

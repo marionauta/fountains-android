@@ -38,7 +38,7 @@ fun OverpassNw.intoDomain(languages: List<String>): Amenity? {
         is OverpassNw.Way -> OsmId.Way(this.id.toString())
     }
     return when (tags["amenity"]) {
-        "drinking_water" -> Amenity.Fountain(
+        "drinking_water", "fountain" -> Amenity.Fountain(
             id = id,
             name = name,
             description = description,
