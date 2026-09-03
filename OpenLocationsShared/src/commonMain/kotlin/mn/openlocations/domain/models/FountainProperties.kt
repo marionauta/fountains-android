@@ -5,6 +5,7 @@ import mn.openlocations.domain.utils.parseBasic
 import mn.openlocations.domain.utils.parseFee
 import mn.openlocations.domain.utils.parsePortableDate
 import mn.openlocations.domain.utils.parseWheelchair
+import kotlin.time.Instant
 
 data class FountainProperties(
     val bottle: BasicValue,
@@ -16,12 +17,12 @@ data class FountainProperties(
     override val closed: Boolean,
 ) : AmenityProperties
 
-fun Map<String, String>.toFountainProperties(): FountainProperties = FountainProperties(
+fun Map<String, String>.toFountainProperties(timestamp: Instant): FountainProperties = FountainProperties(
     bottle = get("bottle").parseBasic(),
     fee = get("fee").parseFee(amount = get("charge")),
     access = get("access").parseAccess(),
     wheelchair = get("wheelchair").parseWheelchair(),
     imageIds = intoImageIds(),
-    checkDate = get("check_date").parsePortableDate(),
+    checkDate = get("check_date").parsePortableDate() ?: timestamp.toPortableDate(),
     closed = get("opening_hours") == "closed" || any { it.key.startsWith("disused") },
 )

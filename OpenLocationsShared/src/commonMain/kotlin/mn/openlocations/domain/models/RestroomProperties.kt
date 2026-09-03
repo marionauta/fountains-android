@@ -5,6 +5,7 @@ import mn.openlocations.domain.utils.parseBasic
 import mn.openlocations.domain.utils.parseFee
 import mn.openlocations.domain.utils.parsePortableDate
 import mn.openlocations.domain.utils.parseWheelchair
+import kotlin.time.Instant
 
 data class RestroomProperties(
     val changingTable: BasicValue,
@@ -18,7 +19,7 @@ data class RestroomProperties(
     override val closed: Boolean,
 ) : AmenityProperties
 
-fun Map<String, String>.toRestroomProperties(): RestroomProperties {
+fun Map<String, String>.toRestroomProperties(timestamp: Instant): RestroomProperties {
     return RestroomProperties(
         changingTable = get("changing_table").parseBasic(),
         handwashing = get("toilets:handwashing").parseBasic(),
@@ -31,7 +32,7 @@ fun Map<String, String>.toRestroomProperties(): RestroomProperties {
         access = get("access").parseAccess(),
         wheelchair = get("wheelchair").parseWheelchair(),
         imageIds = intoImageIds(),
-        checkDate = get("check_date").parsePortableDate(),
+        checkDate = get("check_date").parsePortableDate() ?: timestamp.toPortableDate(),
         closed = get("opening_hours") == "closed" || any { it.key.startsWith("disused") },
     )
 }

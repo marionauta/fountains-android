@@ -43,7 +43,7 @@ fun OverpassNw.intoDomain(languages: List<String>): Amenity? {
             name = name,
             description = description,
             location = location.intoDomain(),
-            properties = tags.toFountainProperties()
+            properties = tags.toFountainProperties(timestamp)
         )
 
         "toilets" -> Amenity.Restroom(
@@ -51,7 +51,7 @@ fun OverpassNw.intoDomain(languages: List<String>): Amenity? {
             name = name,
             description = description,
             location = location.intoDomain(),
-            properties = tags.toRestroomProperties()
+            properties = tags.toRestroomProperties(timestamp)
         )
 
         else -> null

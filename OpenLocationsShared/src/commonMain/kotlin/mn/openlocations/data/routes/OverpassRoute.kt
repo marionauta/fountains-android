@@ -25,7 +25,7 @@ internal class OverpassRoute(
             [out:json][bbox:${bounds.south},${bounds.west},${bounds.north},${bounds.east}];
             (${filters.joinToString("")})->.all;
             nw.all[access!=no][access!=private];
-            out center;
+            out center meta;
             """.trimIndent(),
         ),
     )

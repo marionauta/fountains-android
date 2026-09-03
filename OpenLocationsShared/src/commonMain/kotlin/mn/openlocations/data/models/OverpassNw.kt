@@ -4,6 +4,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonClassDiscriminator
+import kotlin.time.Instant
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
@@ -11,6 +12,7 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 sealed interface OverpassNw {
     val id: Long
     val location: LocationDto
+    val timestamp: Instant
     val tags: Map<String, String>
 
     @Serializable
@@ -19,6 +21,7 @@ sealed interface OverpassNw {
         override val id: Long,
         val lat: Double,
         val lon: Double,
+        override val timestamp: Instant,
         override val tags: Map<String, String>
     ) : OverpassNw {
         override val location: LocationDto
@@ -31,6 +34,7 @@ sealed interface OverpassNw {
         override val id: Long,
         @SerialName("center")
         override val location: LocationDto,
+        override val timestamp: Instant,
         override val tags: Map<String, String>,
     ) : OverpassNw
 }
