@@ -9,10 +9,13 @@ data class FilterSettings(
         )
     }
 
-    val count: Int
+    val producesEmptyResult: Boolean
+        get() = amenities.isEmpty()
+
+    val count: UInt
         get() {
-            var res = 0
-            if (amenities != default.amenities) res += 1
+            var res  = 0u
+            if (amenities != default.amenities) res += 1u
             return res
         }
 }

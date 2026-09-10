@@ -44,4 +44,7 @@
     <string name="amenity_detail_photo_license_learn">Saber más</string>
     <string name="feedback_button_bad_title">Mal</string>
     <string name="feedback_button_good_title">Bien</string>
+    <string name="settings_type_filter_title">Filtrar por tipo</string>
+    <string name="settings_type_filter_fountain_display">Fuentes</string>
+    <string name="settings_type_filter_restroom_display">Baños</string>
 </resources>

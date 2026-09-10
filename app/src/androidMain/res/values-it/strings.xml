@@ -14,7 +14,6 @@
     <string name="app_info_max_distance_content">Potrebbe influire sulle prestazioni sui dispositivi meno recenti</string>
     <string name="app_info_website_title">Sito web</string>
     <string name="app_info_developer_title">Sviluppatore</string>
-    <string name="app_info_developer_content" translatable="false">Mario Nachbaur</string>
     <string name="app_info_app_version_title">Versione dell’app</string>
     <string name="app_info_easteregg_title">Deez</string>
     <string name="app_info_easteregg_content">Deez nuts</string>
@@ -51,4 +50,8 @@
     <string name="amenity_detail_photo_license_learn">Scopri di più</string>
     <string name="feedback_button_bad_title">Male</string>
     <string name="feedback_button_good_title">Bene</string>
+
+    <string name="settings_type_filter_title">Filtra per tipo</string>
+    <string name="settings_type_filter_fountain_display">Fontanelle</string>
+    <string name="settings_type_filter_restroom_display">Bagni</string>
 </resources>

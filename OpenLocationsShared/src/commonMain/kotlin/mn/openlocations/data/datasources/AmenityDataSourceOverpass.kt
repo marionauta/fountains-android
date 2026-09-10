@@ -12,6 +12,7 @@ internal object AmenityDataSourceOverpass : AmenityDataSource {
         bounds: LocationBounds,
         filters: Collection<OverpassFilter>
     ): Result<Collection<OverpassNw>> {
+        if (filters.isEmpty()) return Result.success(emptySet())
         val response = overpassDataSource.getNodes(bounds = bounds, filters = filters)
             ?: return Result.failure(Exception("failed to load nws"))
         return Result.success(response.elements)

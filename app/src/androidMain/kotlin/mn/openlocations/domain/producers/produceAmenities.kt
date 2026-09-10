@@ -2,12 +2,15 @@ package mn.openlocations.domain.producers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import kotlinx.coroutines.delay
 import mn.openlocations.domain.models.AmenitiesResponse
+import mn.openlocations.domain.models.FilterSettings
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.usecases.GetAmenitiesUseCase
+import mn.openlocations.domain.usecases.GetFilterSettingsUseCase
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -18,15 +21,24 @@ data class ProduceAmenitiesResult(
     val amenities: AmenitiesResponse? = null,
     val tooFarAway: Boolean = false,
     val isLoading: Boolean = false,
+    val hasFiltersApplied: Boolean = false,
 )
 
 @Composable
 fun produceAmenities(
     bounds: Pair<Location, Location>?,
-    getAmenitiesUseCase: GetAmenitiesUseCase = GetAmenitiesUseCase
+    getFilterSettings: GetFilterSettingsUseCase = GetFilterSettingsUseCase,
+    getAmenities: GetAmenitiesUseCase = GetAmenitiesUseCase,
 ): State<ProduceAmenitiesResult> {
     val tooFarDistance by mapMaxDistanceProducer()
-    return produceState(initialValue = ProduceAmenitiesResult(isLoading = false), bounds) {
+    val filterSettings by getFilterSettings().collectAsState(FilterSettings.default)
+    return produceState(
+        initialValue = ProduceAmenitiesResult(isLoading = false),
+        bounds,
+        filterSettings,
+    ) {
+        value = value.copy(hasFiltersApplied = filterSettings.count > 0u)
+
         if (bounds == null) {
             return@produceState
         }
@@ -46,7 +58,9 @@ fun produceAmenities(
         delay(100.milliseconds)
 
         value = value.copy(isLoading = true)
-        getAmenitiesUseCase(bounds.first, bounds.second).collect { response ->
+        getAmenities(
+            northEast = bounds.first, southWest = bounds.second, filterSettings = filterSettings
+        ).collect { response ->
             value = value.copy(amenities = response)
         }
         value = value.copy(isLoading = false)

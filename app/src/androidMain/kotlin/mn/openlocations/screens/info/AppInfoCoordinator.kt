@@ -3,7 +3,7 @@ package mn.openlocations.screens.info
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.AlertDialog
@@ -141,14 +141,18 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
 @Composable
 private fun AppInfoScreen(infos: List<AppInfo>) {
     LazyColumn {
-        itemsIndexed(infos) { index, info ->
+        item {
+            SettingsView()
+        }
+
+        items(infos) { info ->
             RowItem(
                 title = info.title,
                 content = info.content,
                 contentIsFaded = false,
                 trailingContent = info.trailing,
                 bottomContent = info.bottom,
-                hasTopDivider = index > 0,
+                hasTopDivider = true,
                 onClick = info.onClick,
             )
         }

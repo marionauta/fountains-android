@@ -18,6 +18,7 @@ internal object AmenityDataSourceInMemory : AmenityDataSourceCached {
         bounds: LocationBounds,
         filters: Collection<OverpassFilter>
     ): Result<Collection<OverpassNw>> {
+        if (filters.isEmpty()) return Result.success(emptySet())
         // TODO: also filter by `filters`
         val filtered = cache.values.filter { it.location.isInside(bounds) }
         return Result.success(filtered)

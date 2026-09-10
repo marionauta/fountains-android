@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -122,10 +123,18 @@ fun MapScreen() {
                     modifier = Modifier.padding(end = 16.dp),
                 )
                 IconButton(onClick = { isAppInfoOpen = true }) {
-                    Icon(
-                        Icons.Rounded.Settings,
-                        contentDescription = stringResource(R.string.app_info_title),
-                    )
+                    Box(
+                        contentAlignment = Alignment.TopEnd,
+                    ) {
+                        Icon(
+                            Icons.Rounded.Settings,
+                            contentDescription = stringResource(R.string.app_info_title),
+                        )
+                        HasFiltersDot(
+                            hasFiltersApplied = amenitiesResult.hasFiltersApplied,
+                            modifier = Modifier.offset(x = 2.dp, y = (-2).dp)
+                        )
+                    }
                 }
             },
         )
@@ -422,5 +431,29 @@ private object OsmIdSaver : Saver<MutableState<OsmId?>, String> {
 
     override fun restore(value: String): MutableState<OsmId?> {
         return mutableStateOf(OsmId.from(value))
+    }
+}
+
+@Composable
+private fun HasFiltersDot(
+    hasFiltersApplied: Boolean,
+    foregroundColor: Color = MaterialTheme.colorScheme.secondary,
+    backgroundColor: Color = customTopAppBarColors.containerColor,
+    modifier: Modifier = Modifier,
+) {
+    if (hasFiltersApplied) {
+        Box(
+            modifier = modifier
+                .size(14.dp)
+                .background(
+                    color = foregroundColor,
+                    shape = CircleShape,
+                )
+                .border(
+                    width = 1.5.dp,
+                    color = backgroundColor,
+                    shape = CircleShape,
+                )
+        )
     }
 }

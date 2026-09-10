@@ -50,4 +50,8 @@
     <string name="amenity_detail_photo_license_learn">Mehr erfahren</string>
     <string name="feedback_button_bad_title">Schlecht</string>
     <string name="feedback_button_good_title">Gut</string>
+
+    <string name="settings_type_filter_title">Nach Typ filtern</string>
+    <string name="settings_type_filter_fountain_display">Trinkbrunnen</string>
+    <string name="settings_type_filter_restroom_display">Toiletten</string>
 </resources>

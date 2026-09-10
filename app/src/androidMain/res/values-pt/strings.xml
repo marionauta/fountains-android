@@ -50,4 +50,8 @@
     <string name="amenity_detail_photo_license_learn">Saiba mais</string>
     <string name="feedback_button_bad_title">Ruim</string>
     <string name="feedback_button_good_title">Bom</string>
+
+    <string name="settings_type_filter_title">Filtrar por tipo</string>
+    <string name="settings_type_filter_fountain_display">Bebedouros</string>
+    <string name="settings_type_filter_restroom_display">Banheiros</string>
 </resources>

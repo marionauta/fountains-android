@@ -31,6 +31,10 @@ internal object AmenityRepository {
             southWest = LocationDto(latitude = southWest.latitude, longitude = southWest.longitude),
         )
         return flow {
+            if (filters.producesEmptyResult) {
+                emit(emptySet())
+                return@flow
+            }
             val filters = filters.amenities.flatMap(AmenityType::intoOverpassFilters)
             val cached = cachedDataSource.inside(bounds, filters)
             cached.onSuccess {

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.map
 import mn.openlocations.domain.models.AmenitiesResponse
 import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.AmenityType
+import mn.openlocations.domain.models.FilterSettings
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.AmenityRepository
 import kotlin.native.ObjCName
@@ -12,22 +13,24 @@ import kotlin.native.ObjCName
 object GetAmenitiesUseCase {
     private val languages: List<String> = GetLanguagesUseCase()
     private val amenityRepository: AmenityRepository = AmenityRepository
-    private val getFilterSettings = GetFilterSettingsUseCase
 
     @ObjCName("callAsFunction")
-    operator fun invoke(northEast: Location, southWest: Location): Flow<AmenitiesResponse> {
-        val settings = getFilterSettings()
-        val response = amenityRepository.inside(
+    operator fun invoke(
+        northEast: Location,
+        southWest: Location,
+        filterSettings: FilterSettings,
+    ): Flow<AmenitiesResponse> {
+        val includedAmenities = filterSettings.amenities
+        return amenityRepository.inside(
             northEast = northEast,
             southWest = southWest,
             languages = languages,
-            filters = settings,
-        )
-        return response.map { response ->
+            filters = filterSettings,
+        ).map { response ->
             return@map response.filter { amenity ->
                 when (amenity) {
-                    is Amenity.Fountain -> settings.amenities.contains(AmenityType.DrinkingFountain)
-                    is Amenity.Restroom -> settings.amenities.contains(AmenityType.Restroom)
+                    is Amenity.Fountain -> includedAmenities.contains(AmenityType.DrinkingFountain)
+                    is Amenity.Restroom -> includedAmenities.contains(AmenityType.Restroom)
                 }
             }
         }

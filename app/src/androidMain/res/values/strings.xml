@@ -51,4 +51,8 @@
     <string name="amenity_detail_photo_license_learn">Learn more</string>
     <string name="feedback_button_bad_title">Bad</string>
     <string name="feedback_button_good_title">Good</string>
+
+    <string name="settings_type_filter_title">Filter by type</string>
+    <string name="settings_type_filter_fountain_display">Fountains</string>
+    <string name="settings_type_filter_restroom_display">Restrooms</string>
 </resources>
