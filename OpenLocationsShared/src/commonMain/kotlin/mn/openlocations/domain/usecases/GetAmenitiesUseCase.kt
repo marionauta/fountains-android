@@ -7,22 +7,21 @@ import mn.openlocations.domain.models.Amenity
 import mn.openlocations.domain.models.AmenityType
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.repositories.AmenityRepository
-import mn.openlocations.domain.repositories.FilterSettingsRepository
-import mn.openlocations.domain.repositories.FilterSettingsRepositoryImpl
 import kotlin.native.ObjCName
 
-class GetAmenitiesUseCase(
-    private val languages: List<String> = GetLanguagesUseCase(),
-    private val amenityRepository: AmenityRepository = AmenityRepository,
-    private val settingsRepository: FilterSettingsRepository = FilterSettingsRepositoryImpl(),
-) {
+object GetAmenitiesUseCase {
+    private val languages: List<String> = GetLanguagesUseCase()
+    private val amenityRepository: AmenityRepository = AmenityRepository
+    private val getFilterSettings = GetFilterSettingsUseCase
+
     @ObjCName("callAsFunction")
     operator fun invoke(northEast: Location, southWest: Location): Flow<AmenitiesResponse> {
-        val settings = settingsRepository.getFilterSettings()
+        val settings = getFilterSettings()
         val response = amenityRepository.inside(
             northEast = northEast,
             southWest = southWest,
             languages = languages,
+            filters = settings,
         )
         return response.map { response ->
             return@map response.filter { amenity ->

@@ -2,12 +2,11 @@ package mn.openlocations.data.routes
 
 import mn.openlocations.data.models.LocationBounds
 import mn.openlocations.networking.ApiRoute
-import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 internal class OverpassRoute(
-    filters: List<Filter>,
+    filters: Collection<OverpassFilter>,
     bounds: LocationBounds,
 ) : ApiRoute {
     override val route: String = "interpreter"
@@ -32,14 +31,4 @@ internal class OverpassRoute(
 
     override val timeout: Duration
         get() = 10.seconds
-
-    @JvmInline
-    internal value class Filter(private val value: Map<String, String>) {
-        constructor(vararg pairs: Pair<String, String>) : this(mapOf(*pairs))
-
-        // format: nw[key1=value1][key2=value2];
-        override fun toString(): String {
-            return "nw${value.map { "[${it.key}=${it.value}]" }.joinToString(separator = "")};"
-        }
-    }
 }

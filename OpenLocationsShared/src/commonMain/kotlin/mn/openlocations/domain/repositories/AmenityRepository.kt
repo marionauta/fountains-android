@@ -11,10 +11,12 @@ import mn.openlocations.data.models.LocationDto
 import mn.openlocations.data.models.OsmId
 import mn.openlocations.domain.models.AmenitiesResponse
 import mn.openlocations.domain.models.Amenity
+import mn.openlocations.domain.models.AmenityType
+import mn.openlocations.domain.models.FilterSettings
 import mn.openlocations.domain.models.Location
 import mn.openlocations.domain.models.intoDomain
 
-object AmenityRepository {
+internal object AmenityRepository {
     private val dataSource: AmenityDataSource = AmenityDataSourceOverpass
     private val cachedDataSource: AmenityDataSourceCached = AmenityDataSourceInMemory
 
@@ -22,19 +24,21 @@ object AmenityRepository {
         northEast: Location,
         southWest: Location,
         languages: List<String>,
+        filters: FilterSettings,
     ): Flow<AmenitiesResponse> {
         val bounds = LocationBounds(
             northEast = LocationDto(latitude = northEast.latitude, longitude = northEast.longitude),
             southWest = LocationDto(latitude = southWest.latitude, longitude = southWest.longitude),
         )
         return flow {
-            val cached = cachedDataSource.inside(bounds)
+            val filters = filters.amenities.flatMap(AmenityType::intoOverpassFilters)
+            val cached = cachedDataSource.inside(bounds, filters)
             cached.onSuccess {
                 if (it.isNotEmpty()) {
                     emit(it.intoDomain(languages))
                 }
             }
-            val nws = dataSource.inside(bounds)
+            val nws = dataSource.inside(bounds, filters)
             nws.onSuccess {
                 cachedDataSource.save(it)
                 if (it.isNotEmpty()) {

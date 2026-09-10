@@ -1,14 +1,20 @@
 package mn.openlocations.domain.repositories
 
-import mn.openlocations.domain.models.AmenityType
 import mn.openlocations.domain.models.FilterSettings
 
-interface FilterSettingsRepository {
+internal interface FilterSettingsRepository {
     fun getFilterSettings(): FilterSettings
+    fun saveFilterSettings(settings: FilterSettings)
 }
 
-class FilterSettingsRepositoryImpl: FilterSettingsRepository {
+internal object FilterSettingsRepositoryImpl : FilterSettingsRepository {
+    private var settings: FilterSettings = FilterSettings.default
+
     override fun getFilterSettings(): FilterSettings {
-        return FilterSettings(amenities = setOf(AmenityType.DrinkingFountain, AmenityType.Restroom))
+        return settings
+    }
+
+    override fun saveFilterSettings(settings: FilterSettings) {
+        this.settings = settings
     }
 }

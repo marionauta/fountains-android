@@ -21,9 +21,11 @@ data class ProduceAmenitiesResult(
 )
 
 @Composable
-fun produceAmenities(bounds: Pair<Location, Location>?): State<ProduceAmenitiesResult> {
+fun produceAmenities(
+    bounds: Pair<Location, Location>?,
+    getAmenitiesUseCase: GetAmenitiesUseCase = GetAmenitiesUseCase
+): State<ProduceAmenitiesResult> {
     val tooFarDistance by mapMaxDistanceProducer()
-    val getAmenitiesUseCase = GetAmenitiesUseCase()
     return produceState(initialValue = ProduceAmenitiesResult(isLoading = false), bounds) {
         if (bounds == null) {
             return@produceState

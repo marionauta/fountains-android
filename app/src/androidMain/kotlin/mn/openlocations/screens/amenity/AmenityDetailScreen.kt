@@ -95,7 +95,7 @@ fun AmenityDetailScreen(
     onClose: () -> Unit,
     context: Context = LocalContext.current,
     storage: SecureStringStorage = StringStorageRepository(context),
-    getAmenity: GetAmenityUseCase = GetAmenityUseCase(),
+    getAmenity: GetAmenityUseCase = GetAmenityUseCase,
 ) {
     val (amenity, setAmenity) = remember { mutableStateOf<Amenity?>(null) }
     val (feedback, setFeedback) = remember { mutableStateOf<FeedbackState?>(null) }
