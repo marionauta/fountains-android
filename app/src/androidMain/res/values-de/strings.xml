@@ -10,8 +10,8 @@
     <string name="property_value_unknown">Unbekannt</string>
 
     <string name="app_info_title">Einstellungen</string>
-    <string name="app_info_max_distance_title">Min. Zoom: %.0fkm</string>
-    <string name="app_info_max_distance_content">Kann die Leistung auf älteren Geräten beeinträchtigen</string>
+    <string name="app_info_max_distance_title">Kartenreichweite: %.0f km</string>
+    <string name="app_info_max_distance_content">Erhöhe den Wert, um beim Herauszoomen weiterhin Orte zu sehen. Kann ältere Geräte verlangsamen.</string>
     <string name="app_info_website_title">Website</string>
     <string name="app_info_developer_title">Entwickler</string>
     <string name="app_info_app_version_title">App-Version</string>

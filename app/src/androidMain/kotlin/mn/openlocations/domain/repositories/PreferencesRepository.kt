@@ -9,7 +9,7 @@ import mn.openlocations.BuildConfig
 
 class PreferencesRepository(context: Context) {
     companion object {
-        internal const val DEFAULT_MAX_DISTANCE = 15_000f
+        internal const val DEFAULT_MAX_DISTANCE = 20_000f
 
         private const val PREFERENCES_KEY = "${BuildConfig.APPLICATION_ID}.PREFERENCES"
         private const val ADS_KEY = "${BuildConfig.APPLICATION_ID}.ADS.${BuildConfig.VERSION_CODE}"

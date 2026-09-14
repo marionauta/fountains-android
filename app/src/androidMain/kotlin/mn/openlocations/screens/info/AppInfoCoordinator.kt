@@ -51,10 +51,10 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
 
     val context = LocalContext.current
     val repository = PreferencesRepository(context)
-    val mapMaxDistance by mapMaxDistanceProducer()
-    var localMapMaxDistance by rememberSaveable { mutableFloatStateOf(10f) }
-    LaunchedEffect(mapMaxDistance) {
-        localMapMaxDistance = mapMaxDistance / 1000
+    val mapMaxDistanceM by mapMaxDistanceProducer()
+    var mapMaxDistanceKm by rememberSaveable { mutableFloatStateOf(PreferencesRepository.DEFAULT_MAX_DISTANCE / 1000) }
+    LaunchedEffect(mapMaxDistanceM) {
+        mapMaxDistanceKm = mapMaxDistanceM / 1000
     }
 
     fun toggleSettings() {
@@ -68,14 +68,14 @@ private fun AppInfoCoordinator(onClose: () -> Unit) {
 
     val infos = listOf(
         AppInfo(
-            title = stringResource(R.string.app_info_max_distance_title, localMapMaxDistance),
+            title = stringResource(R.string.app_info_max_distance_title, mapMaxDistanceKm),
             content = stringResource(R.string.app_info_max_distance_content),
             bottom = {
                 Slider(
-                    value = localMapMaxDistance,
+                    value = mapMaxDistanceKm,
                     valueRange = 4f..40f,
-                    onValueChange = { localMapMaxDistance = it },
-                    onValueChangeFinished = { setMapMaxDistance(km = localMapMaxDistance) },
+                    onValueChange = { mapMaxDistanceKm = it },
+                    onValueChangeFinished = { setMapMaxDistance(km = mapMaxDistanceKm) },
                 )
             }
         ),

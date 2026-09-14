@@ -10,8 +10,8 @@
     <string name="property_value_unknown">Unknown</string>
 
     <string name="app_info_title">Settings</string>
-    <string name="app_info_max_distance_title">Min zoom: %.0fkm</string>
-    <string name="app_info_max_distance_content">Might impact performance on older devices</string>
+    <string name="app_info_max_distance_title">Map range: %.0f km</string>
+    <string name="app_info_max_distance_content">Increase this to keep seeing places when you zoom further out. May slow down older devices.</string>
     <string name="app_info_website_title">Website</string>
     <string name="app_info_developer_title">Developer</string>
     <string name="app_info_developer_content" translatable="false">Mario Nachbaur</string>

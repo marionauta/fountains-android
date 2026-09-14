@@ -10,8 +10,8 @@
     <string name="property_value_unknown">Desconhecido</string>
 
     <string name="app_info_title">Configurações</string>
-    <string name="app_info_max_distance_title">Zoom mín.: %.0f km</string>
-    <string name="app_info_max_distance_content">Pode afetar o desempenho em dispositivos mais antigos</string>
+    <string name="app_info_max_distance_title">Alcance do mapa: %.0f km</string>
+    <string name="app_info_max_distance_content">Aumente este valor para continuar vendo locais ao diminuir o zoom. Pode deixar aparelhos antigos mais lentos.</string>
     <string name="app_info_website_title">Site</string>
     <string name="app_info_developer_title">Desenvolvedor</string>
     <string name="app_info_app_version_title">Versão do app</string>

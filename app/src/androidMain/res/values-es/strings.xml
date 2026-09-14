@@ -17,8 +17,8 @@
     <string name="property_value_yes">Sí</string>
     <string name="property_value_unknown">Desconocido</string>
     <string name="app_info_title">Ajustes</string>
-    <string name="app_info_max_distance_title">Zoom mínimo: %.0fkm</string>
-    <string name="app_info_max_distance_content">Puede afectar al rendimiento en dispositivos antiguos</string>
+    <string name="app_info_max_distance_title">Alcance del mapa: %.0f km</string>
+    <string name="app_info_max_distance_content">Auméntalo para seguir viendo lugares al alejar más el mapa. Puede ralentizar los dispositivos antiguos.</string>
     <string name="app_info_easteregg_title">Tonto</string>
     <string name="app_info_easteregg_content">Tonto el que lo lea</string>
     <string name="app_info_easteregg_ok">Leído</string>

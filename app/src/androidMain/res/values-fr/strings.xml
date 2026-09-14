@@ -10,8 +10,8 @@
     <string name="property_value_unknown">Inconnu</string>
 
     <string name="app_info_title">Paramètres</string>
-    <string name="app_info_max_distance_title">Zoom min. : %.0f km</string>
-    <string name="app_info_max_distance_content">Peut affecter les performances sur les appareils anciens</string>
+    <string name="app_info_max_distance_title">Portée de la carte : %.0f km</string>
+    <string name="app_info_max_distance_content">Augmente cette valeur pour continuer à voir des lieux en dézoomant. Peut ralentir les appareils anciens.</string>
     <string name="app_info_website_title">Site web</string>
     <string name="app_info_developer_title">Développeur</string>
     <string name="app_info_app_version_title">Version de l’application</string>
